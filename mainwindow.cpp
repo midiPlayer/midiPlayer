@@ -12,6 +12,11 @@
 #include "beatscene1.h"
 
 
+/*
+ *Hier werden alle Szenen sowie die Klasse JackProcessor zur kommunikation über jack  instanziiert.
+*/
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),scenes(),overlays(),usedLamps(),status(),currentScene(0),currentOverlay(-1),offsetRequested(true),fading(0),nextOnMusic(false),overlayOnMusic(false),
     ui(new Ui::MainWindow)
@@ -77,7 +82,9 @@ void MainWindow::testMidi()
     offsetRequested = true;
 }
 
-QMap<int, float> MainWindow::getChanges()//if offset is true all lamps will be transmitet not only th changes
+//This method is called by jackprocesssor
+//if offset is true all lamps will be transmitet not only th changes
+QMap<int, float> MainWindow::getChanges()
 {
     QMap<int,float> changes;
     Scene* scene = scenes.at(currentScene);
