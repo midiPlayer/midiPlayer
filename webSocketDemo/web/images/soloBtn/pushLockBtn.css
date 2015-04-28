@@ -1,0 +1,47 @@
+.pushLockBtn{
+width:4.5em;
+height:2em;
+ margin: 10px;
+ margin-left:0;
+ display:inline-block;
+}
+
+.pushLockBtn.solo{
+  background: url(soloButton_bg.png) no-repeat;
+  background-size:100% 100%;
+}
+
+.pushLockBtn.mute{
+  background: url(muteButton_bg.png) no-repeat;
+  background-size:100% 100%;
+}
+
+.pushLockBtn.solo .slider{
+  background:url(soloButton_slider.png) no-repeat;
+  background-size:100% 100%;
+}
+
+.pushLockBtn.mute .slider{
+  background:url(muteButton_slider.png) no-repeat;
+  background-size:100% 100%;
+}
+
+.pushLockBtn .slider{
+height:100%;
+width: 55%;
+float:left;
+}
+
+.pushLockBtn .active ,.pushLockBtn .locked {
+  height:100%;
+  width: 55%;
+}
+.pushLockBtn.solo .active ,.pushLockBtn.solo .locked {
+  background:url(soloButton_sliderTouched.png) no-repeat;
+  background-size:100% 100%;
+}
+.pushLockBtn.mute .active ,.pushLockBtn.mute .locked {
+  background:url(muteButton_sliderTouched.png) no-repeat;
+  background-size:100% 100%;
+}
+ 
