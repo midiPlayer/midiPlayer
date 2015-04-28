@@ -1,0 +1,68 @@
+<html>
+<style>
+.pushLockBtn{
+width:4.2em;
+height:1.9em;
+ background: url(soloButton_bg.png) no-repeat;
+ background-size:100% 100%
+}
+.pushLockBtn .slider{
+height:100%;
+width: 55%;
+background:url(soloButton_slider.png) no-repeat;
+background-size:100% 100%;
+float:left;
+}
+.pushLockBtn .active ,.pushLockBtn .locked {
+height:100%;
+width: 55%;
+background:url(soloButton_sliderTouched.png) no-repeat;
+background-size:100% 100%;
+}
+
+/*--------DEMO------------*/
+.tactive{
+  background: #aa0000 !important;
+}
+</style>
+<script src="../../jq/jquery.js"></script>
+<script src="../../jq/jquery-ui.js"></script>
+<script src="../../jq/jquery.ui.touch-punch.min.js"></script> <!-- enable drag and drop on mobile devices -->
+<script>
+$(function(){
+  $( ".slider" ).draggable({ axis: "x", containment: ".pushLockBtn", scroll: false ,stop:
+    function(event,ui){
+      if(ui.position.left > 15){//on
+	$(this).animate({ left: "30"});
+	$(this).addClass("locked");
+	sliderOn($(this).id);
+      }
+      else{//off
+	$(this).animate({ left: "0"});
+	$(this).removeClass("locked");
+	sliderOff($(this).id);
+      }
+      }});
+  $(".slider").mousedown(function(){$(this).addClass("active"); sliderOn($(this).id);});;
+  $(".slider").mouseup(function(){$(this).removeClass("active"); if(!$(this).hasClass("locked")) sliderOff($(this).id);});
+  $(".slider").mouseleave(function(){$(this).removeClass("active"); if(!$(this).hasClass("locked")) sliderOff($(this).id);});
+  $(".slider").touchend(function(){$(this).removeClass("active"); if(!$(this).hasClass("locked")) sliderOff($(this).id);});
+  $(".slider").touchcancel(function(){$(this).removeClass("active"); if(!$(this).hasClass("locked")) sliderOff($(this).id);});
+  
+});
+
+function sliderOn(id){
+  $("#target").addClass("tactive");
+}
+
+function sliderOff(id){
+  $("#target").removeClass("tactive");
+}
+</script>
+<div style= "margin: 100px auto; width:700px; text-align: center;">
+<h1>Demo f&uuml;r den Button</h1>
+<div class='pushLockBtn'><div class='slider'></div> </div>
+<div id="target" style="width:100px; height:100px; background: grey; margin-top: 20px; padding: 10px;">I am the Target </div>
+</div>
+
+</html>
