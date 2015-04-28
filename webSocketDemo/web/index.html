@@ -1,0 +1,128 @@
+ 
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title>Light Controler</title>
+<link href="jq/jquery-ui.css" rel="stylesheet">
+<script src="jq/jquery.js"></script>
+<script src="jq/jquery-ui.js"></script>
+<script language="javascript" type="text/javascript" src="script.js"></script>
+<style>
+input[type=range][orient=vertical]
+{
+    writing-mode: bt-lr; /* IE */
+    -webkit-appearance: slider-vertical; /* WebKit */
+    width: 8px;
+    height: 175px;
+    padding: 0 5px;
+}
+
+#loginOverlay{
+position:absolute;
+top:0px;
+left:0px;
+z-index:100;
+opacity:0.9;
+ width:100%;
+ height:100%;
+ background: #fff; 
+}
+#mainLayer{
+position:absolute;
+top:0px;
+left:0px;
+z-index:0;
+ width:100%;
+ height:100%;
+}
+#loginBox{
+width:300px;
+margin:300px auto;
+border:1px solid #1281a6;
+padding:20px;
+background:#f9f9f9;
+}
+
+input[type=text]{
+  border:1px solid #888;
+}
+input[type=text]:focus{
+  border:1px solid #1281a6;
+}
+#connectBtn{
+  width:2em;
+  height:2em;
+  display:inline-block;
+  background:url(images/connect.png);
+  background-size: 100% 100%;
+  margin-bottom:-10px;
+  margin-left:10px;
+  cursor:pointer;
+  transition: all 0.2s ease-in-out 0s;
+}
+#connectBtn:hover:not(.connecting)
+{
+    transition: all 0.2s ease-in-out 0s;
+    background:url(images/connectTouch.png);
+    background-size: 100% 100%;
+    transform: rotate(45deg);
+}
+
+@-webkit-keyframes rotate {
+    from {-webkit-transform: rotate(45deg);}
+    to {-webkit-transform: rotate(405deg);}
+}
+
+@-moz-keyframes rotate {
+    from {-moz-transform: rotate(45deg);}
+    to {-moz-transform: rotate(405deg);}
+}
+
+@keyframes rotate {
+    from {transform: rotate(45deg);}
+    to {transform: rotate(405deg);}
+}
+.connecting{
+    transform: rotate(45deg);
+    background:url(images/connectTouch.png) !important;
+    background-size: 100% 100% !important;
+    -webkit-transition-property: -webkit-transform;
+    -webkit-transition-duration: 1s;
+    -moz-transition-property: -moz-transform;
+    -moz-transition-duration: 1s;
+    transition-property: transform;
+    transition-duration: 1s;
+    
+    -webkit-animation-name: rotate; 
+    -webkit-animation-duration: 2s; 
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-name: rotate; 
+    -moz-animation-duration: 2s; 
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-timing-function: linear;
+    animation-name: rotate; 
+    animation-duration: 2s; 
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    
+}
+.wrong{ 
+  border-color:#a00 !important;
+}
+</style>
+</head>
+    <body>
+    <div id='loginOverlay'>
+      <div id='loginBox'>
+      Bitte geben Sie die Adresse des Lichtservers ein! (z.B. 192.168.0.1:8080)<br>
+	<input type='text' id='addressField'/><div id="connectBtn" src="images/connect.png" onclick="startSession();"></div>
+      </div>
+    </div>
+    <div id="mainLayer">
+      <input type="button" onclick="trigger();" value="Trigger!" />
+      <input id='slider1' type="range" orient="vertical" oninput="valueChanged(this.value)" onchange="valueChanged(this.value);" />
+    </div>
+    </body>
+</html>
