@@ -4,8 +4,8 @@
   data.type mute or solo
   
   to set chn chnge set Value of the btn use:
-  $("#soloBtn").pushLockBtnOn();
-  $("#soloBtn").pushLockBtnOff();
+  $("#soloBtn").pushLockBtnOn(ui);
+  $("#soloBtn").pushLockBtnOff(ui);
 */
 (function($) {
 $.fn.pushLockBtn = function(data){
@@ -25,7 +25,6 @@ $.fn.pushLockBtn = function(data){
     data.off = function(){};
   }
 
-
   var slider = this.find(":first-child");
   slider.draggable({ axis: "x", containment: this, scroll: false ,drag: function(event,ui){
   if(ui.position.left > 15)
@@ -35,32 +34,47 @@ $.fn.pushLockBtn = function(data){
   },stop:
     function(event,ui){
       if(ui.position.left > 15){//on
-	$(this).animate({ left: "32"});
+	$(this).animate({ left: "31"});
 	$(this).addClass("locked");
-	data.on();
+	data.on($(this).parent());
       }
       else{//off
 	$(this).animate({ left: "0"});
 	$(this).removeClass("locked");
-	data.off();
+	data.off($(this).parent());
       }
       }});
-  slider.mousedown(function(){$(this).addClass("active"); data.on()});
-  slider.mouseup(function(){$(this).removeClass("active"); if(!$(this).hasClass("locked")) data.off();});
-  slider.mouseleave(function(){$(this).removeClass("active"); if(!$(this).hasClass("locked")&& $(this).hasClass("active")) data.off();});
+  slider.mousedown(function(e){if($(this).parent().hasClass("grayscale")) return; $(this).addClass("active");  data.on($(this).parent());});
+  slider.mouseup(function(e){if($(this).parent().hasClass("grayscale")) return; $(this).removeClass("active"); if(!$(this).hasClass("locked")) data.off($(this).parent());});
+  slider.mouseleave(function(e){if($(this).parent().hasClass("grayscale")) return; $(this).removeClass("active"); if(!$(this).hasClass("locked")&& $(this).hasClass("active")) data.off($(this).parent()); });
 };
 
 $.fn.pushLockBtnOn = function(){
    var slider = this.find(":first-child");
-   slider.animate({ left: "32"});
-   $(this).addClass("locked");
+   slider.animate({ left: "31"});
+   slider.addClass("locked");
 };
 
 $.fn.pushLockBtnOff = function(){
    var slider = this.find(":first-child");
    slider.animate({ left: "0"});
-   $(this).removeClass("locked");
+   slider.removeClass("locked");
+   slider.removeClass("active");
 };
+
+$.fn.pushLockBtnDissable = function(){
+   var slider = this.find(":first-child");
+   slider.draggable( 'disable' );
+   $(this).addClass("grayscale");
+};
+
+$.fn.pushLockBtnEnable = function(){
+   var slider = this.find(":first-child");
+   slider.draggable( 'enable' );
+   $(this).removeClass("grayscale");
+};
+
+
 
 })(jQuery);
  

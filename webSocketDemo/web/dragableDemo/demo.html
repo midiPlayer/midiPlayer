@@ -1,0 +1,125 @@
+<html>
+<meta name="viewport" content="width=device-width, user-scalable=no">
+<link href="../jq/jquery-ui.css" rel="stylesheet">
+<link href="../images/soloBtn/pushLockBtn.css" rel="stylesheet">
+<script src="../jq/jquery.js"></script>
+<script src="../jq/jquery-ui.js"></script>
+<script src="../images/soloBtn/pushLockBtn.js"></script>
+<script src="../jq/jquery.ui.touch-punch.min.js"></script> <!-- enable drag and drop on mobile devices -->
+<style>
+.takeMe{
+display:inline-block;
+height:90%;
+margin-left:10px;
+margin-top:0px;
+background:url(images/dragger.png) no-repeat;
+background-size:100% 100%;
+}
+
+.pushLockBtn{
+ margin-left: 10px;
+ margin-right: 10px;
+}
+#accordion .group{
+}
+#accordion h3 .rightUi{
+  float:right;
+}
+#accordion h3{
+  padding:3px;
+  border:1px solid;
+  border-top-right-radius: 4px;
+  height:30px;
+  
+  border: 1px solid #aaaaaa;
+  color: #aaaaaa;
+}
+#accordion .ui-accordion-header-icon{
+  display:none;
+}
+#accordion h3.ui-state-active{
+  border: 1px solid #49b2c2;
+  color: #49b2c2;
+}
+#accordion h3 span{
+  display:inline-block;
+  margin-top:3px;
+  margin-left:10px;
+}
+</style>
+<script>
+$(function() {
+    $( "#accordion" )
+      .accordion({
+        header: "> div >h3"
+      })
+      .sortable({
+        axis: "y",
+        handle: ".takeMe",
+        stop: function( event, ui ) {
+ 
+          // Refresh accordion to handle new order
+          $( this ).accordion( "refresh" );
+        }
+      });
+      
+      $(".soloBtn").pushLockBtn({type:"solo",on:
+	function(ui)
+	  {
+	  ui.parent().find(".muteBtn").pushLockBtnOff();
+	    $(".soloBtn").each(function(id,element){
+	      if($(element).is(ui))
+		return;
+	      //$(element).pushLockBtnDissable();
+	      $(element).pushLockBtnOff();
+	    });
+	  },off:
+	  function(ui)
+	  {
+	    $(".soloBtn").each(function(id,element){
+	      if($(element).is(ui))
+		return;
+	      //$(element).pushLockBtnEnable();
+	    });
+	  }
+	});
+      $(".muteBtn").pushLockBtn({type:"mute",on:function(ui){ ui.parent().find(".soloBtn").pushLockBtnOff(); }});
+      $(".rightUi").click(function(){return false;});
+  });
+</script>
+
+<body>
+<h1> Dragable Demo</h1>
+<div id="accordion">
+  <div class="group">
+    <h3><span class='title'>Section 1</span><div class='rightUi'><div class="muteBtn"></div><div id='solo1' class="soloBtn"></div><img src='images/dragger.png' class='takeMe'/></div></h3>
+    <div>
+      <p>Mauris mauris ante, blandit et, ultrices a, suscipit eget, quam. Integer ut neque. Vivamus nisi metus, molestie vel, gravida in, condimentum sit amet, nunc. Nam a nibh. Donec suscipit eros. Nam mi. Proin viverra leo ut odio. Curabitur malesuada. Vestibulum a velit eu ante scelerisque vulputate.</p>
+    </div>
+  </div>
+  <div class="group">
+    <h3><span class='title'>Section 2</span><div class='rightUi'><div class="muteBtn"></div><div id='solo2' class="soloBtn"></div><img src='images/dragger.png' class='takeMe'/></div></h3>
+    <div>
+      <p>Sed non urna. Donec et ante. Phasellus eu ligula. Vestibulum sit amet purus. Vivamus hendrerit, dolor at aliquet laoreet, mauris turpis porttitor velit, faucibus interdum tellus libero ac justo. Vivamus non quam. In suscipit faucibus urna. </p>
+    </div>
+  </div>
+  <div class="group">
+    <h3><span class='title'>Section 3</span><div class='rightUi'><div class="muteBtn"></div><div class="soloBtn"></div><img src='images/dragger.png' class='takeMe'/></div></h3>
+    <div>
+      <p>Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis. Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui. </p>
+      <ul>
+        <li>List item one</li>
+        <li>List item two</li>
+        <li>List item three</li>
+      </ul>
+    </div>
+  </div>
+  <div class="group">
+    <h3><span class='title'>Section 4</span><div class='rightUi'><div class="muteBtn"></div><div class="soloBtn"></div><img src='images/dragger.png' class='takeMe'/></div></h3>
+    <div>
+      <p>Cras dictum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aenean lacinia mauris vel est. </p><p>Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. </p>
+    </div>
+  </div>
+</div>
+</body>
+</html> 
