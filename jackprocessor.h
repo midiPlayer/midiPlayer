@@ -47,7 +47,7 @@ public slots:
   signals:
     //void midiEvent(int type, int ch, int index, int val);
     void musicNotification();
-    void beatNotification();
+    void beatNotification(float energy);
 };
   
 #endif

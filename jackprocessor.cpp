@@ -91,7 +91,7 @@ int JackProcessor::jack_callback(jack_nframes_t nframes)
                float res = fvec_get_sample(onset, 0);
                if(res > 0.0f){
                     qDebug()  << res;
-                    emit beatNotification();
+                    emit beatNotification(res);
                    qDebug() << "lib found beat";
                }
                //end Callback
