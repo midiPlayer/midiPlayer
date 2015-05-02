@@ -21,7 +21,10 @@ SOURCES += main.cpp\
     scene4.cpp \
     keyframescene.cpp \
     beatscene1.cpp \
-    overlayscene.cpp
+    overlayscene.cpp \
+    discoscene.cpp \
+    discosubscene.cpp \
+    device.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
@@ -31,6 +34,9 @@ HEADERS  += mainwindow.h\
     scene4.h \
     keyframescene.h \
     beatscene1.h \
-    overlayscene.h
+    overlayscene.h \
+    discoscene.h \
+    discosubscene.h \
+    device.h
 
 FORMS    += mainwindow.ui
