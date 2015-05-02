@@ -6,6 +6,14 @@
 #include <QDebug>
 #include "mainwindow.h"
 #include <QMutexLocker>
+#include <getopt.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <getopt.h>
+#include <unistd.h>
+#include <math.h>               /* for isfinite */
+#include <string.h>             /* for strcmp */
 
 JackProcessor::JackProcessor(QObject *parent) : QObject(parent), musicNotificationRequested(false),beatRequested(true) {
 }
@@ -33,8 +41,14 @@ int JackProcessor::initJack(MainWindow* m) {
 
   jackAudioIn = jack_port_register(jackHandle,"Audio Trigger in",JACK_DEFAULT_AUDIO_TYPE,JackPortIsInput,0);
 
+  //aubio
+  smpl = new_fvec(hop_size);
+  ibuf = new jack_sample_t[1025];
 
-  //music
+  o = new_aubio_onset ("hfc", buffer_size, hop_size, samplerate);
+  samplerate = jack_get_sample_rate (jackHandle);
+  onset = new_fvec (1);
+  aubio_onset_set_threshold (o, 0.6);
 
   return(0);
 }
@@ -66,6 +80,25 @@ int JackProcessor::jack_callback(jack_nframes_t nframes)
     val = *(ev.buffer + 2);    
     emit midiEvent(type, ch, index, val);
   }*/
+
+    ibuf = (jack_sample_t *)jack_port_get_buffer (jackAudioIn, nframes);
+
+    for (int j=0;j<(unsigned)nframes;j++) {
+         fvec_set_sample(smpl, ibuf[j], pos);
+         if (pos == (int)(hop_size) - 1) {
+               //calback:
+               aubio_onset_do (o,smpl , onset);
+               float res = fvec_get_sample(onset, 0);
+               if(res > 0.0f){
+                    qDebug()  << res;
+                    emit beatNotification();
+                   qDebug() << "lib found beat";
+               }
+               //end Callback
+               pos = -1;
+         }
+         pos++;
+    }
 
   //playback
     void* buffer = jack_port_get_buffer(jackMidiOut, nframes);
@@ -114,6 +147,9 @@ int JackProcessor::jack_callback(jack_nframes_t nframes)
            }
 
 
+
+/*
+
            if(nframes > 0){
                double sum;
                for(int i = 0; i < nframes;i++){
@@ -142,6 +178,6 @@ int JackProcessor::jack_callback(jack_nframes_t nframes)
                max *= 0.99;
                if(max < 0)
                    max = 0;
-           }
+           }*/
   return 0;
 }

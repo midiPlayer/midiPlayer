@@ -4,12 +4,15 @@
 #include <QtCore/QObject>
 #include <jack/jack.h>
 #include <QMap>
+#include <aubio/aubio.h>
 
 class MainWindow;
 
 class JackProcessor : public QObject
 {
   Q_OBJECT
+
+    typedef jack_default_audio_sample_t jack_sample_t;
   
   private:
     jack_client_t *jackHandle;
@@ -24,6 +27,15 @@ class JackProcessor : public QObject
     int jack_callback(jack_nframes_t nframes);
     bool musicNotificationRequested;
     bool beatRequested;
+    jack_sample_t *ibuf;
+    aubio_onset_t *o;
+    int samplerate;
+    uint_t buffer_size = 512;
+    uint_t hop_size = 256;
+    fvec_t *onset;
+    /** internal fvec */
+     fvec_t *smpl;
+     int pos;
 
   public:
     JackProcessor(QObject* parent=0);

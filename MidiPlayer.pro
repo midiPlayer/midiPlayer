@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = MidiPlayer
 TEMPLATE = app
-LIBS += -L C:\\JACK -ljack
+LIBS += -L C:\\JACK -ljack -laubio
 
 SOURCES += main.cpp\
         mainwindow.cpp\
