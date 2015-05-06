@@ -10,6 +10,11 @@ Scene::Scene(QString nameP, QString descP, QObject *parent) : name(nameP),desc(d
 
 }
 
+int Scene::getFadeOutDuration()
+{
+ return 0;//default
+}
+
 void Scene::resetTime()
 {
     long            ms; // Milliseconds
@@ -47,4 +52,5 @@ int Scene::getDeltaTime()
     deltaMs = 1000 + deltaMs;
     return deltaMs + deltaS * 1000;;
 }
+
 

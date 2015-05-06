@@ -2,17 +2,17 @@
 #define SCENE_H
 
 #include <QObject>
-#include<QMap>
-#include <QSet>
+#include <QList>
+#include "device.h"
 
 class Scene : public QObject
 {
     Q_OBJECT
 public:
     explicit Scene(QString nameP, QString descP = 0, QObject *parent = 0);
-    virtual QMap<int,float> getLights() = 0;
-    virtual QSet<int> getUsedLights() = 0;
-    virtual int getFadeOutDuration() = 0;
+    virtual QList<Device> getLights() = 0;
+    virtual QList<Device> getUsedLights() = 0;
+    virtual int getFadeOutDuration();
     void resetTime();
     QString getName();
     QString getDesc();

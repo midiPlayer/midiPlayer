@@ -1,8 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "scene1.h"
-#include "scene2.h"
-#include "scene4.h"
 #include "keyframescene.h"
 #include <QDebug>
 #include <QSetIterator>
@@ -10,6 +7,8 @@
 #include "time.h"
 #include "math.h"
 #include "beatscene1.h"
+#include "fusionscene.h"
+#include "blackscene.h"
 
 
 /*
@@ -18,9 +17,17 @@
 
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),scenes(),overlays(),usedLamps(),status(),currentScene(0),currentOverlay(-1),offsetRequested(true),fading(0),nextOnMusic(false),overlayOnMusic(false),
+    QMainWindow(parent),scenes(),overlays(),usedLamps(),status(),currentScene(0),currentOverlay(-1),offsetRequested(true),fading(0),nextOnMusic(false),overlayOnMusic(false),availableDevices(),
     ui(new Ui::MainWindow)
 {
+    //availableDevices = Device::loadDevicesFromXml("~/devices.xml");
+
+    QMap<int,float> channels;
+    channels.insert(1,0.0f);
+    channels.insert(2,0.0f);
+    channels.insert(3,0.0f);
+    availableDevices.append(Device(channels));
+
     p = new JackProcessor(this);
     //connect(p,SIGNAL(midiRequest()),this,SLOT(getChanges()));
     ui->setupUi(this);
@@ -33,16 +40,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->jumpBtn,SIGNAL(clicked()),this,SLOT(jumpClicked()));
     connect(ui->playOverlay,SIGNAL(clicked()),this,SLOT(playOverlayBtn()));
 
-    scenes.append(new Scene4("black"));
-    scenes.append(new BeatScene1("beat",p));
-    scenes.append(new KeyFrameScene("/media/daten/Jakob/Schule/FDG/12/theater/scene1.playable","overtuere",true,"Das ist die Beschreibung zur Overtuere un es ist schoen, dass du dir so viel zeit nimmst das zu Lesen!"));
-    scenes.append(new Scene1("asdf"));
-    scenes.append(new Scene2("soso"));
+    scenes.append(new BlackScene("black",availableDevices));
+    //scenes.append(new BeatScene1("beat",availableDevices,p));
+   // scenes.append(new BeatScene1("beat",availableDevices,p));
+//    scenes.append(new KeyFrameScene("/media/daten/Jakob/Schule/FDG/12/theater/scene1.playable","overtuere",true,"Das ist die Beschreibung zur Overtuere un es ist schoen, dass du dir so viel zeit nimmst das zu Lesen!"));
     scenes.at(currentScene)->resetTime();
     scenes.at(currentScene)->start();
 
 
-    overlays.append(new OverlayScene("magic1",new KeyFrameScene("/media/daten/Jakob/Schule/FDG/12/theater/scene1.playable","overtuere",true,"Das ist die Beschreibung zur Overtuere un es ist schoen, dass du dir so viel zeit nimmst das zu Lesen!"),false));
+   // overlays.append(new OverlayScene("magic1",new KeyFrameScene("/media/daten/Jakob/Schule/FDG/12/theater/scene1.playable","overtuere",true,"Das ist die Beschreibung zur Overtuere un es ist schoen, dass du dir so viel zeit nimmst das zu Lesen!"),false));
     foreach (OverlayScene* overlay, overlays) {
         ui->selectOverlay->addItem(overlay->getName(),overlays.indexOf(overlay));
     }
@@ -52,15 +58,15 @@ MainWindow::MainWindow(QWidget *parent) :
         Scene* scene = scenesIter.next();
         usedLamps += scene->getUsedLights();
     }
-    QSetIterator<int> lampIter(usedLamps);
+    QListIterator<Device> lampIter(usedLamps);
     while(lampIter.hasNext()){
-        int lamp = lampIter.next();
-        status.insert(lamp,0.0f);
+        Device lamp = lampIter.next();
+        status.append(lamp);
     }
 
     updateSceneLables();
 
-    qDebug() << "" << usedLamps;
+    //qDebug() << "" << usedLamps;
 
     p->initJack(this);
 
@@ -84,11 +90,11 @@ void MainWindow::testMidi()
 
 //This method is called by jackprocesssor
 //if offset is true all lamps will be transmitet not only th changes
-QMap<int, float> MainWindow::getChanges()
+QList<Device> MainWindow::getChanges()
 {
-    QMap<int,float> changes;
+    QList<Device> changes;
     Scene* scene = scenes.at(currentScene);
-    QMap<int,float> newState;
+    QList<Device> newState;
 
     if(fading != 0){
         int dur;
@@ -110,8 +116,11 @@ QMap<int, float> MainWindow::getChanges()
             updateSceneLables();
         }
         else{
+            FusionScene fusion("fusion");
+            fusion.import(scenes.at(currentScene));
             Scene* nextScene = scenes.at(currentScene+fading);
-            newState = sceneFusion(scene->getLights(),nextScene->getLights(),per,usedLamps);
+            fusion.fusion(nextScene,Device::AV,per);
+            newState = fusion.getLights();
         }
 
     }
@@ -126,14 +135,14 @@ QMap<int, float> MainWindow::getChanges()
     }
 
 
-    QSetIterator<int> lampIter(usedLamps);
+    QListIterator<Device> lampIter(availableDevices);
     while(lampIter.hasNext()){
-        int lamp = lampIter.next();
+        Device lamp = lampIter.next();
         if(!newState.contains(lamp))//setzte alle unbenutzen Lampen auf 0
-            newState.insert(lamp,0.0f);
+            newState.append(lamp);
     }
 
-    //overlay:
+  /*  //overlay:
     if(currentOverlay != -1){
         OverlayScene* overlay = overlays.at(currentOverlay);
         if(overlay->stopRequested()){
@@ -141,19 +150,17 @@ QMap<int, float> MainWindow::getChanges()
         }
         else
             newState = overlay->getEffect(newState);
-    }
+    }*/
 
     //test for changes
-    QMapIterator<int,float> mapIter(newState);
+    QListIterator<Device> mapIter(newState);
     while(mapIter.hasNext()){
-        mapIter.next();
-        int lamp = mapIter.key();
-        float old = status.value(lamp);
-        if(mapIter.value() != old || offsetRequested){//value changed
-
-            changes.insert(lamp,mapIter.value());
-            status.remove(lamp);
-            status.insert(lamp,mapIter.value());//set status to new value
+        Device lamp = mapIter.next();
+        Device old = lamp.findEqualDevice(status);
+        if(!old.valuesEqual(lamp) || offsetRequested){//value changed
+            changes.append(lamp);
+            status.removeAll(old);
+            status.append(lamp);//set status to new value
         }
     }
     offsetRequested = false;
@@ -250,25 +257,6 @@ void MainWindow::requestOverlayOnMusic(int state)
 }
 
 
-
-
-QMap<int, float> MainWindow::sceneFusion(QMap<int, float> sceneA, QMap<int, float> sceneB, float ballance,QSet<int> usedLamps)
-{
-    QMap<int, float> res;
-    QSetIterator<int> it(usedLamps);
-    while (it.hasNext()) {
-        int lamp = it.next();
-        float lampA = 0;
-        float lampB = 0;
-        if(sceneA.contains(lamp))
-            lampA = sceneA.value(lamp);
-        if(sceneB.contains(lamp))
-            lampB = sceneB.value(lamp);
-        float lampRes = (1.0-ballance)*lampA + ballance * lampB;
-        res.insert(lamp,lampRes);
-    }
-    return res;
-}
 
 void MainWindow::resetFadeStart()
 {

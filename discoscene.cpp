@@ -1,35 +1,42 @@
 #include "discoscene.h"
+#include "fusionscene.h"
 
 
-DiscoScene::DiscoScene(QString name) : Scene(name),availableDevices()
+DiscoScene::DiscoScene(QString name) : Scene(name),fusion("fusion")
 {
-    QMap<int,float> lights;
-    lights.insert(1,0.0);
-    lights.insert(2,0.0);
-    lights.insert(3,0.0);
-    availableDevices.insert(1,Device(lights));
+
 }
 
 
 
-QMap<int, float> DiscoScene::getLights()
+QList<Device> DiscoScene::getLights()
 {
+    fusion.reset();
+    bool first = false;
     foreach (Scene* effect, effects) {
-
+        if(first){
+            fusion.import(effect);
+        }
+        else
+            fusion.fusion(effect,Device::AV,0.5f);
     }
+    return fusion.getLights();
 }
 
-QSet<int> DiscoScene::getUsedLights()
+QList<Device> DiscoScene::getUsedLights()
 {
+    QList<Device> useedLights;
+    foreach (Scene* effect, effects) {
+        foreach(Device d,effect->getUsedLights()){
+            if(useedLights.contains(d))
+                useedLights.append(d);
+        }
+    }
 
+    return useedLights;
 }
 
 int DiscoScene::getFadeOutDuration()
 {
 
-}
-
-QMap<int, Device> DiscoScene::getAvailableDevices()
-{
-    return availableDevices;
 }

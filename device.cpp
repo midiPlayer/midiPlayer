@@ -1,6 +1,11 @@
 #include "device.h"
+#include <QDebug>
+Device::Device(QMap<int,float> channelsP) : dmxChannels(channelsP)
+{
 
-Device::Device(QMap<int,float> channelsP)
+}
+
+Device::Device(const Device &d) : dmxChannels(d.dmxChannels)
 {
 
 }
@@ -9,7 +14,7 @@ Device Device::fusionWith(Device upper, Device::FusionType type, float opacity)
 {
     if(this->getNumChannels() != upper.getNumChannels() || this->getChannels() != upper.getChannels())
         throw "not compatible";//we can only fusion equal devices
-    Device ret(channels);
+    Device ret(dmxChannels);
     switch(type){
         case MAX:
         foreach (int channel, getChannels()) {
@@ -28,31 +33,31 @@ Device Device::fusionWith(Device upper, Device::FusionType type, float opacity)
 
 int Device::getNumChannels()
 {
-    return channels.count();
+    return dmxChannels.count();
 }
 
 QMap<int, float> Device::getChannelValues()
 {
-    return channels;
+    return dmxChannels;
 }
 
 QList<int> Device::getChannels()
 {
-    return channels.keys();
+    return dmxChannels.keys();
 }
 
 void Device::setChannel(int channel, float value)
 {
-    channels.remove(channel);
-    channels.insert(channel,value);
+    dmxChannels.remove(channel);
+    dmxChannels.insert(channel,value);
 }
 
 float Device::getChannelValue(int channel)
 {
-    return channels.value(channel);
+    return dmxChannels.value(channel);
 }
 
-QMap<int, Device> Device::loadDevicesFromXml(QFile file)
+QList<Device> Device::loadDevicesFromXml(QString file)
 {
     //http://doc.qt.io/qt-5/qtxml-module.html
     /*
@@ -65,4 +70,66 @@ QMap<int, Device> Device::loadDevicesFromXml(QFile file)
 
 }
 
+bool Device::deviceEqual(Device other)
+{
+    return deviceEqual(&other);
+}
 
+bool Device::deviceEqual(Device *other)
+{
+    return other->getChannels() == getChannels();
+}
+
+bool Device::valuesEqual(Device other)
+{
+    return (getChannelValues() == getChannelValues());
+}
+
+Device Device::findEqualDevice(QList<Device> devices)
+{
+    foreach (Device d, devices) {
+        if(d.deviceEqual(this)){
+            return d;
+        }
+    }
+}
+
+QMap<int, float> Device::toLagacy(QList<Device> devices)
+{
+    QMap<int,float> ret;
+    foreach (Device d, devices) {
+        QMap<int,float> cValues = d.getChannelValues();
+        QMap<int, float>::iterator i;
+        for (i = cValues.begin(); i != cValues.end(); ++i){
+            if(!ret.contains(i.key()))
+            ret.insert(i.key(),i.value());
+        }
+    }
+    return ret;
+}
+
+QDebug Device::operator<<(QDebug debug)
+{
+    debug << "asdf";
+    return debug;
+}
+
+bool Device::operator==(const Device &other)
+{
+    return deviceEqual(other);
+}
+
+/*
+QDebug operator<<(QDebug dbg, Device &type)
+{
+dbg.nospace() << "Device(" << type.getChannelValues() << ")";
+return dbg.maybeSpace();
+}
+*/
+
+/*
+bool operator==(const Device &a,Device &b)
+{
+    return a.deviceEqual(b);
+}
+*/

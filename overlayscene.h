@@ -2,11 +2,13 @@
 #define OVERLAYSCENE_H
 #include "scene.h"
 #include <QString>
+#include "device.h"
+#include <QList>
 class OverlayScene
 {
 public:
     OverlayScene(QString nameP, Scene* sceneP,bool min = 0);
-    QMap<int, float> getEffect(QMap<int, float> other);
+    QList<Device> getEffect(QList<Device> other);
     void reset();
     void stop();
     QString getName();

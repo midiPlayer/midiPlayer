@@ -1,3 +1,4 @@
+#if 0
 #include "keyframescene.h"
 #include <QDebug>
 #include <QFile>
@@ -8,7 +9,7 @@ KeyFrameScene::KeyFrameScene(QMap<int, QMap<int, float> > frames, QString name, 
     QMapIterator<int,QMap<int,float> > kIt(keyframes);
     while(kIt.hasNext()){
         kIt.next();
-        usedLamps += kIt.value().keys().toSet();
+        usedLamps += kIt.value().keys();
     }
 }
 
@@ -28,12 +29,12 @@ KeyFrameScene::KeyFrameScene(QString path, QString name, bool autoExitP, QString
     QMapIterator<int,QMap<int,float> > kIt(keyframes);
     while(kIt.hasNext()){
         kIt.next();
-        usedLamps += kIt.value().keys().toSet();
+        usedLamps += kIt.value().keys();
     }
 
 }
 
-QMap<int, float> KeyFrameScene::getLights()
+QList<Device> KeyFrameScene::getLights()
 {
     int dTime = getDeltaTime();
     QMap<int,float> prev;
@@ -74,7 +75,7 @@ QMap<int, float> KeyFrameScene::getLights()
     }
 }
 
-QSet<int> KeyFrameScene::getUsedLights()
+QList<Device> KeyFrameScene::getUsedLights()
 {
     return usedLamps;
 }
@@ -94,10 +95,10 @@ void KeyFrameScene::start()
     exitRequestedV = false;
 }
 
-QMap<int, float> KeyFrameScene::keyFrameFusion(QMap<int, float> sceneA, QMap<int, float> sceneB, float ballance,QSet<int> usedLamps)
+QMap<int, float> KeyFrameScene::keyFrameFusion(QMap<int, float> sceneA, QMap<int, float> sceneB, float ballance,QList<int> usedLamps)
 {
     QMap<int, float> res;
-    QSetIterator<int> it(usedLamps);
+    QListIterator<int> it(usedLamps);
     while (it.hasNext()) {
         int lamp = it.next();
         float lampA = 0;
@@ -111,3 +112,4 @@ QMap<int, float> KeyFrameScene::keyFrameFusion(QMap<int, float> sceneA, QMap<int
     }
     return res;
 }
+#endif

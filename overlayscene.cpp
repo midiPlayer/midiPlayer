@@ -1,30 +1,22 @@
 #include "overlayscene.h"
+#include "fusionscene.h"
+
 OverlayScene::OverlayScene(QString nameP, Scene *sceneP, bool minP):name(nameP),scene(sceneP),min(minP)
 {
     scene->resetTime();
 }
 
-QMap<int, float> OverlayScene::getEffect(QMap<int, float> other)
+QList<Device> OverlayScene::getEffect(QList<Device> other)
 {
-    QMap<int, float> overlay = scene->getLights();
-    QMap<int, float> res;
-    foreach (int lampI, overlay.keys()) {
-        float lampV = overlay.value(lampI);
-        float value = lampV;
-        if(other.contains(lampI)){
-            float otherV = other.value(lampI);
-            if((!min && otherV > value) || (min && otherV < value))//max / min
-                value = otherV;
-        }
-        res.insert(lampI,value);
-    }
-    foreach (int lampI, other.keys()) {
-        if(!res.contains(lampI)){
-            res.insert(lampI,other.value(lampI));
-        }
-    }
+    QList<Device> overlay = scene->getLights();
 
-    return res;
+    FusionScene fusion("fusion");
+    fusion.import(other);
+    if(min)
+        fusion.fusion(overlay,Device::MIN,1.0f);
+    else
+        fusion.fusion(overlay,Device::MAX,1.0f);
+    return fusion.getLights();
 }
 
 void OverlayScene::reset()

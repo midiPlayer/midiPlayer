@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <math.h>               /* for isfinite */
 #include <string.h>             /* for strcmp */
+#include "device.h"
 
 JackProcessor::JackProcessor(QObject *parent) : QObject(parent), musicNotificationRequested(false),beatRequested(true) {
 }
@@ -82,7 +83,7 @@ int JackProcessor::jack_callback(jack_nframes_t nframes)
   }*/
 
     ibuf = (jack_sample_t *)jack_port_get_buffer (jackAudioIn, nframes);
-
+/*
     for (int j=0;j<(unsigned)nframes;j++) {
          fvec_set_sample(smpl, ibuf[j], pos);
          if (pos == (int)(hop_size) - 1) {
@@ -98,7 +99,7 @@ int JackProcessor::jack_callback(jack_nframes_t nframes)
                pos = -1;
          }
          pos++;
-    }
+    }*/
 
   //playback
     void* buffer = jack_port_get_buffer(jackMidiOut, nframes);
@@ -109,7 +110,9 @@ int JackProcessor::jack_callback(jack_nframes_t nframes)
         count = 0;
     else return 0;
     queue.clear();
-    queue = mainW->getChanges();
+    QList<Device> devices = mainW->getChanges();
+    if(devices.length() != 0)
+        queue = Device::toLagacy(devices);
 
 
 

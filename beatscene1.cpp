@@ -1,3 +1,4 @@
+#if 0
 #include "beatscene1.h"
 #include <QDebug>
 
@@ -6,12 +7,12 @@
 #define l3 14
 
 
-BeatScene1::BeatScene1(QString name,JackProcessor* p) : Scene(name), c(0)
+BeatScene1::BeatScene1(QString name, QList<Device> avDev, JackProcessor* p) : Scene(name), c(0), availableDevices(avDev)
 {
     jackProcessor = p;
 }
 
-QMap<int, float> BeatScene1::getLights()
+QList<Device> BeatScene1::getLights()
 {
     QMap<int, float> ret;
     switch (c) {
@@ -74,13 +75,9 @@ QMap<int, float> BeatScene1::getLights()
     return ret;
 }
 
-QSet<int> BeatScene1::getUsedLights()
+QList<Device> BeatScene1::getUsedLights()
 {
-    QSet<int> set;
-    set << l1;
-    set << l2;
-    set << l3;
-    return set;
+
 }
 
 int BeatScene1::getFadeOutDuration()
@@ -112,3 +109,4 @@ void BeatScene1::beat()
     qDebug() << c;
 }
 
+#endif

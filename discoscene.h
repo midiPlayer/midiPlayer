@@ -6,18 +6,18 @@
 #include <QList>
 #include <QMap>
 #include "device.h"
+#include "fusionscene.h"
 
 class DiscoScene : public Scene
 {
 public:
     DiscoScene(QString name);
-    QMap<int,float>getLights();
-    QSet<int> getUsedLights();
+    QList<Device> getLights();
+    QList<Device> getUsedLights();
     int getFadeOutDuration();
-    QMap<int,Device> getAvailableDevices();
 private:
     QList<Scene*> effects;
-    QMap<int,Device> availableDevices;
+    FusionScene fusion;
 };
 
 #endif // DISCOSCENE_H

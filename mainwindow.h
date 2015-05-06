@@ -4,10 +4,10 @@
 #include <QMainWindow>
 #include <QList>
 #include <QMap>
-#include <QSet>
 #include "scene.h"
 #include "overlayscene.h"
 #include "jackprocessor.h"
+#include "device.h"
 
 namespace Ui {
 class MainWindow;
@@ -19,8 +19,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    QMap<int,float> getChanges();
-    QMap<int,float> sceneFusion(QMap<int,float> sceneA, QMap<int,float> sceneB,float ballance,QSet<int> usedLamps);
+    QList<Device> getChanges();
 
 public slots:
     void testMidi();
@@ -40,8 +39,8 @@ private:
     JackProcessor *p;
     QList<Scene*> scenes;
     QList<OverlayScene*> overlays;
-    QSet<int> usedLamps;
-    QMap<int,float> status;
+    QList<Device> usedLamps;
+    QList<Device> status;
     int currentScene;
     int currentOverlay;
     bool offsetRequested;
@@ -53,6 +52,7 @@ private:
     void stopCurrentOverlay();
     bool nextOnMusic;
     bool overlayOnMusic;
+    QList<Device> availableDevices;
 };
 
 #endif // MAINWINDOW_H

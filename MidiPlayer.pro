@@ -16,25 +16,23 @@ SOURCES += main.cpp\
         mainwindow.cpp\
         jackprocessor.cpp \
     scene.cpp \
-    scene1.cpp \
-    scene2.cpp \
-    scene4.cpp \
     keyframescene.cpp \
     beatscene1.cpp \
     overlayscene.cpp \
     discoscene.cpp \
-    device.cpp
+    device.cpp \
+    fusionscene.cpp \
+    blackscene.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
     scene.h \
-    scene1.h \
-    scene2.h \
-    scene4.h \
     keyframescene.h \
     beatscene1.h \
     overlayscene.h \
     discoscene.h \
-    device.h
+    device.h \
+    fusionscene.h \
+    blackscene.h
 
 FORMS    += mainwindow.ui
