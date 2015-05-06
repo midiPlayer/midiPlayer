@@ -23,7 +23,6 @@ SOURCES += main.cpp\
     beatscene1.cpp \
     overlayscene.cpp \
     discoscene.cpp \
-    discosubscene.cpp \
     device.cpp
 
 HEADERS  += mainwindow.h\
@@ -36,7 +35,6 @@ HEADERS  += mainwindow.h\
     beatscene1.h \
     overlayscene.h \
     discoscene.h \
-    discosubscene.h \
     device.h
 
 FORMS    += mainwindow.ui

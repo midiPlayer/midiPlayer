@@ -8,8 +8,8 @@ class Device
 {
 public:
     Device(QMap<int,float> channelsP);
-    Device fusionWith(Device upper, FusionType type, float opacity);
     enum FusionType { AV,MAX,MAXG,MIN,MING};
+    Device fusionWith(Device upper, FusionType type, float opacity);
     int getNumChannels();
     QMap<int,float> getChannelValues();
     QList<int> getChannels();

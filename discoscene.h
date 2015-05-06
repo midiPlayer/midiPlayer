@@ -2,7 +2,6 @@
 #define DISCOSCENE_H
 
 #include "scene.h"
-#include "discosubscene.h"
 #include <QString>
 #include <QList>
 #include <QMap>
@@ -15,8 +14,9 @@ public:
     QMap<int,float>getLights();
     QSet<int> getUsedLights();
     int getFadeOutDuration();
+    QMap<int,Device> getAvailableDevices();
 private:
-    QList<DiscoSubScene> effects;
+    QList<Scene*> effects;
     QMap<int,Device> availableDevices;
 };
 

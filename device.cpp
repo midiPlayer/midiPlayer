@@ -8,18 +8,20 @@ Device::Device(QMap<int,float> channelsP)
 Device Device::fusionWith(Device upper, Device::FusionType type, float opacity)
 {
     if(this->getNumChannels() != upper.getNumChannels() || this->getChannels() != upper.getChannels())
-        return null;//we can only fusion equal devices
+        throw "not compatible";//we can only fusion equal devices
     Device ret(channels);
     switch(type){
-        case FusionType.MAX:
+        case MAX:
         foreach (int channel, getChannels()) {
             ret.setChannel(channel,upper.getChannelValue(channel)>getChannelValue(channel) ? upper.getChannelValue(channel) : getChannelValue(channel));
         }
         break;
-        case FusionType.MIN:
+        case MIN:
         foreach (int channel, getChannels()) {
             ret.setChannel(channel,upper.getChannelValue(channel)<getChannelValue(channel) ? upper.getChannelValue(channel) : getChannelValue(channel));
         }
+        break;
+    default :
         break;
     }
 }
@@ -59,6 +61,7 @@ QMap<int, Device> Device::loadDevicesFromXml(QFile file)
      *  <channel id='2'>
      * </device>
      * *>
+     * */
 
 }
 
