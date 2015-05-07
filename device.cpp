@@ -1,11 +1,16 @@
 #include "device.h"
 #include <QDebug>
-Device::Device(QMap<int,float> channelsP) : dmxChannels(channelsP)
+Device::Device(QMap<int,float> channelsP, QString devIdP) : dmxChannels(channelsP),devId(devIdP)
 {
 
 }
 
-Device::Device(const Device &d) : dmxChannels(d.dmxChannels)
+Device::Device(const Device &d) : dmxChannels(d.dmxChannels),devId(d.devId)
+{
+
+}
+
+Device::Device(const Device *d) : dmxChannels(d->dmxChannels),devId(d->devId)
 {
 
 }
@@ -14,7 +19,7 @@ Device Device::fusionWith(Device upper, Device::FusionType type, float opacity)
 {
     if(this->getNumChannels() != upper.getNumChannels() || this->getChannels() != upper.getChannels())
         throw "not compatible";//we can only fusion equal devices
-    Device ret(dmxChannels);
+    Device ret(this);
     switch(type){
         case MAX:
         foreach (int channel, getChannels()) {
@@ -41,8 +46,7 @@ QMap<int, float> Device::getChannelValues()
     return dmxChannels;
 }
 
-QList<int> Device::getChannels()
-{
+QList<int> Device::getChannels()const{
     return dmxChannels.keys();
 }
 
@@ -119,6 +123,11 @@ bool Device::operator==(const Device &other)
     return deviceEqual(other);
 }
 
+QString Device::getDeviceId()
+{
+    return devId;
+}
+
 /*
 QDebug operator<<(QDebug dbg, Device &type)
 {
@@ -127,9 +136,9 @@ return dbg.maybeSpace();
 }
 */
 
-/*
-bool operator==(const Device &a,Device &b)
+
+bool operator==(const Device &a,const Device &b)
 {
-    return a.deviceEqual(b);
+    return a.getChannels() == b.getChannels();
 }
-*/
+

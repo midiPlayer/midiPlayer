@@ -18,15 +18,18 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),scenes(),overlays(),usedLamps(),status(),currentScene(0),currentOverlay(-1),offsetRequested(true),fading(0),nextOnMusic(false),overlayOnMusic(false),availableDevices(),
-    ui(new Ui::MainWindow)
+    wss(this),ui(new Ui::MainWindow)
 {
     //availableDevices = Device::loadDevicesFromXml("~/devices.xml");
+
 
     QMap<int,float> channels;
     channels.insert(1,0.0f);
     channels.insert(2,0.0f);
     channels.insert(3,0.0f);
-    availableDevices.append(Device(channels));
+    availableDevices.append(Device(channels,"beamer1"));
+
+    beamer = new beamerDeviceProvider(&wss,availableDevices);
 
     p = new JackProcessor(this);
     //connect(p,SIGNAL(midiRequest()),this,SLOT(getChanges()));

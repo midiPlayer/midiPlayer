@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets websockets
 
 TARGET = MidiPlayer
 TEMPLATE = app
@@ -22,7 +22,12 @@ SOURCES += main.cpp\
     discoscene.cpp \
     device.cpp \
     fusionscene.cpp \
-    blackscene.cpp
+    blackscene.cpp \
+    websocketserver.cpp \
+    websocketserverprovider.cpp \
+    beamershutterscene.cpp \
+    beamerdeviceprovider.cpp \
+    outputdevice.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
@@ -33,6 +38,11 @@ HEADERS  += mainwindow.h\
     discoscene.h \
     device.h \
     fusionscene.h \
-    blackscene.h
+    blackscene.h \
+    websocketserver.h \
+    websocketserverprovider.h \
+    beamershutterscene.h \
+    beamerdeviceprovider.h \
+    outputdevice.h
 
 FORMS    += mainwindow.ui

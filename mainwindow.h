@@ -8,6 +8,8 @@
 #include "overlayscene.h"
 #include "jackprocessor.h"
 #include "device.h"
+#include "websocketserver.h"
+#include "beamerdeviceprovider.h"
 
 namespace Ui {
 class MainWindow;
@@ -53,6 +55,9 @@ private:
     bool nextOnMusic;
     bool overlayOnMusic;
     QList<Device> availableDevices;
+    WebSocketServer wss;
+    beamerDeviceProvider *beamer;
+
 };
 
 #endif // MAINWINDOW_H
