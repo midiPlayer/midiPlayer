@@ -29,7 +29,7 @@ void WebSocketServer::sendData(QJsonObject data, QWebSocket* reciever, WebSocket
     msg.insert("provider",provider->getRequestType());
     msg.insert("data",data);
     QJsonDocument d;
-    d.fromVariant(msg);
+    d.setObject(msg);
     QString msgJson = d.toJson();
     reciever->sendTextMessage(msgJson);
 }
@@ -72,6 +72,8 @@ void WebSocketServer::onTextMessage(QString message)
 void WebSocketServer::onConnectionClosed()
 {
     QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
-
+    foreach (WebSocketServerProvider *p, provider) {
+        p->unregisterClient(pClient);
+    }
 }
 

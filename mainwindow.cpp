@@ -18,10 +18,9 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),scenes(),overlays(),usedLamps(),status(),currentScene(0),currentOverlay(-1),offsetRequested(true),fading(0),nextOnMusic(false),overlayOnMusic(false),availableDevices(),
-    wss(this),ui(new Ui::MainWindow)
+    wss(this),outDevices(), timer(this),getChangesRunning(false), ui(new Ui::MainWindow)
 {
     //availableDevices = Device::loadDevicesFromXml("~/devices.xml");
-
 
     QMap<int,float> channels;
     channels.insert(1,0.0f);
@@ -29,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     channels.insert(3,0.0f);
     availableDevices.append(Device(channels,"beamer1"));
 
-    beamer = new beamerDeviceProvider(&wss,availableDevices);
+    outDevices.append(new beamerDeviceProvider(&wss,availableDevices));
 
     p = new JackProcessor(this);
     //connect(p,SIGNAL(midiRequest()),this,SLOT(getChanges()));
@@ -77,6 +76,10 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->sceneSelector->addItem(scene->getName(),scenes.indexOf(scene));
     }
 
+    connect(&timer,SIGNAL(timeout()),this,SLOT(trigger()));
+    timer.setInterval(10);
+    timer.start();
+
 }
 
 MainWindow::~MainWindow()
@@ -93,8 +96,9 @@ void MainWindow::testMidi()
 
 //This method is called by jackprocesssor
 //if offset is true all lamps will be transmitet not only th changes
-QList<Device> MainWindow::getChanges()
+void MainWindow::getChanges()
 {
+    getChangesRunning = true;
     QList<Device> changes;
     Scene* scene = scenes.at(currentScene);
     QList<Device> newState;
@@ -109,7 +113,7 @@ QList<Device> MainWindow::getChanges()
         qDebug() << "percentage: " << per;
         if(per < 0){//error
             resetFadeStart();
-            return changes;
+            return;
         }
         else if(per > 1){//fading done;
             scene->stop();
@@ -169,9 +173,12 @@ QList<Device> MainWindow::getChanges()
     offsetRequested = false;
 
 
+    foreach (OutputDevice *out,outDevices) {
+        out->publish(changes);
+    }
 
+    getChangesRunning = false;
 
-    return changes;
 }
 
 void MainWindow::nextScene()
@@ -257,6 +264,15 @@ void MainWindow::requestOverlayOnMusic(int state)
 {
     overlayOnMusic = state != 0;
     p->requestMusicNotification();
+}
+
+void MainWindow::trigger()
+{
+    if(getChangesRunning){
+        qDebug() << "still running!";
+        return;
+    }
+    getChanges();
 }
 
 

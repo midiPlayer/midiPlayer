@@ -23,6 +23,7 @@ void beamerDeviceProvider::clientRegistered(QJsonObject msg, int id)
 void beamerDeviceProvider::clientUnregistered(QJsonObject msg, int id)
 {
     qDebug() << "beamerUnregistered";
+    devices.remove(id);
 }
 
 void beamerDeviceProvider::clientMessage(QJsonObject msg, int id)
@@ -39,8 +40,9 @@ void beamerDeviceProvider::publish(QList<Device> targetDevices)
 {
     foreach(Device d, targetDevices){
             int devID = devices.key(d,-1);
-            if(id  == -1) continue;
+            if(devID  == -1) continue;
             QJsonObject msg;
+            msg.insert("color","#0000ff");
             sendMsg(msg,devID);
     }
 }

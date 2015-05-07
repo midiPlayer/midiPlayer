@@ -10,6 +10,9 @@
 #include "device.h"
 #include "websocketserver.h"
 #include "beamerdeviceprovider.h"
+#include <QList>
+#include "outputdevice.h"
+#include <QTimer>
 
 namespace Ui {
 class MainWindow;
@@ -21,7 +24,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    QList<Device> getChanges();
+    void getChanges();
 
 public slots:
     void testMidi();
@@ -35,6 +38,7 @@ private slots:
     void playOverlayBtn();
     void requestNextOnMusic(int state);
     void requestOverlayOnMusic(int state);
+    void trigger();
 
 private:
     Ui::MainWindow *ui;
@@ -56,7 +60,9 @@ private:
     bool overlayOnMusic;
     QList<Device> availableDevices;
     WebSocketServer wss;
-    beamerDeviceProvider *beamer;
+    QList<OutputDevice*> outDevices;
+    bool getChangesRunning;
+    QTimer timer;
 
 };
 

@@ -110,9 +110,10 @@ int JackProcessor::jack_callback(jack_nframes_t nframes)
         count = 0;
     else return 0;
     queue.clear();
-    QList<Device> devices = mainW->getChanges();
+    /*QList<Device> devices = mainW->getChanges();
     if(devices.length() != 0)
-        queue = Device::toLagacy(devices);
+        queue = Device::toLagacy(devices);*/
+
 
 
 
