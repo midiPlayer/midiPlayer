@@ -11,6 +11,7 @@ public:
     Device(const Device &d);
     Device(const Device *d);
     enum FusionType { AV,MAX,MAXG,MIN,MING,OVERRIDE};
+    enum DeviceType{White,RGB,RGBW,Beamer};
     Device fusionWith(Device upper, FusionType type, float opacity);
     int getNumChannels();
     QMap<int,float> getChannelValues();
