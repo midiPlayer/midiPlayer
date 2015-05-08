@@ -29,9 +29,11 @@ class JackProcessor : public QObject
     bool beatRequested;
     jack_sample_t *ibuf;
     aubio_onset_t *o;
+    aubio_tempo_t * tempo;
+    fvec_t * tempo_out;
     int samplerate;
-    uint_t buffer_size = 512;
-    uint_t hop_size = 256;
+    uint_t buffer_size;
+    uint_t hop_size;
     fvec_t *onset;
     /** internal fvec */
      fvec_t *smpl;
@@ -47,7 +49,8 @@ public slots:
   signals:
     //void midiEvent(int type, int ch, int index, int val);
     void musicNotification();
-    void beatNotification(float energy);
+    void beatNotification();
+    void onsetNotification();
 };
   
 #endif

@@ -16,7 +16,8 @@
 #include <string.h>             /* for strcmp */
 #include "device.h"
 
-JackProcessor::JackProcessor(QObject *parent) : QObject(parent), musicNotificationRequested(false),beatRequested(true) {
+JackProcessor::JackProcessor(QObject *parent) : QObject(parent), musicNotificationRequested(false),
+    beatRequested(true),pos(0),buffer_size(512),hop_size(256) {
 }
 
 JackProcessor::~JackProcessor() {
@@ -27,6 +28,12 @@ JackProcessor::~JackProcessor() {
 }
 
 int JackProcessor::initJack(MainWindow* m) {
+
+    //aubio
+    smpl = new_fvec(hop_size);
+    ibuf = new jack_sample_t[1025];
+    tempo_out = new_fvec(2);
+
     mainW = m;
   if ((jackHandle = jack_client_open("MidiPlayer", JackNullOption, NULL)) == 0) {
     QMessageBox::critical(0, "MidiPlayer", "JACK server not running ?");
@@ -42,14 +49,12 @@ int JackProcessor::initJack(MainWindow* m) {
 
   jackAudioIn = jack_port_register(jackHandle,"Audio Trigger in",JACK_DEFAULT_AUDIO_TYPE,JackPortIsInput,0);
 
-  //aubio
-  smpl = new_fvec(hop_size);
-  ibuf = new jack_sample_t[1025];
-
-  o = new_aubio_onset ("hfc", buffer_size, hop_size, samplerate);
   samplerate = jack_get_sample_rate (jackHandle);
-  onset = new_fvec (1);
+  o = new_aubio_onset ("default", buffer_size, hop_size, samplerate);
   aubio_onset_set_threshold (o, 0.6);
+  onset = new_fvec (1);
+
+  tempo = new_aubio_tempo("default", buffer_size, hop_size, samplerate);
 
   return(0);
 }
@@ -83,24 +88,32 @@ int JackProcessor::jack_callback(jack_nframes_t nframes)
   }*/
 
     ibuf = (jack_sample_t *)jack_port_get_buffer (jackAudioIn, nframes);
-/*
+
     for (int j=0;j<(unsigned)nframes;j++) {
          fvec_set_sample(smpl, ibuf[j], pos);
          if (pos == (int)(hop_size) - 1) {
+               float silence = aubio_silence_detection(smpl, -80.0f);
                //calback:
-               aubio_onset_do (o,smpl , onset);
+               aubio_onset_do (o,smpl , onset); //onsets
                float res = fvec_get_sample(onset, 0);
-               if(res > 0.0f){
-                    qDebug()  << res;
-                    emit beatNotification(res);
+               if(res > 0.0f && !silence){
+                    //qDebug()  << res;
+                    emit onsetNotification();
+                    qDebug() << "lib found onset";
+               }
+               aubio_tempo_do (tempo, smpl, tempo_out); //beat tracking
+               float beat = fvec_get_sample (tempo_out, 0);
+               if(beat != 0.0f && !silence){
+                   emit beatNotification();
                    qDebug() << "lib found beat";
                }
+
                //end Callback
                pos = -1;
          }
          pos++;
-    }*/
-
+    }
+/*
   //playback
     void* buffer = jack_port_get_buffer(jackMidiOut, nframes);
     jack_midi_clear_buffer(buffer);
@@ -110,12 +123,13 @@ int JackProcessor::jack_callback(jack_nframes_t nframes)
         count = 0;
     else return 0;
     queue.clear();
+    */
     /*QList<Device> devices = mainW->getChanges();
     if(devices.length() != 0)
         queue = Device::toLagacy(devices);*/
 
 
-
+/*
 
     unsigned char* buffer2;
     if(queue.size() != 0){
@@ -139,7 +153,7 @@ int JackProcessor::jack_callback(jack_nframes_t nframes)
            }
        }
     }
-
+*/
 
 
        jack_default_audio_sample_t *sample= (jack_default_audio_sample_t *)(jack_port_get_buffer(jackAudioIn, nframes));
