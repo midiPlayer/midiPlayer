@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>blenden/linien.png</file>
+    </qresource>
+</RCC>
