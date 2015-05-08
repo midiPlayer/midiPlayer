@@ -1,16 +1,16 @@
 #include "device.h"
 #include <QDebug>
-Device::Device(QMap<int,float> channelsP, QString devIdP) : dmxChannels(channelsP),devId(devIdP)
+Device::Device(QMap<int,float> channelsP, QString devIdP,DeviceType typeP) : dmxChannels(channelsP),devId(devIdP),type(typeP)
 {
 
 }
 
-Device::Device(const Device &d) : dmxChannels(d.dmxChannels),devId(d.devId)
+Device::Device(const Device &d) : dmxChannels(d.dmxChannels),devId(d.devId),type(d.type)
 {
 
 }
 
-Device::Device(const Device *d) : dmxChannels(d->dmxChannels),devId(d->devId)
+Device::Device(const Device *d) : dmxChannels(d->dmxChannels),devId(d->devId),type(d->type)
 {
 
 }
@@ -86,7 +86,7 @@ bool Device::deviceEqual(Device *other)
 
 bool Device::valuesEqual(Device other)
 {
-    return (getChannelValues() == getChannelValues());
+    return (getChannelValues() == other.getChannelValues());
 }
 
 Device Device::findEqualDevice(QList<Device> devices)
@@ -126,6 +126,11 @@ bool Device::operator==(const Device &other)
 QString Device::getDeviceId()
 {
     return devId;
+}
+
+Device::DeviceType Device::getType()
+{
+    return type;
 }
 
 /*

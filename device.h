@@ -7,11 +7,12 @@
 class Device
 {
 public:
-    Device(QMap<int,float> channelsP, QString devIdP);
-    Device(const Device &d);
-    Device(const Device *d);
     enum FusionType { AV,MAX,MAXG,MIN,MING,OVERRIDE};
     enum DeviceType{White,RGB,RGBW,Beamer};
+
+    Device(QMap<int,float> channelsP, QString devIdP,DeviceType typeP);
+    Device(const Device &d);
+    Device(const Device *d);
     Device fusionWith(Device upper, FusionType type, float opacity);
     int getNumChannels();
     QMap<int,float> getChannelValues();
@@ -28,9 +29,11 @@ public:
     QDebug operator<<(QDebug debug);
     bool operator ==(const Device &other);
     QString getDeviceId();
+    DeviceType getType();
 private:
     QMap<int,float> dmxChannels;
     QString devId;
+    DeviceType type;
 
 };
 //QDebug operator<<(QDebug dbg, const Device &type);

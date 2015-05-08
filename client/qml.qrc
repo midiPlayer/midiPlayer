@@ -6,5 +6,6 @@
         <file>ConnectView.qml</file>
         <file>VisualisationOverviewView.qml</file>
         <file>myWebSocket.qml</file>
+        <file>BeamerShutterControl.qml</file>
     </qresource>
 </RCC>

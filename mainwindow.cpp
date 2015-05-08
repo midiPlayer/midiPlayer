@@ -23,10 +23,13 @@ MainWindow::MainWindow(QWidget *parent) :
     //availableDevices = Device::loadDevicesFromXml("~/devices.xml");
 
     QMap<int,float> channels;
+    channels.insert(0,0.0f);
     channels.insert(1,0.0f);
     channels.insert(2,0.0f);
     channels.insert(3,0.0f);
-    availableDevices.append(Device(channels,"beamer1"));
+    channels.insert(4,0.0f);
+    channels.insert(5,0.0f);
+    availableDevices.append(Device(channels,"beamer1",Device::Beamer));
 
     outDevices.append(new beamerDeviceProvider(&wss,availableDevices));
 
@@ -42,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->jumpBtn,SIGNAL(clicked()),this,SLOT(jumpClicked()));
     connect(ui->playOverlay,SIGNAL(clicked()),this,SLOT(playOverlayBtn()));
 
+    scenes.append(new BeatScene1("bear",availableDevices,p));
     scenes.append(new BlackScene("black",availableDevices));
     //scenes.append(new BeatScene1("beat",availableDevices,p));
    // scenes.append(new BeatScene1("beat",availableDevices,p));

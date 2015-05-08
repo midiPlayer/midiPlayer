@@ -16,7 +16,7 @@ Item {
                 id: mainForm;
                 button1.onClicked: {ws.sendTextMessage("trigger")}
                 button2.onClicked: stackView.push(Qt.resolvedUrl("VisualisationOverviewView.qml"),{ address: urlEdit.text })
-                button3.onClicked: messageDialog.show(qsTr("Button 3 pressed"))
+                button3.onClicked: stackView.push(Qt.resolvedUrl("BeamerShutterControl.qml"),{  })
                 connectBtn.onClicked: {
                     address = "ws://localhost:8888"
                     var obj = Qt.createComponent("myWebSocket.qml",0,this);

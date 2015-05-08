@@ -2,7 +2,9 @@ TEMPLATE = app
 
 QT += qml quick widgets websockets
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    webinterface.cpp \
+    websocketconnector.cpp
 
 RESOURCES += qml.qrc
 
@@ -13,3 +15,6 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 DISTFILES +=
+
+HEADERS += \
+    webinterface.h

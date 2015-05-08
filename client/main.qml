@@ -7,7 +7,7 @@ import QtQuick.Layouts 1.1
 ApplicationWindow {
     title: qsTr("Hello World")
     width: 640
-    height: 480
+    height: 600
     visible: true
 
     menuBar: MenuBar {

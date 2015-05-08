@@ -51,11 +51,11 @@ ApplicationWindow {
 
 
     Rectangle{
-        id:mainBG
+        id:mainHighLighted
         width:100
         height:100
         anchors.fill: parent
-        color:'red'
+        color:'black'
         visible: false
     }
 
@@ -89,9 +89,10 @@ ApplicationWindow {
     id: main
     anchors.fill: parent
     color:"blue"
+
     OpacityMask{
         anchors.fill: parent
-        source:mainBG
+        source:mainHighLighted
         maskSource:mask
     }
     visible: false
@@ -123,7 +124,13 @@ ApplicationWindow {
                 console.log(msg);
                 if(msg.data.color !== undefined){
                     main.color = msg.data.color
+
                 }
+                if(msg.data.highlightedColor !== undefined){
+                    mainHighLighted.color = msg.data.highlightedColor
+
+                }
+
 
 
             }

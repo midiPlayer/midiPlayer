@@ -1,4 +1,3 @@
-#if 0
 #include "beatscene1.h"
 #include <QDebug>
 
@@ -7,106 +6,82 @@
 #define l3 14
 
 
-BeatScene1::BeatScene1(QString name, QList<Device> avDev, JackProcessor* p) : Scene(name), c(0), availableDevices(avDev)
+BeatScene1::BeatScene1(QString name, QList<Device> avDev, JackProcessor* p) : Scene(name), c(0,0,0),highlighted(0,0,0) , availableDevices(avDev),options(),usedDevices()
 {
     jackProcessor = p;
+    options.append(QColor(255,0,0));
+    options.append(QColor(0,255,0));
+    options.append(QColor(0,0,255));
+    options.append(QColor(255,255,0));
+    options.append(QColor(255,0,255));
+    options.append(QColor(0,255,255));
+
+
+    usedDevices.clear();
+    foreach (Device d, availableDevices) {
+        if(d.getType() == Device::Beamer){
+            usedDevices.append(d);
+        }
+    }
 }
 
 QList<Device> BeatScene1::getLights()
 {
-    QMap<int, float> ret;
-    switch (c) {
-    case 0:
-        ret.insert(l1,1.0);
-        ret.insert(l2,0);
-        ret.insert(l3,0);
-        break;
-    case 1:
-        ret.insert(l1,0);
-        ret.insert(l2,1.0);
-        ret.insert(l3,0);
-        break;
-    case 2:
-        ret.insert(l1,0);
-        ret.insert(l2,0);
-        ret.insert(l3,1.0);
-        break;
-    case 3:
-        ret.insert(l1,0.5);
-        ret.insert(l2,0.5);
-        ret.insert(l3,0.5);
-        break;
-    case 4:
-        ret.insert(l1,1.0);
-        ret.insert(l2,1.0);
-        ret.insert(l3,0);
-        break;
-    case 5:
-        ret.insert(l1,0);
-        ret.insert(l2,1.0);
-        ret.insert(l3,1.0);
-        break;
-    case 6:
-        ret.insert(l1,1.0);
-        ret.insert(l2,1.0);
-        ret.insert(l3,1.0);
-        break;
-    case 7:
-        ret.insert(l1,1.0);
-        ret.insert(l2,0.5);
-        ret.insert(l3,0.5);
-        break;
-    case 8:
-        ret.insert(l1,0.5);
-        ret.insert(l2,1.0);
-        ret.insert(l3,0.5);
-        break;
-    case 9:
-        ret.insert(l1,0.5);
-        ret.insert(l2,0.5);
-        ret.insert(l3,1.0);
-        break;
-    default:
-        ret.insert(l1,0);
-        ret.insert(l2,0);
-        ret.insert(l3,0);
-        break;
+    QList<Device> ret;
+    foreach (Device d, usedDevices) {
+        d.setChannel(0,c.red());
+        d.setChannel(1,c.green());
+        d.setChannel(2,c.blue());
+
+        d.setChannel(3,highlighted.red());
+        d.setChannel(4,highlighted.green());
+        d.setChannel(5,highlighted.blue());
+        ret.append(d);
     }
     return ret;
 }
 
 QList<Device> BeatScene1::getUsedLights()
 {
-
+    return usedDevices;
 }
 
-int BeatScene1::getFadeOutDuration()
-{
-    return 100;
-}
 
 void BeatScene1::stop()
 {
     qDebug() << "stoped";
-    disconnect(SLOT(beat()));//TODO: fix
+    disconnect(jackProcessor,SIGNAL(beatNotification()),this,SLOT(beat()));
+    disconnect(jackProcessor,SIGNAL(onsetNotification()),this,SLOT(onset()));
 }
 
 void BeatScene1::start()
 {
     qDebug() << "start";
     connect(jackProcessor,SIGNAL(beatNotification()),this,SLOT(beat()));
+    connect(jackProcessor,SIGNAL(onsetNotification()),this,SLOT(onset()));
 }
 
 void BeatScene1::beat()
 {
-    int last = c;
-    while(last == c)
+    QColor last = c;
+    while(last == c || c == highlighted)
     {
-        c = ((float)rand() / (float)RAND_MAX)*10.0f;
-        if(c > 9)
-           c=9;
+        int i = double(options.length())*double(rand())/RAND_MAX - 0.0001;
+        c = options.at(i);
     }
     qDebug() << c;
 }
 
-#endif
+void BeatScene1::onset()
+{
+    QColor last = highlighted;
+    while(last == highlighted|| c == highlighted)
+    {
+        int i = double(options.length())*double(rand())/RAND_MAX - 0.0001;
+        highlighted = options.at(i);
+    }
+    qDebug() << c;
+}
+
+
+
