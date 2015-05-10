@@ -127,7 +127,6 @@ Item{
                     parent.state = "moving";
                 }
                 onReleased: {
-                   // bh1.enabled = true;
                     if(parent.x > (parent.parent.width - parent.width) / 2){
                         slider.setOn(true);
                     }

@@ -36,12 +36,12 @@ Rectangle {
         delegate: Item {
             id: delegateItem
             width: listView.width
-            height: 60*(modelData.nr+1)
+            height: dragRect.height
 
             Rectangle {
                 id: dragRect
                 width: listView.width
-                height: 60*(modelData.nr+1)
+                height: column.height
                 //height:60
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
@@ -53,13 +53,31 @@ Rectangle {
                     console.log("set");
                 }
 
-                Text {
-                    anchors.centerIn: parent
-                    text: modelData.nr
-                }
-                RowLayout{
-                    anchors.fill: parent
+                Rectangle{
+                    id: column
+                    anchors.left: parent.left
+                    anchors.top: parent.top
                     width:parent.width
+                    height:row.height + optionBox.height
+                    MouseArea{
+                        anchors.fill: row
+                        onPressed: {
+                            if(optionBox.height != 0)
+                                optionBox.height = 0;
+                            else
+                                optionBox.height = optionBox.implicitHeight;
+                        }
+                    }
+
+
+
+                RowLayout{
+                    id: row
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                    width:parent.width
+                    height:100
+
 
                     Rectangle{
                         height: parent.height
@@ -78,6 +96,11 @@ Rectangle {
                             }
                         }
                     }
+
+                    Text {
+                        text: modelData.nr
+                    }
+
 
                     PushLockBtn{
                         id: soloBtn
@@ -98,6 +121,25 @@ Rectangle {
                         anchors.margins: 10;
                     }
                 }
+
+
+
+                    Rectangle{
+                        id:optionBox
+                        anchors.top: row.bottom
+                        anchors.left: parent.left
+                        height:0
+                        implicitHeight: 100
+                        color:"red"
+                        width:parent.width
+                        Behavior on height{
+                           NumberAnimation{
+                               duration: 300
+                           }
+                        }
+                    }
+
+            }
 
                 property int dragStart: 0
                 property int jumpedItems: 0

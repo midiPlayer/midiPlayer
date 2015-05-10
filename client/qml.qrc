@@ -7,5 +7,6 @@
         <file>VisualisationOverviewView.qml</file>
         <file>myWebSocket.qml</file>
         <file>BeamerShutterControl.qml</file>
+        <file>BeatScene.qml</file>
     </qresource>
 </RCC>
