@@ -25,6 +25,7 @@ private:
 protected:
     bool sendMsg(QJsonObject msg, int client_id);
     bool sendMsg(QJsonObject msg);
+    bool sendMsgButNotTo(QJsonObject msg,int client_id);
 
     int id;
     QMap<QWebSocket*,int> connectedSockets;

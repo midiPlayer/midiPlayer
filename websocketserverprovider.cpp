@@ -49,4 +49,13 @@ bool WebSocketServerProvider::sendMsg(QJsonObject msg)
     }
 }
 
+bool WebSocketServerProvider::sendMsgButNotTo(QJsonObject msg, int client_id)
+{
+    QWebSocket* notTo = connectedSockets.key(client_id);
+    foreach(QWebSocket* ws, connectedSockets.keys()){
+        if(ws != notTo)
+            server->sendData(msg,ws,this);
+    }
+}
+
 

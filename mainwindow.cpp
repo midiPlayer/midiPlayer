@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->jumpBtn,SIGNAL(clicked()),this,SLOT(jumpClicked()));
     connect(ui->playOverlay,SIGNAL(clicked()),this,SLOT(playOverlayBtn()));
 
-    scenes.append(new BeatScene1("bear",availableDevices,p));
+    scenes.append(new BeatScene1("beat",availableDevices,p,&wss));
     scenes.append(new BlackScene("black",availableDevices));
     //scenes.append(new BeatScene1("beat",availableDevices,p));
    // scenes.append(new BeatScene1("beat",availableDevices,p));

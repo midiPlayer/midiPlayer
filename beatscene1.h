@@ -6,15 +6,22 @@
 #include <QList>
 #include "device.h"
 #include <QColor>
-class BeatScene1 : public Scene
+#include "websocketserverprovider.h"
+#include <QSet>
+
+class BeatScene1 : public Scene, public WebSocketServerProvider
 {
     Q_OBJECT
 public:
-    BeatScene1(QString name,QList<Device>avDev,JackProcessor* p);
+    BeatScene1(QString name, QList<Device>avDev, JackProcessor* p, WebSocketServer *ws);
     QList<Device>getLights();
     QList<Device> getUsedLights();
     void stop();
     void start();
+    void clientRegistered(QJsonObject msg,int id);
+    void clientUnregistered(QJsonObject msg,int id);
+    void clientMessage(QJsonObject msg,int id);
+    QString getRequestType();
 public slots:
     void beat();
     void onset();
@@ -25,6 +32,15 @@ private:
     QColor highlighted;
     QList<QColor> options;
     QList<Device> usedDevices;
+    enum TriggerType{BEAT,TIMER,ONSET};
+    QSet<TriggerType> foregroundTrigger;
+    QSet<TriggerType> backgroundTrigger;
+
+    void changeForeground();
+    void changeBackground();
+    void parseTriggerMsg(QJsonObject msg, QSet<TriggerType> *trigger);
+
+    QJsonObject getState(bool foreground, bool background);
 };
 
 #endif // BEATSCENE1_H

@@ -4,6 +4,16 @@ import WebSocketConnector 1.1
 
     Rectangle{
         property bool radio : true
+
+        signal stateChanged(bool onset,bool beat,bool timer);
+        signal modalStateChanged(string trigger);
+
+        function setState(onset,beat,timer){
+            beatBtn.isOn = beat;
+            onsetBtn.isOn = onset;
+            timerBtn.isOn = timer;
+        }
+
         id: box
         height:30
         width: 180
@@ -23,7 +33,9 @@ import WebSocketConnector 1.1
                         onsetBtn.isOn = false;
                         timerBtn.isOn = false;
                     }
+                    sendState();
                 }
+                onStateOff: sendState();
             }
             TriggerSourceBtnItem{
                 id: onsetBtn
@@ -34,7 +46,9 @@ import WebSocketConnector 1.1
                         beatBtn.isOn = false;
                         timerBtn.isOn = false;
                     }
+                    sendState();
                 }
+                onStateOff: sendState();
             }
             TriggerSourceBtnItem{
                 id: timerBtn
@@ -47,9 +61,25 @@ import WebSocketConnector 1.1
                         onsetBtn.isOn = false;
                         beatBtn.isOn = false;
                     }
+                    sendState();
                 }
+                onStateOff: sendState();
             }
         }
+
+        function sendState(){
+            stateChanged(onsetBtn.isOn,beatBtn.isOn,timerBtn.isOn);
+            console.log(beatBtn.isOn);
+            var method = "";
+            if(onsetBtn.isOn)
+                method = "onset";
+            else if(beatBtn.isOn)
+                method = "beat";
+            else if(timerBtn.isOn)
+                method = "timer";
+            modalStateChanged(method);
+        }
+
 
 
 WebSocketConnector{

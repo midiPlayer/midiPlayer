@@ -57,7 +57,6 @@ void WebSocketServer::onTextMessage(QString message)
         QJsonValue value = data.value("register");
         if(value.isArray()){
             foreach(QJsonValue val, value.toArray()){
-                qDebug() << val;
                 foreach (WebSocketServerProvider *p, provider) {
                     if(p->getRequestType() == val.toString("")){
                         p->registerClient(data.value("parameters").toObject(),pClient);
@@ -75,6 +74,14 @@ void WebSocketServer::onTextMessage(QString message)
             }
         }
     }
+    else if(data.contains("provider")){
+        QString rqt = data.value("provider").toString("");
+        foreach (WebSocketServerProvider *p, provider) {
+            if(p->getRequestType() == rqt){
+                p->onMessage(data.value("data").toObject(),pClient);
+            }
+        }
+    }
 }
 
 void WebSocketServer::onConnectionClosed()
@@ -84,4 +91,5 @@ void WebSocketServer::onConnectionClosed()
         p->unregisterClient(pClient);
     }
 }
+
 

@@ -7,7 +7,7 @@ Rectangle{
     property bool isFirst : false;
     property bool isLast : false;
     property string text;
-    property bool isOn : false;
+    property bool isOn;
     property color textColor : "#fff";
     property color mColor : setGradient();
 
@@ -15,6 +15,7 @@ Rectangle{
 
     signal stateOn();
     signal stateOff();
+
 
     onIsOnChanged: {
         mColor = setGradient();
@@ -83,8 +84,8 @@ Rectangle{
                 isOn = false;
                 stateOff();
             }else{
-                stateOn();
                 isOn = true;
+                stateOn();
             }
 
             mColor = setGradient();
