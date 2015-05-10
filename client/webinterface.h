@@ -1,21 +1,35 @@
 #ifndef WEBINTERFACE_H
 #define WEBINTERFACE_H
 
-#include "websocketconnector.h"
+
 #include <QList>
 #include <QWebSocket>
-
-class WebInterface
+#include <QObject>
+#include <QJsonDocument>
+#include <QJsonObject>
+class WebSocketConnector;
+class WebInterface : public QObject
 {
+Q_OBJECT
 public:
-    static void init();
     static WebInterface &getInstance();
     void registerWsConnector(WebSocketConnector *wsc);
-    bool connect(QString url);
+    bool connectToServer(QString url);
+    bool isConnected();
+    void registerConnector(WebSocketConnector *connector);
+    void sendMsg(WebSocketConnector *connector,QJsonObject msg);
+public slots:
+    void connected();
+    void disconnected();
+    void onTextMessage(QString message);
+signals:
+    void connectedS();
+    void disconnectedS();
 private:
-    WebInterface();
+    WebInterface(QObject *parent = 0);
     QList<WebSocketConnector *> connectors;
     QWebSocket ws;
+    bool isConnectedP;
 protected:
 
 

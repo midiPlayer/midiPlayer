@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    qmlRegisterType<WebSocketConnector>("WebSocketConnector", 1,0, "WebSocketConnector");
+    qmlRegisterType<WebSocketConnector>("WebSocketConnector", 1,1, "WebSocketConnector");
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
