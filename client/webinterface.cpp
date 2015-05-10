@@ -34,11 +34,18 @@ bool WebInterface::isConnected()
 void WebInterface::registerConnector(WebSocketConnector *connector)
 {
     connectors.append(connector);
+    if(connectedRequestTypes.contains(connector->getRequestType()))
+        return; //allreaddy requested
     QJsonObject msg;
     msg.insert("register",connector->getRequestType());
     QJsonDocument d;
     d.setObject(msg);
     ws.sendTextMessage(d.toJson());
+}
+
+void WebInterface::unregisterConnector(WebSocketConnector *connector)
+{
+    connectors.removeAll(connector);
 }
 
 void WebInterface::sendMsg(WebSocketConnector *connector, QJsonObject msg)
@@ -53,6 +60,7 @@ void WebInterface::sendMsg(WebSocketConnector *connector, QJsonObject msg)
 
 void WebInterface::connected()
 {
+    qDebug() << "connected";
     connect(&ws,SIGNAL(textMessageReceived(QString)),this,SLOT(onTextMessage(QString)));
     isConnectedP = true;
     emit connectedS();
@@ -60,6 +68,7 @@ void WebInterface::connected()
 
 void WebInterface::disconnected()
 {
+    qDebug() << "failed";
     isConnectedP = false;
     emit disconnectedS();
 }

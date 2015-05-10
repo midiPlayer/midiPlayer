@@ -1,19 +1,27 @@
 #include "websocketconnector.h"
 #include <QDebug>
-WebSocketConnector::WebSocketConnector(QObject* parent) :QObject(parent),webInterface(WebInterface::getInstance()),requestType()
+WebSocketConnector::WebSocketConnector(QObject* parent) :QObject(parent),webInterface(WebInterface::getInstance()),requestType(""),urlV("")
 {
+}
 
+WebSocketConnector::~WebSocketConnector()
+{
+    webInterface.unregisterConnector(this);
 }
 
 
-void WebSocketConnector::startConnection(const QString &)
+void WebSocketConnector::startConnection(const QString &url)
 {
     qDebug() << "startConnectionCalled";
+    webInterface.connectToServer(url);
+    connect(&webInterface,SIGNAL(connectedS()),this,SLOT(connected()));
+    connect(&webInterface,SIGNAL(disconnectedS()),this,SLOT(disconnected()));
+    urlV = url;
 }
 
 QString WebSocketConnector::url() const
 {
-    return "";
+    return urlV;
 }
 
 QString WebSocketConnector::empty() const
@@ -34,7 +42,7 @@ void WebSocketConnector::registerForRequestType(QString type)
 
 void WebSocketConnector::onMessage(QJsonObject msg)
 {
-    emit onMessage(msg);
+    emit message(msg);
 }
 
 void WebSocketConnector::sendMessge(QString msg)

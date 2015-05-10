@@ -4,7 +4,8 @@ import QtQuick.Window 2.2
 import QtQuick.Dialogs 1.2
 import Qt.WebSockets 1.0
 import QtQuick.Layouts 1.1
-
+import WebSocketConnector 1.1
+import Qt.labs.settings 1.0
 
 Item {
             property WebSocket ws
@@ -18,11 +19,10 @@ Item {
                 button2.onClicked: stackView.push(Qt.resolvedUrl("VisualisationOverviewView.qml"),{ address: urlEdit.text })
                 button3.onClicked: stackView.push(Qt.resolvedUrl("BeamerShutterControl.qml"),{  })
                 connectBtn.onClicked: {
-                    address = "ws://localhost:8888"
-                    var obj = Qt.createComponent("myWebSocket.qml",0,this);
-                    ws = obj.createObject(this,{address:"ws://localhost:8888"});
-
-                    console.log(ws)
+                  wsc.url = urlEdit.text;
+                }
+                Component.onCompleted: {
+                    urlEdit.text = settings.lastUrl;
                 }
             }
 
@@ -35,4 +35,15 @@ Item {
                     messageDialog.open();
                 }
             }
+
+            WebSocketConnector{
+                id: wsc
+                onConnectionSucceded: {
+                    settings.lastUrl = url;
+                }
+            }
+            Settings {
+                    id: settings
+                    property string lastUrl: ""
+                }
         }

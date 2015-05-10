@@ -8,5 +8,7 @@
         <file>myWebSocket.qml</file>
         <file>BeamerShutterControl.qml</file>
         <file>BeatScene.qml</file>
+        <file>TriggerSourceBtn.qml</file>
+        <file>TriggerSourceBtnItem.qml</file>
     </qresource>
 </RCC>

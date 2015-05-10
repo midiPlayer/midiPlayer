@@ -13,6 +13,7 @@
 #include <QList>
 #include "outputdevice.h"
 #include <QTimer>
+#include "remotebeat.h"
 
 namespace Ui {
 class MainWindow;
@@ -63,6 +64,7 @@ private:
     QList<OutputDevice*> outDevices;
     bool getChangesRunning;
     QTimer timer;
+    RemoteBeat *remoteBeat;
 
 };
 

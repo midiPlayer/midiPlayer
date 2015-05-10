@@ -10,11 +10,7 @@ Rectangle {
     id: root
     width: parent.width
     height: parent.height
-    property string address:""
-    MessageDialog{
-        text: address;
-        Component.onCompleted: visible = true
-    }
+
     ListView {
         id: listView
         width: parent.width
@@ -45,20 +41,19 @@ Rectangle {
                 //height:60
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                color: "#eee"
-                border.color: "#999"
-                border.width: 1
                 Component.onCompleted: {
                     modelData.vElement=dragRect.height;
-                    console.log("set");
                 }
-
                 Rectangle{
                     id: column
                     anchors.left: parent.left
                     anchors.top: parent.top
                     width:parent.width
                     height:row.height + optionBox.height
+                    color: "#333"
+                    border.color: "#000"
+                    border.width: 1
+
                     MouseArea{
                         anchors.fill: row
                         onPressed: {
@@ -73,6 +68,7 @@ Rectangle {
 
                 RowLayout{
                     id: row
+                    z: 2
                     anchors.left: parent.left
                     anchors.top: parent.top
                     width:parent.width
@@ -99,6 +95,7 @@ Rectangle {
 
                     Text {
                         text: modelData.nr
+                        color:"#fff"
                     }
 
 
@@ -124,18 +121,34 @@ Rectangle {
 
 
 
-                    Rectangle{
+                    Item{
                         id:optionBox
                         anchors.top: row.bottom
                         anchors.left: parent.left
                         height:0
-                        implicitHeight: 100
-                        color:"red"
+                        implicitHeight: beatScene.height
                         width:parent.width
                         Behavior on height{
                            NumberAnimation{
                                duration: 300
                            }
+                        }
+                        onHeightChanged: {
+                            if(height == 0)
+                                beatScene.visible = false;
+                            else
+                                beatScene.visible = true;
+                        }
+
+                        BeatScene{
+                            id: beatScene
+                            onZChanged: {
+                                console.log("z changed: " + z);
+
+                            }
+
+                            visible:false
+
                         }
                     }
 
@@ -158,7 +171,6 @@ Rectangle {
                            && index < listView.count-1
                            && (listView.itemAt(dragRect.width/2,y+height+listView.contentY) !== delegateItem)){
 
-                        console.log("jetzt umspringen");
                         dragStart = dragStart + nextHeight;
                         listView.model.move(index,index+1,1);
                        jumpedItems++;
@@ -166,7 +178,6 @@ Rectangle {
                    if(dragRect.y + listView.contentY - dragStart < -prevHeight * 0.75
                            && index != 0
                            && (listView.itemAt(dragRect.width/2,y+height+listView.contentY) !== delegateItem)){
-                        console.log("jetzt nach unten umspringen");
                         listView.model.move(index,index-1,1);
                        dragStart = dragStart - prevHeight;
                        if(index == 0){

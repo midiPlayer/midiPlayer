@@ -14,7 +14,8 @@ Q_OBJECT
 
 public:
     WebSocketConnector(QObject* parent = 0);
-    void startConnection(const QString &);
+    virtual ~WebSocketConnector();
+    void startConnection(const QString &url);
     QString url() const;
     QString empty() const;
     WebInterface &webInterface;
@@ -31,6 +32,7 @@ signals:
     void connectionSucceded();
 private:
     QString requestType;
+    QString urlV;
 };
 
 #endif // WEBSOCKETCONNECTOR_H

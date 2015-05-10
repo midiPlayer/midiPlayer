@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     websocketserverprovider.cpp \
     beamershutterscene.cpp \
     beamerdeviceprovider.cpp \
-    outputdevice.cpp
+    outputdevice.cpp \
+    remotebeat.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
@@ -43,6 +44,7 @@ HEADERS  += mainwindow.h\
     websocketserverprovider.h \
     beamershutterscene.h \
     beamerdeviceprovider.h \
-    outputdevice.h
+    outputdevice.h \
+    remotebeat.h
 
 FORMS    += mainwindow.ui

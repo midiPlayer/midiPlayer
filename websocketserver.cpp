@@ -66,6 +66,14 @@ void WebSocketServer::onTextMessage(QString message)
                 }
             }
         }
+        else if(value.isString()){
+            foreach (WebSocketServerProvider *p, provider) {
+                if(p->getRequestType() == value.toString("")){
+                    p->registerClient(data.value("parameters").toObject(),pClient);
+                    break;
+                }
+            }
+        }
     }
 }
 

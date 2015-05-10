@@ -17,6 +17,7 @@ public:
     bool connectToServer(QString url);
     bool isConnected();
     void registerConnector(WebSocketConnector *connector);
+    void unregisterConnector(WebSocketConnector *connector);
     void sendMsg(WebSocketConnector *connector,QJsonObject msg);
 public slots:
     void connected();
@@ -30,6 +31,7 @@ private:
     QList<WebSocketConnector *> connectors;
     QWebSocket ws;
     bool isConnectedP;
+    QList<QString> connectedRequestTypes;
 protected:
 
 

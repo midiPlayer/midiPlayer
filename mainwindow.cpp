@@ -11,6 +11,7 @@
 #include "blackscene.h"
 
 
+
 /*
  *Hier werden alle Szenen sowie die Klasse JackProcessor zur kommunikation über jack  instanziiert.
 */
@@ -83,6 +84,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&timer,SIGNAL(timeout()),this,SLOT(trigger()));
     timer.setInterval(10);
     timer.start();
+
+    remoteBeat = new RemoteBeat(&wss,p);
 
 }
 
