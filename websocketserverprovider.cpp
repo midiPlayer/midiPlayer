@@ -1,6 +1,6 @@
 #include "websocketserverprovider.h"
 #include "websocketserver.h"
-WebSocketServerProvider::WebSocketServerProvider(WebSocketServer *s) : server(s), connectedSockets(),id(0)
+WebSocketServerProvider::WebSocketServerProvider(WebSocketServer *s) : server(s), connectedSockets(),clientIdCounter(0),providerId(-1)
 {
 
 }
@@ -9,9 +9,9 @@ void WebSocketServerProvider::registerClient(QJsonObject msg, QWebSocket *client
 {
     if(connectedSockets.contains(client))
         return; //allreaddy registered
-    connectedSockets.insert(client,id);
-    clientRegistered(msg,id);
-    id++;
+    connectedSockets.insert(client,clientIdCounter);
+    clientRegistered(msg,clientIdCounter);
+    clientIdCounter++;
 }
 
 void WebSocketServerProvider::unregisterClient(QJsonObject msg, QWebSocket *client)

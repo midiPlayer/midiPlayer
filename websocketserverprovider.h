@@ -16,18 +16,18 @@ public:
     void unregisterClient(QJsonObject msg, QWebSocket *client);
     void unregisterClient(QWebSocket *client);
     void onMessage(QJsonObject msg, QWebSocket *client);
-private:
     int providerId;
-    virtual void clientRegistered(QJsonObject msg,int id) = 0;
-    virtual void clientUnregistered(QJsonObject msg,int id) = 0;
-    virtual void clientMessage(QJsonObject msg,int id) = 0;
+private:
+    virtual void clientRegistered(QJsonObject msg,int clientIdCounter) = 0;
+    virtual void clientUnregistered(QJsonObject msg,int clientIdCounter) = 0;
+    virtual void clientMessage(QJsonObject msg,int clientIdCounter) = 0;
 
 protected:
     bool sendMsg(QJsonObject msg, int client_id);
     bool sendMsg(QJsonObject msg);
     bool sendMsgButNotTo(QJsonObject msg,int client_id);
 
-    int id;
+    int clientIdCounter;
     QMap<QWebSocket*,int> connectedSockets;
     WebSocketServer *server;
 };

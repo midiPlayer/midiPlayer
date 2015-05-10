@@ -19,7 +19,7 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),scenes(),overlays(),usedLamps(),status(),currentScene(0),currentOverlay(-1),offsetRequested(true),fading(0),nextOnMusic(false),overlayOnMusic(false),availableDevices(),
-    wss(this),outDevices(), timer(this),getChangesRunning(false), ui(new Ui::MainWindow)
+    wss(this),outDevices(), timer(this),getChangesRunning(false), ui(new Ui::MainWindow),discoscene("disco",&wss)
 {
     //availableDevices = Device::loadDevicesFromXml("~/devices.xml");
 
@@ -46,7 +46,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->jumpBtn,SIGNAL(clicked()),this,SLOT(jumpClicked()));
     connect(ui->playOverlay,SIGNAL(clicked()),this,SLOT(playOverlayBtn()));
 
-    scenes.append(new BeatScene1("beat",availableDevices,p,&wss));
+    discoscene.addEffect(new BeatScene1("beat",availableDevices,p,&wss));
+    scenes.append(&discoscene);
     scenes.append(new BlackScene("black",availableDevices));
     //scenes.append(new BeatScene1("beat",availableDevices,p));
    // scenes.append(new BeatScene1("beat",availableDevices,p));

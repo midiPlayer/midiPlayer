@@ -16,7 +16,7 @@ Item {
                 anchors.fill: parent
                 id: mainForm;
                 button1.onClicked: {ws.sendTextMessage("trigger")}
-                button2.onClicked: stackView.push(Qt.resolvedUrl("VisualisationOverviewView.qml"),{ address: urlEdit.text })
+                button2.onClicked: stackView.push(Qt.resolvedUrl("DiscoScene.qml"),{ address: urlEdit.text })
                 button3.onClicked: stackView.push(Qt.resolvedUrl("BeamerShutterControl.qml"),{  })
                 connectBtn.onClicked: {
                   wsc.url = urlEdit.text;

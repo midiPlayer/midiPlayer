@@ -7,17 +7,40 @@
 #include <QMap>
 #include "device.h"
 #include "fusionscene.h"
+#include "websocketserverprovider.h"
 
-class DiscoScene : public Scene
+class DiscoScene : public Scene, public WebSocketServerProvider
 {
 public:
-    DiscoScene(QString name);
+    DiscoScene(QString name,WebSocketServer *ws);
     QList<Device> getLights();
     QList<Device> getUsedLights();
-    int getFadeOutDuration();
+
+    void clientRegistered(QJsonObject msg, int id);
+    void clientUnregistered(QJsonObject msg, int id);
+    void clientMessage(QJsonObject msg, int id);
+    QString getRequestType();
+public:
+    void addEffect(Scene *scene);
 private:
-    QList<Scene*> effects;
+    struct DiscoSubScene{
+        int id;
+        Scene* scene;
+        bool mute;
+        float opacity;
+    };
+
+    bool solo;
+    Scene* soloScene;
+
+
+    QMap<int,DiscoSubScene> effects;
+    QList<int> order;
+    int sceneIdCounter;
     FusionScene fusion;
+
+    QJsonObject getStatus(bool showEffects, bool showOrder);
+    QJsonObject getEffectJson(DiscoSubScene effect);
 };
 
 #endif // DISCOSCENE_H

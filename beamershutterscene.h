@@ -10,9 +10,9 @@ public:
     QList<Device> getLights();
     QList<Device> getUsedLights();
 
-    void clientRegistered(QJsonObject msg,int id);
-    void clientUnregistered(QJsonObject msg,int id);
-    void clientMessage(QJsonObject msg,int id);
+    void clientRegistered(QJsonObject msg,int clientIdCounter);
+    void clientUnregistered(QJsonObject msg,int clientIdCounter);
+    void clientMessage(QJsonObject msg,int clientIdCounter);
     QString getRequestType();
 };
 

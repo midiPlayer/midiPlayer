@@ -36,6 +36,7 @@ void WebInterface::registerConnector(WebSocketConnector *connector)
     connectors.append(connector);
     if(connectedRequestTypes.contains(connector->getRequestType()))
         return; //allreaddy requested
+    connectedRequestTypes.append(connector->getRequestType());
     QJsonObject msg;
     msg.insert("register",connector->getRequestType());
     QJsonDocument d;

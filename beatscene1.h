@@ -18,9 +18,9 @@ public:
     QList<Device> getUsedLights();
     void stop();
     void start();
-    void clientRegistered(QJsonObject msg,int id);
-    void clientUnregistered(QJsonObject msg,int id);
-    void clientMessage(QJsonObject msg,int id);
+    void clientRegistered(QJsonObject msg,int clientIdCounter);
+    void clientUnregistered(QJsonObject msg,int clientIdCounter);
+    void clientMessage(QJsonObject msg,int clientIdCounter);
     QString getRequestType();
 public slots:
     void beat();

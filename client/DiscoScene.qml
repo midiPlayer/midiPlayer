@@ -2,8 +2,8 @@ import QtQuick 2.4
 import QtQuick.Controls 1.3
 import QtQuick.Window 2.2
 import QtQuick.Dialogs 1.2
-import Qt.WebSockets 1.0
 import QtQuick.Layouts 1.1
+import WebSocketConnector 1.1
 
 
 Rectangle {
@@ -19,14 +19,15 @@ Rectangle {
         property int dragItemIndex: -1
 
         model: ListModel {
-            Component.onCompleted: {
+            id: listModel
+            /*Component.onCompleted: {
                 for (var i = 0; i < 10; ++i) {
                     append({value:{
                                 nr: i,
                                 vElement:0
                                } });
                 }
-            }
+            }*/
         }
 
         delegate: Item {
@@ -41,9 +42,7 @@ Rectangle {
                 //height:60
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.verticalCenter: parent.verticalCenter
-                Component.onCompleted: {
-                    modelData.vElement=dragRect.height;
-                }
+
                 Rectangle{
                     id: column
                     anchors.left: parent.left
@@ -94,7 +93,7 @@ Rectangle {
                     }
 
                     Text {
-                        text: modelData.nr
+                        text: modelData.name
                         color:"#fff"
                     }
 
@@ -102,18 +101,27 @@ Rectangle {
                     PushLockBtn{
                         id: soloBtn
                         onStateOn: {
-                          mtBtn.setOff(true);
+                            mtBtn.setOff(true);
                         }
-                        mute: "true"
                         anchors.right: mtBtn.left;
                         anchors.margins: 10;
                     }
 
                     PushLockBtn{
                         id:mtBtn
+                        mute: "true"
                         onStateOn: {
                             soloBtn.setOff(true);
+                            modelData.mute = true;
+                            muteStateChanged(sceneId,modelData.mute);
                         }
+                        onStateOff: {
+                            modelData.mute = false;
+                            muteStateChanged(sceneId,modelData.mute);
+                        }
+
+                        isOn: modelData.mute;
+
                         anchors.right: parent.right;
                         anchors.margins: 10;
                     }
@@ -126,30 +134,46 @@ Rectangle {
                         anchors.top: row.bottom
                         anchors.left: parent.left
                         height:0
-                        implicitHeight: beatScene.height
+                        //implicitHeight: beatScene.height
+                        property BeatScene beatScene;
                         width:parent.width
                         Behavior on height{
                            NumberAnimation{
-                               duration: 300
+                               duration: 200
+                               onRunningChanged: {
+                                    if (running) {//start
+                                        if(height != 0)
+                                            optionBox.beatScene.visible = false;
+                                    }
+                                    else{//stoped
+                                        if(optionBox.height != 0)
+                                            optionBox.beatScene.visible = true;
+                                    }
+                               }
                            }
                         }
                         onHeightChanged: {
-                            if(height == 0)
-                                beatScene.visible = false;
-                            else
-                                beatScene.visible = true;
+
                         }
 
-                        BeatScene{
-                            id: beatScene
-                            onZChanged: {
-                                console.log("z changed: " + z);
 
+                        Item{
+                            id:placeholder
+                        }
+                        Component.onCompleted: {
+                            var obj = Qt.createComponent("BeatScene.qml",0,this);
+                             var incubator = obj.incubateObject(placeholder,{"visible":false});
+                            if (incubator.status !== Component.Ready) {
+                                incubator.onStatusChanged = function(status) {
+                                    if (status == Component.Ready) {
+                                        print ("Object", incubator.object, "is now ready!");
+                                        optionBox.implicitHeight = incubator.object.height;
+                                        beatScene = incubator.object;
+                                    }
+                                }
                             }
-
-                            visible:false
-
                         }
+
                     }
 
             }
@@ -210,5 +234,27 @@ Rectangle {
         }
     }
 
+
+    WorkerScript {
+            id: importer
+            source: "DiscoSceneImport.js"
+        }
+
+
+    WebSocketConnector{
+        id: ws
+        requestType: "discoScene"
+        onMessage: {
+            importer.sendMessage({"msg":msg,"listModel":listModel});
+        }
+    }
+
+    function muteStateChanged(id,state){
+        var msg = new Object();
+        msg.muteChanged = new Object();
+        msg.muteChanged.id = id;
+        msg.muteChanged.state = state;
+        ws.send = JSON.stringify(msg);
+    }
 
 }

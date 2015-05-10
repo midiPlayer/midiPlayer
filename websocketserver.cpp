@@ -2,8 +2,9 @@
 #define PORT 8888
 #include <QJsonArray>
 
-WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent),m_pWebSocketServer(new QWebSocketServer(QStringLiteral("Light Server"),
-                                                                          QWebSocketServer::NonSecureMode, this)), m_clients()
+WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent),
+    m_pWebSocketServer(new QWebSocketServer(QStringLiteral("Light Server"),
+  QWebSocketServer::NonSecureMode, this)), m_clients(),providerIdCounter(0)
 {
     if (m_pWebSocketServer->listen(QHostAddress::Any, PORT)) {
             qDebug() << "WebSocketServer listening";
@@ -14,8 +15,10 @@ WebSocketServer::WebSocketServer(QObject *parent) : QObject(parent),m_pWebSocket
 
 void WebSocketServer::registerProvider(WebSocketServerProvider *me)
 {
-    if(!provider.contains(me))
+    if(!provider.contains(me)){
         provider.append(me);
+        me->providerId = providerIdCounter++;
+    }
 }
 
 void WebSocketServer::unregisterProvider(WebSocketServerProvider *me)

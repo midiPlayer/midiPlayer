@@ -26,8 +26,10 @@ public slots:
 
 private:
     QList<WebSocketServerProvider*> provider;
+    int providerIdCounter;
     QWebSocketServer *m_pWebSocketServer;
     QList<QWebSocket *> m_clients;
 };
 
 #endif // WEBSOCKETSERVER_H
+

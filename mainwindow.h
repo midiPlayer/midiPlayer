@@ -14,6 +14,7 @@
 #include "outputdevice.h"
 #include <QTimer>
 #include "remotebeat.h"
+#include "discoscene.h"
 
 namespace Ui {
 class MainWindow;
@@ -65,6 +66,7 @@ private:
     bool getChangesRunning;
     QTimer timer;
     RemoteBeat *remoteBeat;
+    DiscoScene discoscene;
 
 };
 

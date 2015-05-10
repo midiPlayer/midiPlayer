@@ -6,6 +6,14 @@ Item{
         signal stateOn()
         signal stateOff()
         property string mute : "false"
+        property bool isOn : false;
+        onIsOnChanged: {
+            if(isOn)
+                setOn(false);
+            else
+                setOff(false);
+        }
+
         function setOn(trigger){
             slider.setOn(trigger);
         }
