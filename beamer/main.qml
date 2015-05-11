@@ -110,7 +110,7 @@ ApplicationWindow {
         anchors.fill: parent
         source:main
         maskSource:blackMask
-        visible: true
+        visible: false
     }
 
 }
@@ -125,7 +125,12 @@ ApplicationWindow {
         reopen: true
         onConnectionSucceded: {
             requestType="asBeamer";
+            display.visible = true;
         }
+        onConnectionFailed: {
+            display.visible = false;
+        }
+
         url:"ws://127.0.0.1:8888"
         onMessage: {
             if(msg.color !== undefined){

@@ -97,6 +97,10 @@ Rectangle {
                         color:"#fff"
                     }
 
+                    ComboBox {
+                        width: 200
+                        model: [ qsTr("Maximum"), qsTr("Minimum"), qsTr("Averrage"),qsTr("Override") ]
+                    }
 
                     PushLockBtn{
                         id: soloBtn

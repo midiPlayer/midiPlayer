@@ -12,34 +12,32 @@ Item {
             property string address
             width: parent.width
             height: parent.height
-            MainForm {
+            ConnectViewForm {
                 anchors.fill: parent
                 id: mainForm;
-                button1.onClicked: {ws.sendTextMessage("trigger")}
+                /*button1.onClicked: {ws.sendTextMessage("trigger")}
                 button2.onClicked: stackView.push(Qt.resolvedUrl("DiscoScene.qml"),{ address: urlEdit.text })
-                button3.onClicked: stackView.push(Qt.resolvedUrl("BeamerShutterControl.qml"),{  })
+                button3.onClicked: stackView.push(Qt.resolvedUrl("BeamerShutterControl.qml"),{  })*/
                 connectBtn.onClicked: {
                   wsc.url = urlEdit.text;
+                  mainForm.state = "connecting";
                 }
                 Component.onCompleted: {
                     urlEdit.text = settings.lastUrl;
                 }
             }
 
-            MessageDialog {
-                id: messageDialog
-                title: qsTr("May I have your attention, please?")
-
-                function show(caption) {
-                    messageDialog.text = caption;
-                    messageDialog.open();
-                }
-            }
 
             WebSocketConnector{
                 id: wsc
                 onConnectionSucceded: {
                     settings.lastUrl = url;
+                    //change view
+                    stackView.push(Qt.resolvedUrl("MainMenu.qml"),{  });
+
+                }
+                onConnectionFailed: {
+                    mainForm.state = "failed";
                 }
             }
             Settings {

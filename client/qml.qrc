@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>MainForm.ui.qml</file>
+        <file>ConnectViewForm.ui.qml</file>
         <file>PushLockBtn.qml</file>
         <file>ConnectView.qml</file>
         <file>DiscoScene.qml</file>
@@ -13,5 +13,7 @@
         <file>DiscoSceneImport.js</file>
         <file>FlashScene.qml</file>
         <file>DisoSceneSubSceneCreator.js</file>
+        <file>MainMenu.qml</file>
+        <file>MainMenuForm.ui.qml</file>
     </qresource>
 </RCC>

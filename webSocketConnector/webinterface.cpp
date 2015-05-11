@@ -5,6 +5,9 @@ WebInterface::WebInterface(QObject *parent):QObject(parent), connectors(),ws(),i
     onceConnected(false),timer(),lastUrl("")
 {
     connect(&timer,SIGNAL(timeout()),this,SLOT(timeout()));
+
+    connect(&ws,SIGNAL(connected()),this,SLOT(connected()));
+    connect(&ws,SIGNAL(disconnected()),this,SLOT(disconnected()));
 }
 
 
@@ -23,8 +26,6 @@ void WebInterface::registerWsConnector(WebSocketConnector *wsc)
 bool WebInterface::connectToServer(QString url)
 {
     lastUrl = url;
-    connect(&ws,SIGNAL(connected()),this,SLOT(connected()));
-    connect(&ws,SIGNAL(disconnected()),this,SLOT(disconnected()));
     ws.open(QUrl(url));
     return true;
 }
@@ -102,8 +103,11 @@ void WebInterface::disconnected()
     isConnectedP = false;
     emit disconnectedS();
     if(onceConnected && reopen && lastUrl != ""){
-        timer.start(10*1000);
-        qDebug() << "disconnected next retry in 10s";
+        if(!timer.isActive()){
+            timer.stop();
+            timer.start(10*1000);
+            qDebug() << "disconnected next retry in 10s";
+        }
     }
 }
 
