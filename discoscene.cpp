@@ -19,8 +19,9 @@ QList<Device> DiscoScene::getLights()
         fusion.fusion(soloScene->getLights(),Device::OVERRIDE,1.0);
     }
     else{
-        foreach (DiscoSubScene effect, effects.values()) {
-                fusion.fusion(effect.scene,Device::AV,0.5f);
+        foreach (DiscoSubScene *effect, effects.values()) {
+                if(!effect->mute)
+                    fusion.fusion(effect->scene,Device::MAX,0.5f);
         }
     }
     return fusion.getLights();
@@ -29,10 +30,10 @@ QList<Device> DiscoScene::getLights()
 QList<Device> DiscoScene::getUsedLights()
 {
     QList<Device> useedLights;
-    foreach (DiscoSubScene effect, effects.values()) {
-        if(effect.mute)
+    foreach (DiscoSubScene *effect, effects.values()) {
+        if(effect->mute)
             continue; //TODO add handling for unused devices
-        foreach(Device d,effect.scene->getUsedLights()){
+        foreach(Device d,effect->scene->getUsedLights()){
             if(useedLights.contains(d))
                 useedLights.append(d);
         }
@@ -54,7 +55,13 @@ void DiscoScene::clientUnregistered(QJsonObject msg, int id)
 
 void DiscoScene::clientMessage(QJsonObject msg, int id)
 {
-
+    if(msg.contains("muteChanged")){
+        QJsonObject muteChange = msg.value("muteChanged").toObject();
+        int sceneId = muteChange.value("sceneId").toInt(-1);
+        bool muteState = muteChange.value("state").toBool(false);
+        DiscoSubScene *sub = effects.value(sceneId);
+        sub->mute = muteState;
+    }
 }
 
 QString DiscoScene::getRequestType()
@@ -62,22 +69,36 @@ QString DiscoScene::getRequestType()
     return "discoScene";
 }
 
+void DiscoScene::stop()
+{
+    foreach (DiscoSubScene *dss, effects) {
+        dss->scene->stop();
+    }
+}
+
+void DiscoScene::start()
+{
+    foreach (DiscoSubScene *dss, effects) {
+        dss->scene->start();
+    }
+}
+
 
 void DiscoScene::addEffect(Scene *scene)
 {
-    effects.insert(sceneIdCounter,DiscoSubScene{sceneIdCounter,scene,false,1.0});
+    effects.insert(sceneIdCounter,new DiscoSubScene{sceneIdCounter,scene,false,1.0});
     order.append(sceneIdCounter);
     sceneIdCounter++;
 }
 
-QJsonObject DiscoScene::getEffectJson(DiscoScene::DiscoSubScene effect)
+QJsonObject DiscoScene::getEffectJson(DiscoScene::DiscoSubScene *effect)
 {
     QJsonObject effectObj;
-    effectObj.insert("sceneId",effect.id);
-    effectObj.insert("mute",effect.mute);
-    effectObj.insert("opacity",effect.opacity);
-    effectObj.insert("name",effect.scene->getName());
-    WebSocketServerProvider *provider = dynamic_cast<WebSocketServerProvider*>(effect.scene);
+    effectObj.insert("sceneId",effect->id);
+    effectObj.insert("mute",effect->mute);
+    effectObj.insert("opacity",effect->opacity);
+    effectObj.insert("name",effect->scene->getName());
+    WebSocketServerProvider *provider = dynamic_cast<WebSocketServerProvider*>(effect->scene);
     if(provider != 0){
         effectObj.insert("requestType",provider->getRequestType());
         effectObj.insert("providerId",provider->providerId);
@@ -90,7 +111,7 @@ QJsonObject DiscoScene::getStatus(bool showEffects,bool showOrder)
     QJsonObject status;
     if(showEffects){
         QJsonArray effectsObj;
-        foreach(DiscoSubScene effect,effects){
+        foreach(DiscoSubScene *effect,effects){
             effectsObj.append(getEffectJson(effect));
         }
         status.insert("effects",effectsObj);

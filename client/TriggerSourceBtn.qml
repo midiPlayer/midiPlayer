@@ -4,9 +4,18 @@ import WebSocketConnector 1.1
 
     Rectangle{
         property bool radio : true
-
+        property alias requestId : stateWsc.requestId
         signal stateChanged(bool onset,bool beat,bool timer);
         signal modalStateChanged(string trigger);
+
+        onStateChanged: {
+            var msg = new Object();
+            msg.setTrigger = new Object();
+            msg.setTrigger.onset = onset;
+            msg.setTrigger.beat = beat;
+            msg.setTrigger.timer = timer;
+            stateWsc.send = JSON.stringify(msg);
+        }
 
         function setState(onset,beat,timer){
             beatBtn.isOn = beat;
@@ -90,6 +99,13 @@ WebSocketConnector{
         if(msg.type === "onset")
             onsetBtn.trigger();
 
+    }
+}
+WebSocketConnector{
+    id:stateWsc
+    onMessage: {
+        if(msg.setTrigger !== undefined)
+            setState(msg.setTrigger.onset,msg.setTrigger.beat,msg.setTrigger.timer);
     }
 }
 

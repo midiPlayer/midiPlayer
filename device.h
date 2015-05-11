@@ -28,7 +28,7 @@ public:
 
     QDebug operator<<(QDebug debug);
     bool operator ==(const Device &other);
-    QString getDeviceId();
+    QString getDeviceId() const;
     DeviceType getType();
 private:
     QMap<int,float> dmxChannels;

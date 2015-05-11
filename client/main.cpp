@@ -2,7 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlEngine>
 #include <QQmlComponent>
-#include "websocketconnector.h"
+#include "../webSocketConnector/websocketconnector.h"
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);

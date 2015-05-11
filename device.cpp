@@ -32,8 +32,10 @@ Device Device::fusionWith(Device upper, Device::FusionType type, float opacity)
         }
         break;
     default :
+        qDebug() << "this Fusiontype is currently not implemented";
         break;
     }
+    return ret;
 }
 
 int Device::getNumChannels()
@@ -81,7 +83,7 @@ bool Device::deviceEqual(Device other)
 
 bool Device::deviceEqual(Device *other)
 {
-    return other->getChannels() == getChannels();
+    return other->getDeviceId() == getDeviceId();
 }
 
 bool Device::valuesEqual(Device other)
@@ -123,7 +125,7 @@ bool Device::operator==(const Device &other)
     return deviceEqual(other);
 }
 
-QString Device::getDeviceId()
+QString Device::getDeviceId() const
 {
     return devId;
 }
@@ -144,6 +146,6 @@ return dbg.maybeSpace();
 
 bool operator==(const Device &a,const Device &b)
 {
-    return a.getChannels() == b.getChannels();
+    return a.getDeviceId() == b.getDeviceId();
 }
 

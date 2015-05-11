@@ -1,4 +1,5 @@
 #include "fusionscene.h"
+#include <QDebug>
 
 FusionScene::FusionScene(QString name) : Scene(name)
 {
@@ -13,8 +14,12 @@ void FusionScene::fusion(Scene *with, Device::FusionType fusionType,float opacit
 void FusionScene::fusion(QList<Device> with, Device::FusionType fusionType, float opacity)
 {
     foreach(Device device,with){
-        if(devices.contains(device))
-            device.findEqualDevice(devices).fusionWith(device,fusionType,opacity);
+        if(devices.contains(device)){
+            Device my = device.findEqualDevice(devices);
+                devices.removeAll(my);
+                devices.append(my.fusionWith(device,fusionType,opacity));
+
+        }
         else
             devices.append(device);
     }

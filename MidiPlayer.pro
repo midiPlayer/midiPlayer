@@ -28,7 +28,9 @@ SOURCES += main.cpp\
     beamershutterscene.cpp \
     beamerdeviceprovider.cpp \
     outputdevice.cpp \
-    remotebeat.cpp
+    remotebeat.cpp \
+    flashscene.cpp \
+    trigger.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
@@ -45,6 +47,8 @@ HEADERS  += mainwindow.h\
     beamershutterscene.h \
     beamerdeviceprovider.h \
     outputdevice.h \
-    remotebeat.h
+    remotebeat.h \
+    flashscene.h \
+    trigger.h
 
 FORMS    += mainwindow.ui

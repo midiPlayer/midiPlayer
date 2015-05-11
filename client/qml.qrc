@@ -11,5 +11,7 @@
         <file>TriggerSourceBtn.qml</file>
         <file>TriggerSourceBtnItem.qml</file>
         <file>DiscoSceneImport.js</file>
+        <file>FlashScene.qml</file>
+        <file>DisoSceneSubSceneCreator.js</file>
     </qresource>
 </RCC>

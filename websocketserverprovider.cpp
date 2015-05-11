@@ -36,25 +36,25 @@ void WebSocketServerProvider::onMessage(QJsonObject msg, QWebSocket *client)
     clientMessage(msg,id);
 }
 
-bool WebSocketServerProvider::sendMsg(QJsonObject msg, int client_id)
+bool WebSocketServerProvider::sendMsg(QJsonObject msg, int client_id,bool onlyForProvierID)
 {
     QWebSocket* ws = connectedSockets.key(client_id);
-    server->sendData(msg,ws,this);
+    server->sendData(msg,ws,this,onlyForProvierID);
 }
 
-bool WebSocketServerProvider::sendMsg(QJsonObject msg)
+bool WebSocketServerProvider::sendMsg(QJsonObject msg,bool onlyForProvierID)
 {
     foreach(QWebSocket* ws, connectedSockets.keys()){
-        server->sendData(msg,ws,this);
+        server->sendData(msg,ws,this,onlyForProvierID);
     }
 }
 
-bool WebSocketServerProvider::sendMsgButNotTo(QJsonObject msg, int client_id)
+bool WebSocketServerProvider::sendMsgButNotTo(QJsonObject msg, int client_id,bool onlyForProvierID)
 {
     QWebSocket* notTo = connectedSockets.key(client_id);
     foreach(QWebSocket* ws, connectedSockets.keys()){
         if(ws != notTo)
-            server->sendData(msg,ws,this);
+            server->sendData(msg,ws,this,false);
     }
 }
 

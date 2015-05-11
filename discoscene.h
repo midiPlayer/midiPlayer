@@ -20,6 +20,8 @@ public:
     void clientUnregistered(QJsonObject msg, int id);
     void clientMessage(QJsonObject msg, int id);
     QString getRequestType();
+    void stop();
+    void start();
 public:
     void addEffect(Scene *scene);
 private:
@@ -34,13 +36,13 @@ private:
     Scene* soloScene;
 
 
-    QMap<int,DiscoSubScene> effects;
+    QMap<int,DiscoSubScene*> effects;
     QList<int> order;
     int sceneIdCounter;
     FusionScene fusion;
 
     QJsonObject getStatus(bool showEffects, bool showOrder);
-    QJsonObject getEffectJson(DiscoSubScene effect);
+    QJsonObject getEffectJson(DiscoSubScene *effect);
 };
 
 #endif // DISCOSCENE_H

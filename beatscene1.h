@@ -7,7 +7,7 @@
 #include "device.h"
 #include <QColor>
 #include "websocketserverprovider.h"
-#include <QSet>
+#include "trigger.h"
 
 class BeatScene1 : public Scene, public WebSocketServerProvider
 {
@@ -23,24 +23,16 @@ public:
     void clientMessage(QJsonObject msg,int clientIdCounter);
     QString getRequestType();
 public slots:
-    void beat();
-    void onset();
+    void changeForeground();
+    void changeBackground();
 private:
-    JackProcessor* jackProcessor;
     QList<Device> availableDevices;
     QColor c;
     QColor highlighted;
     QList<QColor> options;
     QList<Device> usedDevices;
-    enum TriggerType{BEAT,TIMER,ONSET};
-    QSet<TriggerType> foregroundTrigger;
-    QSet<TriggerType> backgroundTrigger;
-
-    void changeForeground();
-    void changeBackground();
-    void parseTriggerMsg(QJsonObject msg, QSet<TriggerType> *trigger);
-
-    QJsonObject getState(bool foreground, bool background);
+    Trigger foregroundTrigger;
+    Trigger backgroundTrigger;
 };
 
 #endif // BEATSCENE1_H

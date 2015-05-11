@@ -9,6 +9,7 @@
 #include "beatscene1.h"
 #include "fusionscene.h"
 #include "blackscene.h"
+#include "flashscene.h"
 
 
 
@@ -47,6 +48,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->playOverlay,SIGNAL(clicked()),this,SLOT(playOverlayBtn()));
 
     discoscene.addEffect(new BeatScene1("beat",availableDevices,p,&wss));
+    discoscene.addEffect(new FlashScene("flash",&wss,availableDevices,p));
+    //scenes.append(new FlashScene("flash",&wss,availableDevices,p));
     scenes.append(&discoscene);
     scenes.append(new BlackScene("black",availableDevices));
     //scenes.append(new BeatScene1("beat",availableDevices,p));
@@ -106,6 +109,7 @@ void MainWindow::testMidi()
 //if offset is true all lamps will be transmitet not only th changes
 void MainWindow::getChanges()
 {
+
     getChangesRunning = true;
     QList<Device> changes;
     Scene* scene = scenes.at(currentScene);

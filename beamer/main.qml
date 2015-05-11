@@ -3,7 +3,8 @@ import QtQuick.Controls 1.3
 import QtQuick.Window 2.2
 import QtQuick.Dialogs 1.2
 import QtGraphicalEffects 1.0
-import Qt.WebSockets 1.0
+import WebSocketConnector 1.1
+
 
 ApplicationWindow {
     title: qsTr("Hello World")
@@ -114,41 +115,29 @@ ApplicationWindow {
 
 }
 
-    WebSocket {
-            id: socket
-            url: "ws://localhost:8888"
-            onTextMessageReceived: {
-                //messageBox.text = messageBox.text + "\nReceived message: " + message
-                //main.color = message
-                var msg= JSON.parse(message);
-                console.log(msg);
-                if(msg.data.color !== undefined){
-                    main.color = msg.data.color
 
-                }
-                if(msg.data.highlightedColor !== undefined){
-                    mainHighLighted.color = msg.data.highlightedColor
+    WebSocketConnector{
 
-                }
-
-
+        registrationParams: {
+            var msg = { "deviceId" : "beamer1"};
+            JSON.stringify(msg);
+        }
+        reopen: true
+        onConnectionSucceded: {
+            requestType="asBeamer";
+        }
+        url:"ws://127.0.0.1:8888"
+        onMessage: {
+            if(msg.color !== undefined){
+                main.color = msg.color
 
             }
-            onStatusChanged: if (socket.status == WebSocket.Error) {
-                                display.visible = false;
-                             } else if (socket.status == WebSocket.Open) {
-                                 var message = new Object();
-                                 message.register = ["asBeamer"];
-                                 message.parameters = new Object();
-                                 message.parameters.deviceId = "beamer1";
-                                 var json = JSON.stringify(message);
-                                 console.log("connected");
-                                 socket.sendTextMessage(json);
-                             } else if (socket.status == WebSocket.Closed) {
-                                 display.visible = false;
-                             }
-            active: true
+            if(msg.highlightedColor !== undefined){
+                mainHighLighted.color = msg.highlightedColor
+
+            }
         }
+    }
 
     MessageDialog {
         id: messageDialog

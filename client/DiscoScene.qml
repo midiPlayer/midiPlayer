@@ -112,12 +112,11 @@ Rectangle {
                         mute: "true"
                         onStateOn: {
                             soloBtn.setOff(true);
-                            modelData.mute = true;
-                            muteStateChanged(sceneId,modelData.mute);
+                            muteStateChanged(modelData.sceneId,true);
                         }
                         onStateOff: {
                             modelData.mute = false;
-                            muteStateChanged(sceneId,modelData.mute);
+                            muteStateChanged(modelData.sceneId,false);
                         }
 
                         isOn: modelData.mute;
@@ -135,7 +134,7 @@ Rectangle {
                         anchors.left: parent.left
                         height:0
                         //implicitHeight: beatScene.height
-                        property BeatScene beatScene;
+                        property Item beatScene;
                         width:parent.width
                         Behavior on height{
                            NumberAnimation{
@@ -161,17 +160,30 @@ Rectangle {
                             id:placeholder
                         }
                         Component.onCompleted: {
-                            var obj = Qt.createComponent("BeatScene.qml",0,this);
-                             var incubator = obj.incubateObject(placeholder,{"visible":false});
-                            if (incubator.status !== Component.Ready) {
-                                incubator.onStatusChanged = function(status) {
-                                    if (status == Component.Ready) {
-                                        print ("Object", incubator.object, "is now ready!");
-                                        optionBox.implicitHeight = incubator.object.height;
-                                        beatScene = incubator.object;
-                                    }
-                                }
+                            var filename = "";
+                            if(modelData.requestType === "beatScene1")
+                                filename = "BeatScene.qml";
+                            if(modelData.requestType === "falshScene")
+                                filename = "FlashScene.qml";
+                            if(filename != ""){
+                            var obj = Qt.createComponent(filename,0,this);
+                                if (obj.status === Component.Ready)
+                                        finishCreation(obj);
+                                    else
+                                        obj.statusChanged.connect(finishCreation(obj));
                             }
+                        }
+
+                        function finishCreation(obj) {
+                            var incubator = obj.incubateObject(placeholder,{"visible":false,"requestId":modelData.providerId});
+                           if (incubator.status !== Component.Ready) {
+                               incubator.onStatusChanged = function(status) {
+                                   if (status === Component.Ready) {
+                                       optionBox.implicitHeight = incubator.object.height;
+                                       beatScene = incubator.object;
+                                   }
+                               }
+                           }
                         }
 
                     }
@@ -249,11 +261,11 @@ Rectangle {
         }
     }
 
-    function muteStateChanged(id,state){
+    function muteStateChanged(id,stateP){
         var msg = new Object();
         msg.muteChanged = new Object();
-        msg.muteChanged.id = id;
-        msg.muteChanged.state = state;
+        msg.muteChanged.sceneId = id;
+        msg.muteChanged.state = stateP;
         ws.send = JSON.stringify(msg);
     }
 

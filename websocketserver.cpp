@@ -26,10 +26,13 @@ void WebSocketServer::unregisterProvider(WebSocketServerProvider *me)
     provider.removeAll(me);
 }
 
-void WebSocketServer::sendData(QJsonObject data, QWebSocket* reciever, WebSocketServerProvider *provider)
+void WebSocketServer::sendData(QJsonObject data, QWebSocket* reciever, WebSocketServerProvider *provider, bool onlyToProviderId)
 {
     QJsonObject msg;
-    msg.insert("provider",provider->getRequestType());
+    if(onlyToProviderId)
+       msg.insert("providerId",provider->providerId);
+    else
+        msg.insert("provider",provider->getRequestType());
     msg.insert("data",data);
     QJsonDocument d;
     d.setObject(msg);
@@ -76,11 +79,41 @@ void WebSocketServer::onTextMessage(QString message)
                 }
             }
         }
+
+    }
+    else if(data.contains("registerId")){
+        QJsonValue value = data.value("registerId");
+        if(value.isArray()){
+            foreach(QJsonValue val, value.toArray()){
+                foreach (WebSocketServerProvider *p, provider) {
+                    if(p->providerId == val.toInt(-2)){
+                        p->registerClient(data.value("parameters").toObject(),pClient);
+                        break;
+                    }
+                }
+            }
+        }
+        else{
+            foreach (WebSocketServerProvider *p, provider) {
+                if(p->providerId == value.toInt(-2)){
+                    p->registerClient(data.value("parameters").toObject(),pClient);
+                    break;
+                }
+            }
+        }
     }
     else if(data.contains("provider")){
         QString rqt = data.value("provider").toString("");
         foreach (WebSocketServerProvider *p, provider) {
             if(p->getRequestType() == rqt){
+                p->onMessage(data.value("data").toObject(),pClient);
+            }
+        }
+    }
+    else if(data.contains("providerId")){
+        int  pid = data.value("providerId").toInt(-2);
+        foreach (WebSocketServerProvider *p, provider) {
+            if(p->providerId == pid){
                 p->onMessage(data.value("data").toObject(),pClient);
             }
         }

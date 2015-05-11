@@ -6,6 +6,7 @@ Item{
     width: parent.width;
     height:200
     id:main
+    property alias requestId : wsc.requestId
 
     ColumnLayout{
         anchors.fill: parent
@@ -19,14 +20,6 @@ Item{
                 }
                 TriggerSourceBtn{
                     id:foregroundBtn
-                    onStateChanged: {
-                        var msg = new Object();
-                        msg.foregroundTrigger = new Object();
-                        msg.foregroundTrigger.onset = onset;
-                        msg.foregroundTrigger.beat = beat;
-                        msg.foregroundTrigger.timer = timer;
-                        wsc.send = JSON.stringify(msg);
-                    }
                 }
             }
             RowLayout{
@@ -37,14 +30,6 @@ Item{
                 }
                 TriggerSourceBtn{
                     id:backroundBtn
-                    onStateChanged: {
-                                            var msg = new Object();
-                                            msg.backgroundTrigger = new Object();
-                                            msg.backgroundTrigger.onset = onset;
-                                            msg.backgroundTrigger.beat = beat;
-                                            msg.backgroundTrigger.timer = timer;
-                                            wsc.send = JSON.stringify(msg);
-                                        }
                 }
                 }
 
@@ -53,12 +38,13 @@ Item{
 
     WebSocketConnector{
         id: wsc
-        requestType: "beatScene1"
         onMessage: {
-            if(msg.foregroundTrigger !== undefined)
-                foregroundBtn.setState(msg.foregroundTrigger.onset,msg.foregroundTrigger.beat,msg.foregroundTrigger.timer);
-            if(msg.backgroundTrigger !== undefined)
-                backroundBtn.setState(msg.backgroundTrigger.onset,msg.backgroundTrigger.beat,msg.backgroundTrigger.timer);
+            if(msg.config.foregroundTrigger !== undefined){
+                foregroundBtn.requestId = msg.config.foregroundTrigger;
+            }
+            if(msg.config.backgroundTrigger !== undefined)
+                backroundBtn.requestId = msg.config.backgroundTrigger;
+
         }
     }
 

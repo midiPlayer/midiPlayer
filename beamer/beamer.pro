@@ -2,7 +2,9 @@ TEMPLATE = app
 
 QT += qml quick widgets websockets
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    ../webSocketConnector/webinterface.cpp \
+    ../webSocketConnector/websocketconnector.cpp
 
 RESOURCES += qml.qrc
 
@@ -15,3 +17,5 @@ include(deployment.pri)
 DISTFILES +=
 
 HEADERS += \
+    ../webSocketConnector/webinterface.h \
+    ../webSocketConnector/websocketconnector.h

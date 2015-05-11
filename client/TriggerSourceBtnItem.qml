@@ -21,9 +21,14 @@ Rectangle{
         mColor = setGradient();
     }
 
+
     function trigger(){
         anim1.start();
         anim2.start();
+    }
+
+    Component.onCompleted: {
+        console.log("buttonItem completed");
     }
 
     function setGradient(){
@@ -33,12 +38,14 @@ Rectangle{
             return stdGradient;
     }
 
+
     color:"#00000000"
 
     height: parent.height
 
 
     Rectangle{
+        id: rect1
         height: parent.height
         width: 2*cornerRadius * (isFirst + isLast)
         Component.onCompleted: {
@@ -50,6 +57,7 @@ Rectangle{
         radius: cornerRadius
         color:parent.mColor
         ColorAnimation on color{
+            running: false
             id: anim1
             duration :100
             from:triggeredGradient
@@ -58,6 +66,7 @@ Rectangle{
 
     }
     Rectangle{
+        id: rect2
         height: parent.height
         width: (parent.width - cornerRadius)*(isFirst+isLast) + parent.width * !(isFirst+isLast)
         Component.onCompleted: {
@@ -71,6 +80,7 @@ Rectangle{
         color:parent.mColor
             ColorAnimation on color{
                 id: anim2
+                running: false
                 duration :100
                 from:triggeredGradient
                 to: setGradient()

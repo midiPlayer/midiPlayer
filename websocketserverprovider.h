@@ -23,9 +23,9 @@ private:
     virtual void clientMessage(QJsonObject msg,int clientIdCounter) = 0;
 
 protected:
-    bool sendMsg(QJsonObject msg, int client_id);
-    bool sendMsg(QJsonObject msg);
-    bool sendMsgButNotTo(QJsonObject msg,int client_id);
+    bool sendMsg(QJsonObject msg, int client_id, bool onlyForProvierID = false);
+    bool sendMsg(QJsonObject msg, bool onlyForProvierID = false);
+    bool sendMsgButNotTo(QJsonObject msg, int client_id, bool onlyForProvierID = false);
 
     int clientIdCounter;
     QMap<QWebSocket*,int> connectedSockets;

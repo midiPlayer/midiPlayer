@@ -18,7 +18,7 @@ public:
     WebSocketServer(QObject *parent);
     void registerProvider(WebSocketServerProvider *me);
     void unregisterProvider(WebSocketServerProvider *me);
-    void sendData(QJsonObject data, QWebSocket *reciever, WebSocketServerProvider *provider);
+    void sendData(QJsonObject data, QWebSocket *reciever, WebSocketServerProvider *provider,bool onlyToProviderId = 0);
 public slots:
     void onNewConnection();
     void onTextMessage(QString message);
