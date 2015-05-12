@@ -2,7 +2,7 @@
 #include "websocketserver.h"
 
 FlashScene::FlashScene(QString name, WebSocketServer *ws,QList<Device> avDevP,JackProcessor *jackP) : Scene(name),
-    WebSocketServerProvider(ws),trigger(ws,jackP),avDev(avDevP),flash(false),flashState(),time()
+    WebSocketServerProvider(ws),trigger(ws,jackP),avDev(avDevP),flash(false),flashState(),time(),smoothDuration(200),beatSpeed(INT_MAX),timePer(0.0f)
 {
     ws->registerProvider(this);
     trigger.triggerConfig.insert(Trigger::BEAT);
@@ -17,14 +17,51 @@ FlashScene::FlashScene(QString name, WebSocketServer *ws,QList<Device> avDevP,Ja
 
 QList<Device> FlashScene::getLights()
 {
-    if(flash){
-        if(time.elapsed() > 100){
+
+        int realSmoothDuration = smoothDuration;
+        if(beatSpeed < realSmoothDuration)
+            realSmoothDuration = beatSpeed;//optherwise the animation will get cut
+
+
+        if(time.elapsed() > smoothDuration){
             flash = false;
         }
-        return flashState;
-    }
-    else
-        return QList<Device>();
+
+        // mit weiß beim beat:
+        float timePer = 0;
+        if(time.elapsed() < smoothDuration){
+            timePer = 1.0f - (float(time.elapsed()) / float(smoothDuration));
+            if(timePer > 1)
+                timePer = 1;
+        }
+        else if(time.elapsed() > beatSpeed-realSmoothDuration){
+            timePer = float(time.elapsed()-(beatSpeed-realSmoothDuration))/float(realSmoothDuration);
+            if(timePer > 1)
+                timePer = 1-timePer;
+        }
+
+/*
+        //start width beat
+        timePer = float(time.elapsed()) / float(realSmoothDuration);
+        timePer -= 0.5;
+        if(timePer<0.0f) timePer *= -1;
+        timePer *= 2;
+        timePer = 1-timePer;
+
+*/
+
+
+
+        if(timePer < 0)
+            timePer = 0;
+
+        QList<Device> ret;
+        foreach (Device d, flashState) {
+            ret.append(d*timePer);
+        }
+
+        return ret;
+
 }
 
 QList<Device> FlashScene::getUsedLights()
@@ -74,5 +111,6 @@ QString FlashScene::getRequestType()
 void FlashScene::triggered()
 {
     flash = 1;
+    beatSpeed = time.elapsed();
     time.restart();
 }

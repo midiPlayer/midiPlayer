@@ -28,6 +28,7 @@ public:
 
     QDebug operator<<(QDebug debug);
     bool operator ==(const Device &other);
+    Device operator *(float percentage);
     QString getDeviceId() const;
     DeviceType getType();
 private:

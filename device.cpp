@@ -125,6 +125,15 @@ bool Device::operator==(const Device &other)
     return deviceEqual(other);
 }
 
+Device Device::operator *(float percentage)
+{
+    Device ret(this);
+    foreach (int channel, getChannels()) {
+        ret.setChannel(channel,getChannelValue(channel)*percentage);
+    }
+    return ret;
+}
+
 QString Device::getDeviceId() const
 {
     return devId;

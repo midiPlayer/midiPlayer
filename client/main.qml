@@ -27,9 +27,19 @@ ApplicationWindow {
     }
 
 
-
+ColumnLayout{
+    anchors.fill: parent;
+    Item{
+        Layout.fillWidth: true;
+        Layout.preferredHeight: 30
+        Button{
+            text: "back"
+        }
+    }
     StackView {
         id: stackView
+        Layout.fillWidth: true;
+        Layout.fillHeight: true;
         anchors.fill: parent
         // Implements back key navigation
         focus: true
@@ -40,6 +50,7 @@ ApplicationWindow {
 
         initialItem: Qt.resolvedUrl("ConnectView.qml")
     }
-
-
+    }
 }
+
+

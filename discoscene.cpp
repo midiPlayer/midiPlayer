@@ -21,7 +21,7 @@ QList<Device> DiscoScene::getLights()
     else{
         foreach (DiscoSubScene *effect, effects.values()) {
                 if(!effect->mute)
-                    fusion.fusion(effect->scene,Device::MAX,0.5f);
+                    fusion.fusion(effect->scene,effect->fusionType,0.5f);
         }
     }
     return fusion.getLights();

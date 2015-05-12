@@ -27,6 +27,9 @@ private:
     QList<Device>flashState;
     bool flash;
     QTime time;
+    int smoothDuration;//in ms
+    int beatSpeed;
+    float timePer;
 
 
 };
