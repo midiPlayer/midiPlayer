@@ -34,13 +34,17 @@ ColumnLayout{
         Layout.preferredHeight: 30
         Button{
             text: "back"
+                onClicked: {
+                    console.log(stackView.currentItem);
+                    console.log(stackView.pop(stackView.currentItem.Stack.index));
+                }
+            }
         }
-    }
+
     StackView {
         id: stackView
         Layout.fillWidth: true;
         Layout.fillHeight: true;
-        anchors.fill: parent
         // Implements back key navigation
         focus: true
         Keys.onReleased: if (event.key === Qt.Key_Back && stackView.depth > 1) {

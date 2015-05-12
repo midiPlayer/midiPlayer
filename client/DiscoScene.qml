@@ -7,14 +7,12 @@ import WebSocketConnector 1.1
 
 
 Item {
-    id: root
     width: parent.width
     height: parent.height
-
+    id: discoScene
     ListView {
         id: listView
-        width: parent.width
-        height: parent.height
+        anchors.fill: parent
 
         property int dragItemIndex: -1
 
@@ -276,7 +274,7 @@ Item {
                         when: dragRect.Drag.active
                         ParentChange {
                             target: dragRect
-                            parent: root
+                            parent: discoScene
                         }
 
                         AnchorChanges {

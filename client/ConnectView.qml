@@ -10,8 +10,9 @@ import Qt.labs.settings 1.0
 Item {
             property WebSocket ws
             property string address
-            width: parent.width
-            height: parent.height
+
+            width: stackView.width
+            height: stackView.height
             ConnectViewForm {
                 anchors.fill: parent
                 id: mainForm;
