@@ -62,6 +62,28 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
         DiscoSubScene *sub = effects.value(sceneId);
         sub->mute = muteState;
     }
+    if(msg.contains("fusionTypeChanged")){
+        QJsonObject fusionTypeChange = msg.value("fusionTypeChanged").toObject();
+        int sceneId = fusionTypeChange.value("sceneId").toInt(-1);
+        QString fusionTypeStr = fusionTypeChange.value("fusionType").toString("");
+        Device::FusionType fusionType;
+
+        if(fusionTypeStr == "max")
+            fusionType = Device::MAX;
+        else if(fusionTypeStr == "min")
+            fusionType = Device::MIN;
+        else if(fusionTypeStr == "maxg")
+            fusionType = Device::MAXG;
+        else if(fusionTypeStr == "ming")
+            fusionType = Device::MING;
+        else if(fusionTypeStr == "av")
+            fusionType = Device::AV;
+        else if(fusionTypeStr == "override")
+            fusionType = Device::OVERRIDE;
+        DiscoSubScene *sub = effects.value(sceneId);
+        sub->fusionType = fusionType;
+    }
+    sendMsgButNotTo(msg,id);
 }
 
 QString DiscoScene::getRequestType()
@@ -86,7 +108,7 @@ void DiscoScene::start()
 
 void DiscoScene::addEffect(Scene *scene)
 {
-    effects.insert(sceneIdCounter,new DiscoSubScene{sceneIdCounter,scene,false,1.0});
+    effects.insert(sceneIdCounter,new DiscoSubScene{sceneIdCounter,scene,false,1.0,Device::MAX});
     order.append(sceneIdCounter);
     sceneIdCounter++;
 }
@@ -98,6 +120,30 @@ QJsonObject DiscoScene::getEffectJson(DiscoScene::DiscoSubScene *effect)
     effectObj.insert("mute",effect->mute);
     effectObj.insert("opacity",effect->opacity);
     effectObj.insert("name",effect->scene->getName());
+
+    QString fusionType;
+    switch (effect->fusionType) {
+    case Device::MAX:
+        fusionType = "max";
+        break;
+    case Device::MAXG:
+        fusionType = "maxg";
+        break;
+    case Device::MIN:
+        fusionType = "min";
+        break;
+    case Device::MING:
+        fusionType = "ming";
+        break;
+    case Device::AV:
+        fusionType = "av";
+        break;
+    case Device::OVERRIDE:
+        fusionType = "override";
+        break;
+    }
+    effectObj.insert("fusionType",fusionType);
+
     WebSocketServerProvider *provider = dynamic_cast<WebSocketServerProvider*>(effect->scene);
     if(provider != 0){
         effectObj.insert("requestType",provider->getRequestType());

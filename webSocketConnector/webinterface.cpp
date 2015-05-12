@@ -113,7 +113,7 @@ void WebInterface::disconnected()
 
 void WebInterface::onTextMessage(QString message)
 {
-    qDebug() << "got message: " << message;
+  //  qDebug() << "got message: " << message;
     QJsonDocument d = QJsonDocument::fromJson(message.toUtf8());
     if(!d.isObject())
         return;

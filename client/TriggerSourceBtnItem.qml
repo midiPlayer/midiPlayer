@@ -27,9 +27,6 @@ Rectangle{
         anim2.start();
     }
 
-    Component.onCompleted: {
-        console.log("buttonItem completed");
-    }
 
     function setGradient(){
         if(isOn)

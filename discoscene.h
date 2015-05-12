@@ -30,6 +30,7 @@ private:
         Scene* scene;
         bool mute;
         float opacity;
+        Device::FusionType fusionType;
     };
 
     bool solo;

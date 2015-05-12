@@ -35,6 +35,33 @@ Item {
             width: listView.width
             height: dragRect.height
 
+            WebSocketConnector{
+                id: dlegateWs
+                requestType: "discoScene"
+                onMessage: {
+                    if(msg.fusionTypeChanged !== undefined){
+                         if(modelData.sceneId === msg.fusionTypeChanged.sceneId){
+                             console.log("new combo box state:");
+                             for(var i  =0; i < fusionTypeModel.count;i++){
+                                 if(fusionTypeModel.get(i).name === msg.fusionTypeChanged.fusionType){
+                                     fusionTypeCombo.currentIndex = i;
+                                     break;
+                                 }
+                             }
+                         }
+                    }
+                    if(msg.muteChanged !== undefined){
+                        if(modelData.sceneId === msg.muteChanged.sceneId){
+                             console.log("new mute state:");
+                            if(msg.muteChanged.state)
+                                mtBtn.setOn(false)
+                            else
+                                mtBtn.setOff(false)
+                        }
+                    }
+                }
+            }
+
             Rectangle {
                 id: dragRect
                 width: listView.width
@@ -98,8 +125,17 @@ Item {
                     }
 
                     ComboBox {
+                        id:fusionTypeCombo
                         width: 200
-                        model: [ qsTr("Maximum"), qsTr("Minimum"), qsTr("Averrage"),qsTr("Override") ]
+                        model: fusionTypeModel
+                        currentIndex: modelData.fusionTypeId
+                        onActivated: {
+                            var msg = new Object();
+                            msg.fusionTypeChanged = new Object();
+                            msg.fusionTypeChanged.sceneId = modelData.sceneId;
+                            msg.fusionTypeChanged.fusionType = model.get(index).name;
+                            ws.send = JSON.stringify(msg);
+                        }
                     }
 
                     PushLockBtn{
@@ -127,6 +163,14 @@ Item {
 
                         anchors.right: parent.right;
                         anchors.margins: 10;
+
+                        function muteStateChanged(id,stateP){
+                            var msg = new Object();
+                            msg.muteChanged = new Object();
+                            msg.muteChanged.sceneId = id;
+                            msg.muteChanged.state = stateP;
+                            ws.send = JSON.stringify(msg);
+                        }
                     }
                 }
 
@@ -250,10 +294,39 @@ Item {
         }
     }
 
+    ListModel{
+        id: fusionTypeModel
+        ListElement{
+            name:"av"
+            text: qsTr("average")
+        }
+        ListElement{
+            name:"max"
+            text: qsTr("maximum")
+        }
+        ListElement{
+            name:"min"
+            text: qsTr("minnimum")
+        }
+        ListElement{
+            name:"maxg"
+            text: qsTr("overall maximum")
+        }
+        ListElement{
+            name:"ming"
+            text: qsTr("overall minimum")
+        }
+        ListElement{
+            name:"override"
+            text: qsTr("override")
+        }
+    }
+
 
     WorkerScript {
             id: importer
             source: "DiscoSceneImport.js"
+            signal fusionTypeChanged();
         }
 
 
@@ -261,16 +334,11 @@ Item {
         id: ws
         requestType: "discoScene"
         onMessage: {
-            importer.sendMessage({"msg":msg,"listModel":listModel});
+
+            importer.sendMessage({"msg":msg,"listModel":listModel,"fusionTypeModel":fusionTypeModel});
         }
     }
 
-    function muteStateChanged(id,stateP){
-        var msg = new Object();
-        msg.muteChanged = new Object();
-        msg.muteChanged.sceneId = id;
-        msg.muteChanged.state = stateP;
-        ws.send = JSON.stringify(msg);
-    }
+
 
 }
