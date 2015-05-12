@@ -32,8 +32,7 @@ Item {
                 id: wsc
                 onConnectionSucceded: {
                     settings.lastUrl = url;
-                    //change view
-                    stackView.push(Qt.resolvedUrl("MainMenu.qml"),{  });
+                    stackView.push(Qt.resolvedUrl("MainMenu.qml"),{});
 
                 }
                 onConnectionFailed: {

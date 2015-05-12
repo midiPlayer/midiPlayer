@@ -14,6 +14,8 @@
         <file>FlashScene.qml</file>
         <file>DisoSceneSubSceneCreator.js</file>
         <file>MainMenu.qml</file>
-        <file>MainMenuForm.ui.qml</file>
+        <file>icons/trigger.png</file>
+        <file>icons/settings.png</file>
+        <file>MainMenuItem.qml</file>
     </qresource>
 </RCC>
