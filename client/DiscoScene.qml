@@ -6,7 +6,7 @@ import QtQuick.Layouts 1.1
 import WebSocketConnector 1.1
 
 
-Rectangle {
+Item {
     id: root
     width: parent.width
     height: parent.height

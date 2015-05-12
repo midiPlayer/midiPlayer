@@ -3,11 +3,10 @@ import QtQuick.Controls 1.3
 import QtQuick.Layouts 1.1
 import QtQuick.Controls.Styles 1.3
 
-Rectangle {
+Item {
     id: item1
     width: 640
     height: 480
-    color:"#333"
     property alias connectBtn: connectBtn
     property alias urlEdit: urlEdit
 
@@ -28,6 +27,8 @@ Rectangle {
             style: Text.Normal
             font.pointSize: 56
             font.bold: true
+            color:"#369cb6"
+            opacity: 0.5
         }
         RowLayout{
         TextField {

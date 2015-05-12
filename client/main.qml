@@ -10,6 +10,8 @@ ApplicationWindow {
     height: 600
     visible: true
 
+    color:"#002b38"
+
     menuBar: MenuBar {
         Menu {
             title: qsTr("&File")

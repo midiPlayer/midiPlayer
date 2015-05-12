@@ -1,8 +1,7 @@
 import QtQuick 2.4
 import QtQuick.Layouts 1.1
 
-Rectangle {
-    color:"#002b38"
+Item {
     RowLayout{
         anchors.fill: parent
     GridLayout {
@@ -26,7 +25,7 @@ Rectangle {
 
         MainMenuItem{
             imageSrc: "icons/settings.png"
-            name: "Beamer"
+            name: "beamer"
             link:"BeamerShutterControl.qml"
         }
     }
