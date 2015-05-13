@@ -40,6 +40,13 @@ import QtQuick.Layouts 1.1
                         if(subcolors !== undefined) return subcolors;
                         return "";
                     }
+                    onSelected: {
+                        if(subColors.count == 0)
+                            ;
+                        else{
+                            colorPickerStackView.push(Qt.resolvedUrl("ColorPickerView.qml"),{"lmodel":subColors})
+                        }
+                    }
                 }
         }
     }

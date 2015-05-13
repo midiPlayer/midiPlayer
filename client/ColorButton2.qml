@@ -47,11 +47,7 @@ Item {
         }
         onReleased: {
             shadow.opacity = 0.6;
-            if(subColors.count == 0)
-                selected();
-            else{
-                colorPickerStackView.push(Qt.resolvedUrl("ColorPickerView.qml"),{"lmodel":subColors})
-            }
+            selected();
         }
         onCanceled: {
             shadow.opacity = 0.6;
