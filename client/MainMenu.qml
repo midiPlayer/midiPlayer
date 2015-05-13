@@ -20,7 +20,7 @@ Item {
         MainMenuItem{
             imageSrc: "icons/trigger.png"
             name: "configutre Trigger"
-            link:"TestColorPicker.ui.qml"
+            link:"ColorPicker.qml"
         }
 
         MainMenuItem{

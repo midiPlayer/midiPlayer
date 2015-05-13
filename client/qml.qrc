@@ -18,6 +18,9 @@
         <file>icons/settings.png</file>
         <file>MainMenuItem.qml</file>
         <file>ColorButton.qml</file>
-        <file>TestColorPicker.ui.qml</file>
+        <file>ColorButton2.qml</file>
+        <file>images/schatten.png</file>
+        <file>ColorPickerView.qml</file>
+        <file>ColorPicker.qml</file>
     </qresource>
 </RCC>
