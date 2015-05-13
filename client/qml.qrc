@@ -17,5 +17,7 @@
         <file>icons/trigger.png</file>
         <file>icons/settings.png</file>
         <file>MainMenuItem.qml</file>
+        <file>ColorButton.qml</file>
+        <file>TestColorPicker.ui.qml</file>
     </qresource>
 </RCC>
