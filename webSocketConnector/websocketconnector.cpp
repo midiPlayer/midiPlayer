@@ -2,6 +2,8 @@
 #include <QDebug>
 WebSocketConnector::WebSocketConnector(QObject* parent) :QObject(parent),webInterface(WebInterface::getInstance()),requestType(""),urlV(""),requestId(-1),requestParams()
 {
+    connect(&webInterface,SIGNAL(connectedS()),this,SLOT(connected()));
+    connect(&webInterface,SIGNAL(disconnectedS()),this,SLOT(disconnected()));
 }
 
 WebSocketConnector::~WebSocketConnector()
@@ -12,11 +14,13 @@ WebSocketConnector::~WebSocketConnector()
 
 void WebSocketConnector::startConnection(const QString &url)
 {
-    qDebug() << "startConnectionCalled";
-    webInterface.connectToServer(url);
-    connect(&webInterface,SIGNAL(connectedS()),this,SLOT(connected()));
-    connect(&webInterface,SIGNAL(disconnectedS()),this,SLOT(disconnected()));
-    urlV = url;
+    if(url == "")
+        webInterface.closeConnection();
+    else{
+        qDebug() << "startConnectionCalled";
+        webInterface.connectToServer(url);
+        urlV = url;
+    }
 }
 
 QString WebSocketConnector::url() const

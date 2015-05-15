@@ -81,8 +81,8 @@ Item {
 
             PropertyChanges {
                 target: connectBtn
-                text: qsTr("Connected")
-                enabled: false
+                text: qsTr("Disconnect")
+                enabled: true
             }
 
             PropertyChanges {

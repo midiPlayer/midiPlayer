@@ -23,6 +23,7 @@ public:
     void sendMsg(WebSocketConnector *connector,QJsonObject msg);
     void sendMsgToRqId(WebSocketConnector *connector, QJsonObject msg);
     bool reopen;
+    void closeConnection();
 public slots:
     void connected();
     void disconnected();

@@ -102,6 +102,22 @@ void WebSocketServer::onTextMessage(QString message)
             }
         }
     }
+    else if(data.contains("unregister")){
+        QString requestType = data.value("unregister").toString();
+        foreach (WebSocketServerProvider *p, provider) {
+            if(p->getRequestType() == requestType){
+                p->unregisterClient(pClient);
+            }
+        }
+    }
+    else if(data.contains("unregisterId")){
+        int requestId = data.value("unregisterId").toInt(-2);
+        foreach (WebSocketServerProvider *p, provider) {
+            if(p->providerId == requestId){
+                p->unregisterClient(pClient);
+            }
+        }
+    }
     else if(data.contains("provider")){
         QString rqt = data.value("provider").toString("");
         foreach (WebSocketServerProvider *p, provider) {

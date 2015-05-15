@@ -8,6 +8,8 @@ WebInterface::WebInterface(QObject *parent):QObject(parent), connectors(),ws(),i
 
     connect(&ws,SIGNAL(connected()),this,SLOT(connected()));
     connect(&ws,SIGNAL(disconnected()),this,SLOT(disconnected()));
+
+    connect(&ws,SIGNAL(textMessageReceived(QString)),this,SLOT(onTextMessage(QString)));
 }
 
 
@@ -60,7 +62,16 @@ void WebInterface::registerConnector(WebSocketConnector *connector,QJsonObject p
 
 void WebInterface::unregisterConnector(WebSocketConnector *connector)
 {
+    QJsonObject msg;
+    if(connector->getReqestId() == -1)
+        msg.insert("unregister",connector->getRequestType());
+    else
+        msg.insert("unregisterId",connector->getReqestId());
+    QJsonDocument d;
+    d.setObject(msg);
+    ws.sendTextMessage(d.toJson());
     connectors.removeAll(connector);
+    connectedRequestTypes.removeAll(connector->getRequestType());
 }
 
 void WebInterface::sendMsg(WebSocketConnector *connector, QJsonObject msg)
@@ -83,10 +94,14 @@ void WebInterface::sendMsgToRqId(WebSocketConnector *connector, QJsonObject msg)
     ws.sendTextMessage(d.toJson());
 }
 
+void WebInterface::closeConnection()
+{
+    ws.close();
+}
+
 void WebInterface::connected()
 {
     qDebug() << "connected";
-    connect(&ws,SIGNAL(textMessageReceived(QString)),this,SLOT(onTextMessage(QString)));
     isConnectedP = true;
     onceConnected = true;
     emit connectedS();
