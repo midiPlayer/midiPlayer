@@ -19,9 +19,12 @@ QList<Device> DiscoScene::getLights()
         fusion.fusion(soloScene->getLights(),Device::OVERRIDE,1.0);
     }
     else{
-        foreach (DiscoSubScene *effect, effects.values()) {
-                if(!effect->mute)
-                    fusion.fusion(effect->scene,effect->fusionType,0.5f);
+        foreach (int orderId, order) {
+            if(!effects.contains(orderId))
+                continue;
+            DiscoSubScene *effect = effects.value(orderId);
+            if(!effect->mute)
+                fusion.fusion(effect->scene,effect->fusionType,0.5f);
         }
     }
     return fusion.getLights();
@@ -82,6 +85,17 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
             fusionType = Device::OVERRIDE;
         DiscoSubScene *sub = effects.value(sceneId);
         sub->fusionType = fusionType;
+    }
+    if(msg.contains("orderChanged")){
+        QJsonArray readOrder = msg.value("orderChanged").toArray();
+        QList<int> newOrder;
+        foreach (QJsonValue val, readOrder) {
+            int i = val.toInt(-2);
+            if(i != -2 && effects.contains(i))
+                newOrder.append(i);
+        }
+        order.clear();
+        order = newOrder;
     }
     sendMsgButNotTo(msg,id);
 }

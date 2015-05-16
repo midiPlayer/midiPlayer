@@ -18,14 +18,17 @@ Item {
 
         model: ListModel {
             id: listModel
-            /*Component.onCompleted: {
-                for (var i = 0; i < 10; ++i) {
-                    append({value:{
-                                nr: i,
-                                vElement:0
-                               } });
+
+
+            onRowsMoved:  {
+                var msg = new Object();
+                msg.orderChanged = [];
+                for(var i = 0;i < count; i++){
+                    msg.orderChanged.push(listModel.get(i).modelData.sceneId);
                 }
-            }*/
+                ws.send = JSON.stringify(msg);
+            }
+
         }
 
         delegate: Item {
