@@ -19,8 +19,7 @@ Item {
         model: ListModel {
             id: listModel
 
-
-            onRowsMoved:  {
+            function rowMovedManualy(){
                 var msg = new Object();
                 msg.orderChanged = [];
                 for(var i = 0;i < count; i++){
@@ -258,12 +257,14 @@ Item {
 
                         dragStart = dragStart + nextHeight;
                         listView.model.move(index,index+1,1);
+                        listView.model.rowMovedManualy();
                        jumpedItems++;
                    }
                    if(dragRect.y + listView.contentY - dragStart < -prevHeight * 0.75
                            && index != 0
                            && (listView.itemAt(dragRect.width/2,y+height+listView.contentY) !== delegateItem)){
                         listView.model.move(index,index-1,1);
+                       listView.model.rowMovedManualy();
                        dragStart = dragStart - prevHeight;
                        if(index == 0){
                            mouseArea.drag.minimumY = 0;

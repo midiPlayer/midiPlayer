@@ -18,6 +18,19 @@ WorkerScript.onMessage = function(params) {
         }
         params.listModel.sync();
     }
+    if(msg.orderChanged !== undefined){
+        for(var i = 0; i<msg.orderChanged.length;i++){
+            var id = msg.orderChanged[i];
+            if(params.listModel.get(i).modelData.sceneId !== id){
+                for(var y = i;y < params.listModel.count; y++){
+                    if(params.listModel.get(y).modelData.sceneId === id){
+                        params.listModel.move(y,i,1);
+                    }
+                }
+            }
+        }
+        params.listModel.sync();
+    }
 
 }
 
