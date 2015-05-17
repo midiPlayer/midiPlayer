@@ -1,6 +1,7 @@
 #include "websocketconnector.h"
 #include <QDebug>
-WebSocketConnector::WebSocketConnector(QObject* parent) :QObject(parent),webInterface(WebInterface::getInstance()),requestType(""),urlV(""),requestId(-1),requestParams()
+WebSocketConnector::WebSocketConnector(QObject* parent) :QObject(parent),webInterface(WebInterface::getInstance()),
+    requestType(""),urlV(""),requestId(-1),requestParams(),passiveConnected(false)
 {
     connect(&webInterface,SIGNAL(connectedS()),this,SLOT(connected()));
     connect(&webInterface,SIGNAL(disconnectedS()),this,SLOT(disconnected()));
@@ -75,6 +76,13 @@ void WebSocketConnector::registerForRequestType(QString type)
         webInterface.registerConnector(this,requestParams);
 }
 
+void WebSocketConnector::registerForRequestTypePassivly(QString type)
+{
+     webInterface.registerConnectorPassive(this);
+     requestType = type;
+     passiveConnected = true;
+}
+
 void WebSocketConnector::onMessage(QJsonObject msg)
 {
     emit message(msg);
@@ -99,6 +107,12 @@ bool WebSocketConnector::getReopen()
 {
     return webInterface.reopen;
 }
+
+bool WebSocketConnector::isPassive()
+{
+    return passiveConnected;
+}
+
 
 
 void WebSocketConnector::connected()

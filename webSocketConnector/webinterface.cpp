@@ -60,6 +60,11 @@ void WebInterface::registerConnector(WebSocketConnector *connector,QJsonObject p
     ws.sendTextMessage(d.toJson());
 }
 
+void WebInterface::registerConnectorPassive(WebSocketConnector *connector)
+{
+     connectors.append(connector);
+}
+
 void WebInterface::unregisterConnector(WebSocketConnector *connector)
 {
     QJsonObject msg;
@@ -108,7 +113,8 @@ void WebInterface::connected()
 
     connectedRequestTypes.clear();
     foreach (WebSocketConnector *connect, connectors) {
-        registerConnector(connect,connect->getRegistrationParams(),true);
+        if(!connect->isPassive())
+            registerConnector(connect,connect->getRegistrationParams(),true);
     }
 }
 

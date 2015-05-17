@@ -16,6 +16,8 @@
 #include "remotebeat.h"
 #include "discoscene.h"
 
+#include "beamershutterscenemanager.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -44,7 +46,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    JackProcessor *p;
+    JackProcessor p;
     QList<Scene*> scenes;
     QList<OverlayScene*> overlays;
     QList<Device> usedLamps;
@@ -67,6 +69,8 @@ private:
     QTimer timer;
     RemoteBeat *remoteBeat;
     DiscoScene discoscene;
+    BeamerShutterSceneManager beamerShutterSceneManager;
+    beamerDeviceProvider myBeamerDeviceProvider;
 
 };
 

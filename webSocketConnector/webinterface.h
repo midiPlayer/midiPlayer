@@ -19,6 +19,7 @@ public:
     bool isConnected();
     void registerConnector(WebSocketConnector *connector);
     void registerConnector(WebSocketConnector *connector, QJsonObject params, bool reregister = false);
+    void registerConnectorPassive(WebSocketConnector* connector);
     void unregisterConnector(WebSocketConnector *connector);
     void sendMsg(WebSocketConnector *connector,QJsonObject msg);
     void sendMsgToRqId(WebSocketConnector *connector, QJsonObject msg);

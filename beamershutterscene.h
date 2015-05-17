@@ -1,19 +1,11 @@
 #ifndef BEAMERSHUTTERSCENE_H
 #define BEAMERSHUTTERSCENE_H
 #include "scene.h"
-#include "websocketserverprovider.h"
-class WebSocketServer;
-class BeamerShutterScene : public Scene, public WebSocketServerProvider
+class BeamerShutterScene
 {
 public:
-    BeamerShutterScene(QString name,WebSocketServer *server);
-    QList<Device> getLights();
-    QList<Device> getUsedLights();
-
-    void clientRegistered(QJsonObject msg,int clientIdCounter);
-    void clientUnregistered(QJsonObject msg,int clientIdCounter);
-    void clientMessage(QJsonObject msg,int clientIdCounter);
-    QString getRequestType();
+    virtual void start() = 0;
+    virtual void stop() = 0;
 };
 
 #endif // BEAMERSHUTTERSCENE_H

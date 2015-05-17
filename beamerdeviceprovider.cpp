@@ -1,10 +1,11 @@
 #include "beamerdeviceprovider.h"
 #include <QColor>
 
-beamerDeviceProvider::beamerDeviceProvider(WebSocketServer *server, QList<Device> availableVirtualDevicesP) : WebSocketServerProvider(server), OutputDevice(),
+beamerDeviceProvider::beamerDeviceProvider(WebSocketServer *server, QList<Device> *availableVirtualDevicesP) : WebSocketServerProvider(server), OutputDevice(),
     availableVirtualDevices(availableVirtualDevicesP)
 {
     server->registerProvider(this);
+
 }
 
 void beamerDeviceProvider::clientRegistered(QJsonObject msg, int id)
@@ -13,7 +14,7 @@ void beamerDeviceProvider::clientRegistered(QJsonObject msg, int id)
     if(msg.contains("deviceId")){
         QString devId = msg.value("deviceId").toString();
 
-        foreach(Device d, availableVirtualDevices){
+        foreach(Device d, *availableVirtualDevices){
             if(d.getDeviceId() == devId){
                 devices.insert(id,d);
             }
@@ -54,6 +55,35 @@ void beamerDeviceProvider::publish(QList<Device> targetDevices)
             msg.insert("highlightedColor",c.name());
             sendMsg(msg,devID);
     }
+}
+
+void beamerDeviceProvider::publishShutter(QList<Device> beamer)
+{
+    QJsonObject msg;
+    foreach (Device d, beamer) {
+        BeamerDevice b = static_cast<BeamerDevice>(b);
+        publishShutter(b);
+    }
+}
+
+void beamerDeviceProvider::publishShutter(BeamerDevice beamer, bool dismissDevID)
+{
+    QJsonObject msg;
+    BeamerDevice::ShutterType shutterT = beamer.getShutterType();
+      if(shutterT == BeamerDevice::CIRCULAR)
+        msg.insert("shutterType","circular");
+      else if(shutterT == BeamerDevice::NONE)
+        msg.insert("shutterType","none");
+      if(beamer.shutterParams.length() != 0)
+          msg.insert("shutterParams",beamer.shutterParams);
+
+      if(!dismissDevID){
+          int devID = devices.key(beamer,-1);
+          if(devID  == -1) return;
+          sendMsg(msg,devID);
+      }
+      else
+          sendMsg(msg);//sendToAll
 }
 
 

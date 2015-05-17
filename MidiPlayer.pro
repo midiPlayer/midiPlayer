@@ -30,7 +30,10 @@ SOURCES += main.cpp\
     outputdevice.cpp \
     remotebeat.cpp \
     flashscene.cpp \
-    trigger.cpp
+    trigger.cpp \
+    beamerdevice.cpp \
+    circularbeamershutterscene.cpp \
+    beamershutterscenemanager.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
@@ -49,6 +52,9 @@ HEADERS  += mainwindow.h\
     outputdevice.h \
     remotebeat.h \
     flashscene.h \
-    trigger.h
+    trigger.h \
+    beamerdevice.h \
+    circularbeamershutterscene.h \
+    beamershutterscenemanager.h
 
 FORMS    += mainwindow.ui

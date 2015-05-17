@@ -11,7 +11,10 @@ ApplicationWindow {
     width: 640
     height: 480
     visible: true
-   // visibility: "FullScreen"
+
+    // visibility: "FullScreen"
+
+
 
     Item{
         anchors.fill: parent
@@ -69,19 +72,12 @@ ApplicationWindow {
 
     }
 
-    Rectangle{
+    Item{
         id:blackMask
         anchors.fill: parent
-        color:"#00000000"
         visible: false;
-        Rectangle{
-            id: pointer
-            color:'#ffffff'
-            opacity: 1
-            width: parent.height;
-            height: parent.height;
-            anchors.centerIn: parent
-            radius: width/2
+        CircularBeamerShutter{
+
         }
     }
 
@@ -113,14 +109,13 @@ ApplicationWindow {
         visible: false
     }
 
+
 }
-
-
     WebSocketConnector{
-
+        id:wsc
         registrationParams: {
             var msg = { "deviceId" : "beamer1"};
-            JSON.stringify(msg);
+            return JSON.stringify(msg);
         }
         reopen: true
         onConnectionSucceded: {
@@ -143,6 +138,7 @@ ApplicationWindow {
             }
         }
     }
+
 
     MessageDialog {
         id: messageDialog

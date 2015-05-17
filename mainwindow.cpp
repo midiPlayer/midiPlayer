@@ -19,8 +19,8 @@
 
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),scenes(),overlays(),usedLamps(),status(),currentScene(0),currentOverlay(-1),offsetRequested(true),fading(0),nextOnMusic(false),overlayOnMusic(false),availableDevices(),
-    wss(this),outDevices(), timer(this),getChangesRunning(false), ui(new Ui::MainWindow),discoscene("disco",&wss)
+    QMainWindow(parent),p(this),scenes(),overlays(),usedLamps(),status(),currentScene(0),currentOverlay(-1),offsetRequested(true),fading(0),nextOnMusic(false),overlayOnMusic(false),availableDevices(),
+    wss(this),outDevices(), timer(this),getChangesRunning(false), ui(new Ui::MainWindow),discoscene("disco",&wss),myBeamerDeviceProvider(&wss,&availableDevices),beamerShutterSceneManager(&myBeamerDeviceProvider,&wss,&p)
 {
     //availableDevices = Device::loadDevicesFromXml("~/devices.xml");
 
@@ -33,22 +33,20 @@ MainWindow::MainWindow(QWidget *parent) :
     channels.insert(5,0.0f);
     availableDevices.append(Device(channels,"beamer1",Device::Beamer));
 
-    outDevices.append(new beamerDeviceProvider(&wss,availableDevices));
-
-    p = new JackProcessor(this);
+    outDevices.append(&myBeamerDeviceProvider);
     //connect(p,SIGNAL(midiRequest()),this,SLOT(getChanges()));
     ui->setupUi(this);
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(testMidi()));
     connect(ui->nextBtn,SIGNAL(clicked()),this,SLOT(nextScene()));
     connect(ui->prevBtn,SIGNAL(clicked()),this,SLOT(prevScene()));
-    connect(p,SIGNAL(musicNotification()),this,SLOT(onMusic()));
+    connect(&p,SIGNAL(musicNotification()),this,SLOT(onMusic()));
     connect(ui->nextWidthNusic,SIGNAL(stateChanged(int)),this,SLOT(requestNextOnMusic(int)));
     connect(ui->playOverlayWidthMusic,SIGNAL(stateChanged(int)),this,SLOT(requestOverlayOnMusic(int)));
     connect(ui->jumpBtn,SIGNAL(clicked()),this,SLOT(jumpClicked()));
     connect(ui->playOverlay,SIGNAL(clicked()),this,SLOT(playOverlayBtn()));
 
-    discoscene.addEffect(new BeatScene1("beat",availableDevices,p,&wss));
-    discoscene.addEffect(new FlashScene("flash",&wss,availableDevices,p));
+    discoscene.addEffect(new BeatScene1("beat",availableDevices,&p,&wss));
+    discoscene.addEffect(new FlashScene("flash",&wss,availableDevices,&p));
     //scenes.append(new FlashScene("flash",&wss,availableDevices,p));
     scenes.append(&discoscene);
     scenes.append(new BlackScene("black",availableDevices));
@@ -79,7 +77,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //qDebug() << "" << usedLamps;
 
-    p->initJack(this);
+    p.initJack(this);
 
     foreach (Scene* scene, scenes) {
         ui->sceneSelector->addItem(scene->getName(),scenes.indexOf(scene));
@@ -89,13 +87,12 @@ MainWindow::MainWindow(QWidget *parent) :
     timer.setInterval(10);
     timer.start();
 
-    remoteBeat = new RemoteBeat(&wss,p);
+    remoteBeat = new RemoteBeat(&wss,&p);
 
 }
 
 MainWindow::~MainWindow()
 {
-    delete p;
     delete ui;
 }
 
@@ -269,13 +266,13 @@ void MainWindow::playOverlayBtn()
 void MainWindow::requestNextOnMusic(int state)
 {
     nextOnMusic = state != 0;
-    p->requestMusicNotification();
+    p.requestMusicNotification();
 }
 
 void MainWindow::requestOverlayOnMusic(int state)
 {
     overlayOnMusic = state != 0;
-    p->requestMusicNotification();
+    p.requestMusicNotification();
 }
 
 void MainWindow::trigger()
