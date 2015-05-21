@@ -22,5 +22,7 @@
         <file>images/schatten.png</file>
         <file>ColorPickerView.qml</file>
         <file>ColorPicker.qml</file>
+        <file>BeamerShutterControlImporter.js</file>
+        <file>CircularShutterScene.qml</file>
     </qresource>
 </RCC>

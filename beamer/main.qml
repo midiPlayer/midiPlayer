@@ -23,9 +23,8 @@ ApplicationWindow {
             main.color = "green";
         }
 
-    Rectangle{
+    Item{
         id:mask
-        color:"#00000000"
         anchors.fill: parent
         Image {
                 id:linien
@@ -87,12 +86,18 @@ ApplicationWindow {
     anchors.fill: parent
     color:"blue"
 
-    OpacityMask{
-        anchors.fill: parent
-        source:mainHighLighted
-        maskSource:mask
-    }
-    visible: false
+    property double centerX;
+    property double centerY;
+
+        OpacityMask{
+            source:mainHighLighted
+            maskSource:mask
+            x:parent.centerX*width - width/2;
+            y:parent.centerY*height-height/2;
+            width: parent.width
+            height: parent.height
+        }
+        visible: false
     }
 
     Rectangle{
@@ -101,13 +106,13 @@ ApplicationWindow {
     }
 
 
-    OpacityMask{
-        id: display
-        anchors.fill: parent
-        source:main
-        maskSource:blackMask
-        visible: false
-    }
+        OpacityMask{
+            id: display
+            anchors.fill: parent
+            source:main
+            maskSource:blackMask
+            visible: false
+        }
 
 
 }

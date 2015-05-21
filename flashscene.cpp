@@ -1,19 +1,32 @@
 #include "flashscene.h"
 #include "websocketserver.h"
 
-FlashScene::FlashScene(QString name, WebSocketServer *ws,QList<Device> avDevP,JackProcessor *jackP) : Scene(name),
-    WebSocketServerProvider(ws),trigger(ws,jackP),avDev(avDevP),flash(false),flashState(),time(),smoothDuration(200),beatSpeed(INT_MAX),timePer(0.0f)
+void FlashScene::init(WebSocketServer *ws)
 {
     ws->registerProvider(this);
     trigger.triggerConfig.insert(Trigger::BEAT);
     connect(&trigger,SIGNAL(trigger()),this,SLOT(triggered()));
-    foreach (Device dev, avDev) {
+    foreach (Device dev, availableDevices) {
         foreach (int c, dev.getChannels()) {
             dev.setChannel(c,254.0f);
         }
         flashState.append(dev);
     }
 }
+
+FlashScene::FlashScene(QString name, WebSocketServer *ws,QList<Device> avDevP,JackProcessor *jackP) : Scene(name),
+    WebSocketServerProvider(ws),trigger(ws,jackP),availableDevices(avDevP),flashEnabled(false),flashState(),time(),smoothDuration(200),beatSpeed(INT_MAX),timePer(0.0f)
+{
+    init(ws);
+}
+
+FlashScene::FlashScene(QJsonObject serialized,WebSocketServer *ws,QList<Device> avDevP,JackProcessor *jackP) : Scene(serialized),
+        WebSocketServerProvider(ws),trigger(ws,jackP),availableDevices(avDevP),
+        flashEnabled(false),flashState(),time(),smoothDuration(200),beatSpeed(INT_MAX),timePer(0.0f)
+{
+
+}
+
 
 QList<Device> FlashScene::getLights()
 {
@@ -24,7 +37,7 @@ QList<Device> FlashScene::getLights()
 
 
         if(time.elapsed() > smoothDuration){
-            flash = false;
+            flashEnabled = false;
         }
 
         // mit weiß beim beat:
@@ -66,7 +79,7 @@ QList<Device> FlashScene::getLights()
 
 QList<Device> FlashScene::getUsedLights()
 {
-    if(flash)
+    if(flashEnabled)
         return flashState;
     else
         return QList<Device>();
@@ -108,9 +121,15 @@ QString FlashScene::getRequestType()
     return "falshScene";
 }
 
+QJsonObject FlashScene::serialize(QJsonObject ret){
+    ret.insert("trigger",trigger.serialize());
+    ret.insert("smoothDuration",smoothDuration);
+    return Scene::serialize(ret);
+}
+
 void FlashScene::triggered()
 {
-    flash = 1;
+    flashEnabled = 1;
     beatSpeed = time.elapsed();
     time.restart();
 }

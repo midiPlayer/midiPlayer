@@ -11,9 +11,15 @@ class CircularBeamerShutterScene : public QObject, public BeamerShutterScene
 {
 Q_OBJECT
 public:
-    CircularBeamerShutterScene(beamerDeviceProvider *providerP,WebSocketServer *ws,JackProcessor *p);
+    CircularBeamerShutterScene(QString nameP, beamerDeviceProvider *providerP, WebSocketServer *ws, JackProcessor *p);
     void start();
     void stop();
+
+    void clientRegistered(QJsonObject msg,int clientIdCounter);
+    void clientUnregistered(QJsonObject msg,int clientIdCounter);
+    void clientMessage(QJsonObject msg, int clientId);
+    QString getRequestType();
+    void dataChanged();
 public slots:
     void triggered();
 private:

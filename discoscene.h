@@ -8,6 +8,7 @@
 #include "device.h"
 #include "fusionscene.h"
 #include "websocketserverprovider.h"
+#include "discosubscene.h"
 
 class DiscoScene : public Scene, public WebSocketServerProvider
 {
@@ -22,17 +23,10 @@ public:
     QString getRequestType();
     void stop();
     void start();
+    QJsonObject serialize();
 public:
     void addEffect(Scene *scene);
 private:
-    struct DiscoSubScene{
-        int id;
-        Scene* scene;
-        bool mute;
-        float opacity;
-        Device::FusionType fusionType;
-    };
-
     bool solo;
     Scene* soloScene;
 
@@ -42,8 +36,7 @@ private:
     int sceneIdCounter;
     FusionScene fusion;
 
-    QJsonObject getStatus(bool showEffects, bool showOrder);
-    QJsonObject getEffectJson(DiscoSubScene *effect);
+    QJsonObject getStatus(bool showEffects, bool showOrder,bool serialize);
 };
 
 #endif // DISCOSCENE_H

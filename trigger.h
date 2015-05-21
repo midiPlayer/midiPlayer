@@ -4,11 +4,13 @@
 #include "jackprocessor.h"
 #include <QSet>
 #include <QObject>
-class Trigger : public QObject, public WebSocketServerProvider
+#include "serializable.h"
+
+class Trigger : public QObject, public WebSocketServerProvider, public Serializable
 {
 Q_OBJECT
 public:
-    Trigger(WebSocketServer *ws,JackProcessor *jackP);
+    Trigger(WebSocketServer *ws,JackProcessor *jackP,QJsonObject serialized = QJsonObject());
     enum TriggerType{BEAT,TIMER,ONSET};
     void start();
     void stop();
@@ -17,6 +19,8 @@ public:
     void clientMessage(QJsonObject msg,int clientId);
     QString getRequestType();
     QSet<TriggerType> triggerConfig;
+    QJsonObject serialize();
+    QJsonObject getTriggerSourceJson();
 public slots:
     void beat();
     void onset();
@@ -25,6 +29,7 @@ signals:
 private:
     JackProcessor *jack;
     QJsonObject getState();
+    void setState(QJsonObject fgt);
 };
 
 #endif // TRIGGER_H

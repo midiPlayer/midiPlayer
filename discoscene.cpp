@@ -47,7 +47,7 @@ QList<Device> DiscoScene::getUsedLights()
 
 void DiscoScene::clientRegistered(QJsonObject msg, int id)
 {
-    QJsonObject response = getStatus(true,true);
+    QJsonObject response = getStatus(true,true,false);
     sendMsg(response,id);
 }
 
@@ -119,60 +119,37 @@ void DiscoScene::start()
     }
 }
 
+QJsonObject DiscoScene::serialize()
+{
+    QJsonObject ret = getStatus(true,true,true);
+    return Scene::serialize(ret);
+}
+
 
 void DiscoScene::addEffect(Scene *scene)
 {
-    effects.insert(sceneIdCounter,new DiscoSubScene{sceneIdCounter,scene,false,1.0,Device::MAX});
+    effects.insert(sceneIdCounter,new DiscoSubScene(sceneIdCounter,scene,Device::MAX,false,1.0));
     order.append(sceneIdCounter);
     sceneIdCounter++;
 }
 
-QJsonObject DiscoScene::getEffectJson(DiscoScene::DiscoSubScene *effect)
-{
-    QJsonObject effectObj;
-    effectObj.insert("sceneId",effect->id);
-    effectObj.insert("mute",effect->mute);
-    effectObj.insert("opacity",effect->opacity);
-    effectObj.insert("name",effect->scene->getName());
-
-    QString fusionType;
-    switch (effect->fusionType) {
-    case Device::MAX:
-        fusionType = "max";
-        break;
-    case Device::MAXG:
-        fusionType = "maxg";
-        break;
-    case Device::MIN:
-        fusionType = "min";
-        break;
-    case Device::MING:
-        fusionType = "ming";
-        break;
-    case Device::AV:
-        fusionType = "av";
-        break;
-    case Device::OVERRIDE:
-        fusionType = "override";
-        break;
-    }
-    effectObj.insert("fusionType",fusionType);
-
-    WebSocketServerProvider *provider = dynamic_cast<WebSocketServerProvider*>(effect->scene);
-    if(provider != 0){
-        effectObj.insert("requestType",provider->getRequestType());
-        effectObj.insert("providerId",provider->providerId);
-    }
-    return effectObj;
-}
-
-QJsonObject DiscoScene::getStatus(bool showEffects,bool showOrder)
+/**
+ * @brief DiscoScene::getStatus
+ * @param showEffects
+ * @param showOrder
+ * @param serialize not generate client json bt generate serialized json width sub json.
+ * @return void
+ */
+QJsonObject DiscoScene::getStatus(bool showEffects,bool showOrder,bool serialize)
 {
     QJsonObject status;
     if(showEffects){
         QJsonArray effectsObj;
         foreach(DiscoSubScene *effect,effects){
-            effectsObj.append(getEffectJson(effect));
+            if(serialize)
+                effectsObj.append(effect->serialize());
+            else
+                effectsObj.append(effect->getJsonForClient());
         }
         status.insert("effects",effectsObj);
     }

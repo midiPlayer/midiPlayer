@@ -4,6 +4,7 @@
 #include "device.h"
 #include <QString>
 #include <QList>
+#include <QJsonObject>
 class FusionScene : public Scene
 {
 public:
@@ -16,6 +17,8 @@ public:
 
     QList<Device> getLights();
     QList<Device> getUsedLights();
+
+    QJsonObject serialize();
 
 private:
     QList<Device> devices;

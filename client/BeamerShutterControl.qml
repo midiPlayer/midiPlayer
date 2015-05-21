@@ -6,64 +6,68 @@ import WebSocketConnector 1.1
 Item{
 ListModel{
     id:effectListModel
-    ListElement{
+    /*ListElement{
         name:"manual Spot"
-    }
-
-    ListElement{
-        name:"color bar"
-    }
-    ListElement{
-        name:"color bar"
-    }
-    ListElement{
-        name:"color bar"
-    }
-    ListElement{
-        name:"color bar"
-    }
-    ListElement{
-        name:"color bar"
-    }
-    ListElement{
-        name:"color bar"
-    }
-
-
+    }*/
 }
 
 Component{
     id:effectListDelegate
     Rectangle {
-        gradient: Gradient{
-             GradientStop { position: 0.0; color: "#000" }
-             GradientStop { position: 1.0; color: "#333" }
-        }
+        color:"#000000ee"
         border.width: 1
-        border.color: "#444"
+        border.color: "#111"
         width:effectListView.width
         height:text.height + 20
-        Text{
-            anchors.centerIn: parent
-            id:text
-            text:name;
-            color:"#fff"
-            font.pointSize: 15;
+        MouseArea{
+            anchors.fill: parent;
+            onClicked: {
+                var filename = "";
+                if(modelData.requestType === "circualrBeamerShutter")
+                    filename = "CircularShutterScene.qml";
+                if(filename != ""){
+                    var obj = Qt.createComponent(filename,0,placeholder);
+                    obj.incubateObject(placeholder,{"visible":true,"requestId":modelData.requestId});
+                }
+            }
+        }
+
+        RowLayout{
+            anchors.fill: parent;
+            anchors.leftMargin: 10
+            Item{
+                Layout.fillHeight: true;
+                Layout.preferredWidth: 20;
+                Rectangle{
+                    anchors.centerIn: parent;
+                    width: 15;
+                    height: width;
+                    radius: width/2;
+                    color:"#369cb6"
+                    visible: modelData.isAcitve
+                }
+            }
+
+            Text{
+                anchors.centerIn: parent
+                id:text
+                text:modelData.name;
+                color:"#369cb6"
+                font.pointSize: 15;
+            }
         }
     }
 }
 
-Rectangle{
+Item{
     anchors.fill: parent;
-    color:"#333";
     width: parent.width
     height: parent.height
 
     RowLayout{
         anchors.fill: parent;
-        Rectangle{
+        Item{
             width:200;
-            color:"#222"
             Layout.fillHeight: true;
             ListView{
                 id: effectListView
@@ -73,149 +77,27 @@ Rectangle{
                 delegate: effectListDelegate
             }
         }
-        Rectangle{
-            color:"#333"
-            Layout.fillHeight: true;
-            Layout.fillWidth: true;
 
-            ColumnLayout{
-                anchors.fill: parent;
-            Rectangle{
-                anchors.horizontalCenter: parent.horizontalCenter
-                width:400
-                height:400
-                color:"#444"
-                Text{
-                    anchors.centerIn: parent;
-                    color:"#555"
-                    text:"Touch Control"
-                    font.pointSize: 18;
-                }
-
-                MouseArea{
-                    id: tArea
-                    anchors.fill: parent
-                    focus:true
-                    onMouseXChanged: {
-                        green.centerX = mouseX;
-                        green.centerY = mouseY;
-                    }
-
-                }
-
-
-                RectangularGlow {
-                    id: effect
-                    anchors.fill: green
-                    glowRadius: 1
-                    spread: 0.001
-                    color: "white"
-                    cornerRadius: green.radius + glowRadius
-                }
-                Rectangle {
-                    id: green
-                       width: 20; height: width
-                       color: "white"
-                       radius: width/2
-                       opacity: 0.5
-                       x: point1.x - width/2
-                       y: point1.y - height/2
-                       property int centerX
-                       property int centerY
-
-
-                       function validateX(){
-                           if(centerX < width/2)
-                               centerX = width/2;
-                           else if(centerX > tArea.width-width/2)
-                              centerX  = tArea.width-width/2;
-                           x = centerX-width/2;
-                       }
-
-                       onWidthChanged: validateX()
-
-                       onCenterXChanged: validateX()
-
-                       function validateY(){
-                           if(centerY < height/2)
-                               centerY = height/2;
-                           else if(centerY > tArea.height-height/2)
-                              centerY = tArea.height-height/2;
-                           y = centerY - height/2;
-                       }
-
-                       onCenterYChanged: validateY()
-
-                       onHeightChanged: validateY()
-                   }
-
-                }
-            Rectangle{
-                Layout.fillHeight: true
-                Layout.fillWidth: true
-                color:"#333"
-                RowLayout{
-                    anchors.fill: parent
-                    Text{
-                        text:"Radius:"
-                        font.pointSize: 13
-                        color:"#fff"
-                    }
-
-                    Slider{
-                        maximumValue:tArea.width
-                        minimumValue: tArea.width/10
-                        onValueChanged: {
-                            console.log(value);
-                            green.width = value;
-                        }
-                        width: 200
-                    }
-                }
-            }
-            }
-        }
-
+    Item{
+        Layout.fillHeight: true;
+        Layout.fillWidth: true;
+        id:placeholder
     }
-/*
-    RowLayout{
-        anchors.fill: parent;
-        Rectangle{
-            anchors.fill: parent
-            Layout.fillHeight: true;
-            width:200;
-            ListView{
-                id: effectListView
-                width: parent.width
-                height:parent.height
-                model: effectListModel
-                delegate: effectListDelegate
-            }
+    }
 
-        }
-        Rectangle{
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            anchors.fill: parent
-            Rectangle{
-                width:100
-                height:100
-                //anchors.verticalCenter: parent;
-                //anchors.top:parent;
-                anchors.topMargin: 30;
-                color:"#444"
-            }
-        }
-
-
-    }*/
 }
+WorkerScript {
+        id: importer
+        source: "BeamerShutterControlImporter.js"
+        signal fusionTypeChanged();
+    }
 
 WebSocketConnector{
-    url:"asdf"
-    requestType:"req1"
+    requestType:"BeamerShutterControl"
     onMessage: {
-        console.log(msg);
+        if(msg.effectList !== undefined){
+            importer.sendMessage({"msg":msg,"listModel":effectListModel});
+        }
     }
 }
 

@@ -54,7 +54,7 @@ bool WebSocketServerProvider::sendMsgButNotTo(QJsonObject msg, int client_id,boo
     QWebSocket* notTo = connectedSockets.key(client_id);
     foreach(QWebSocket* ws, connectedSockets.keys()){
         if(ws != notTo)
-            server->sendData(msg,ws,this,false);
+            server->sendData(msg,ws,this,onlyForProvierID);
     }
 }
 

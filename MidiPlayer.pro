@@ -33,7 +33,9 @@ SOURCES += main.cpp\
     trigger.cpp \
     beamerdevice.cpp \
     circularbeamershutterscene.cpp \
-    beamershutterscenemanager.cpp
+    beamershutterscenemanager.cpp \
+    serializable.cpp \
+    discosubscene.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
@@ -55,6 +57,8 @@ HEADERS  += mainwindow.h\
     trigger.h \
     beamerdevice.h \
     circularbeamershutterscene.h \
-    beamershutterscenemanager.h
+    beamershutterscenemanager.h \
+    serializable.h \
+    discosubscene.h
 
 FORMS    += mainwindow.ui

@@ -50,3 +50,9 @@ QList<Device> FusionScene::getUsedLights()
     return devices;
 }
 
+QJsonObject FusionScene::serialize()
+{
+    QJsonObject ret;//it is useless to serialize a fusion scene!
+    return ret;
+}
+

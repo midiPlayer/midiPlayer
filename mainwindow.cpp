@@ -49,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     discoscene.addEffect(new FlashScene("flash",&wss,availableDevices,&p));
     //scenes.append(new FlashScene("flash",&wss,availableDevices,p));
     scenes.append(&discoscene);
+    qDebug() << discoscene.serialize();
     scenes.append(new BlackScene("black",availableDevices));
     //scenes.append(new BeatScene1("beat",availableDevices,p));
    // scenes.append(new BeatScene1("beat",availableDevices,p));

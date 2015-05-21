@@ -94,6 +94,14 @@ QString BeatScene1::getRequestType()
     return "beatScene1";
 }
 
+QJsonObject BeatScene1::serialize()
+{
+    QJsonObject ret;
+    ret.insert("foregroundTrigger",foregroundTrigger.serialize());
+    ret.insert("backgroundTrigger",backgroundTrigger.serialize());
+    return ret;
+}
+
 
 void BeatScene1::changeForeground()
 {

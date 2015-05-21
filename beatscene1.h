@@ -22,6 +22,7 @@ public:
     void clientUnregistered(QJsonObject msg,int clientIdCounter);
     void clientMessage(QJsonObject msg,int clientIdCounter);
     QString getRequestType();
+    QJsonObject serialize();
 public slots:
     void changeForeground();
     void changeBackground();

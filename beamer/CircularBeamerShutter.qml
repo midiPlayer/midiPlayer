@@ -3,6 +3,7 @@ import WebSocketConnector 1.1
 
 Item{
     anchors.fill: parent;
+    property bool follow:true;
     Rectangle{
         id: pointer
         color:'#ffffff'
@@ -11,7 +12,7 @@ Item{
         height: width;
         //anchors.centerIn: parent
         radius: width/2
-        Behavior on x{
+       /* Behavior on x{
             NumberAnimation{
                 duration: 100;
             }
@@ -20,6 +21,17 @@ Item{
             NumberAnimation{
                 duration: 100;
             }
+        }*/
+        onXChanged: {
+            if(follow)
+                main.centerX = (x + width/2)/parent.width;
+            else main.centerX = 0.5;
+        }
+        onYChanged: {
+            if(follow)
+                main.centerY = (y + height/2)/parent.height;
+            else
+                main.centerY = 0.5;
         }
     }
     WebSocketConnector{
