@@ -3,9 +3,10 @@
 #include <stdio.h>
 #include <time.h>
 #include <QDebug>
-
+#include <typeinfo>
 #define KEY_NAME "sceneName"
 #define KEY_DESC "sceneDesc"
+#define KEY_SCENE_TYPE "sceneType"
 
 Scene::Scene(QString nameP, QString descP, QObject *parent) : name(nameP),desc(descP),
     QObject(parent)
@@ -64,9 +65,15 @@ int Scene::getDeltaTime()
 
 QJsonObject Scene::serialize(QJsonObject inherited)
 {
+    inherited.insert(KEY_SCENE_TYPE,getSceneTypeString());
     inherited.insert(KEY_NAME,name);
     inherited.insert(KEY_DESC,desc);
     return Serializable::serialize(inherited);
 }
+
+/*
+ * Problem: I have no Idea how to find an elegant way to dynamicly generate the scenes by a name string as
+ * I can't find any elegant way to provide an name string staticly
+ * */
 
 

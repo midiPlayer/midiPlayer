@@ -31,6 +31,7 @@ public:
     Device operator *(float percentage);
     QString getDeviceId() const;
     DeviceType getType();
+    int getFirstChannel();
 private:
     QMap<int,float> dmxChannels;
     QString devId;

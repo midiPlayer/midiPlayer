@@ -5,7 +5,7 @@ Item{
         width: 70; height: 0.5*width
         signal stateOn()
         signal stateOff()
-        property string mute : "false"
+        property bool mute : false
         property bool isOn : false;
         onIsOnChanged: {
             if(isOn)
@@ -22,13 +22,13 @@ Item{
         }
 
         Component.onCompleted: {
-            if(mute != "false"){
+            if(mute){
             slider.touchedC1 = "#b70b48";
             slider.touchedC2 = "#97093b";
 
-            slider.stdC1 = "#da6b92";
-            slider.stdC2 = "#da3e75";
-            textF.text = "M"
+            slider.stdC1 = "#888";
+            slider.stdC2 = "#666";
+            textF.text = "A"//acive
             dot.color = "#b70b48";
             }
 
@@ -116,9 +116,6 @@ Item{
                 },
                 State {
                     name: "off"; PropertyChanges { target: slider;  }
-                },
-                State{
-                    name: "moving"; PropertyChanges {  target: slider;  gradient: gradientTouched}
                 }
             ]
 
@@ -130,9 +127,21 @@ Item{
                 drag.maximumX: parent.parent.width - parent.width;
                 drag.minimumX: 0
                 onPressed: {
-                    if(parent.state != "on")
-                        pushLockBtn.stateOn();
-                    parent.state = "moving";
+                    if(mute){
+                        if(parent.x > (parent.parent.width - parent.width) / 2){
+                            pushLockBtn.stateOff();
+                            parent.state = "off";
+                        }
+                        else{
+                            pushLockBtn.stateOn();
+                            parent.state = "on";
+                        }
+                    }
+                    else{
+                        if(parent.state != "on")
+                            pushLockBtn.stateOn();
+                            parent.state = "on";
+                    }
                 }
                 onReleased: {
                     if(parent.x > (parent.parent.width - parent.width) / 2){

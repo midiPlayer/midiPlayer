@@ -23,6 +23,7 @@ public:
     void clientMessage(QJsonObject msg,int clientIdCounter);
     QString getRequestType();
     QJsonObject serialize();
+    QString getSceneTypeString();
 public slots:
     void changeForeground();
     void changeBackground();

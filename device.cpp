@@ -144,6 +144,11 @@ Device::DeviceType Device::getType()
     return type;
 }
 
+int Device::getFirstChannel()
+{
+    return dmxChannels.keys().at(0);
+}
+
 /*
 QDebug operator<<(QDebug dbg, Device &type)
 {

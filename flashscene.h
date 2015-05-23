@@ -22,6 +22,7 @@ public:
     QString getRequestType();
     QJsonObject serialize(QJsonObject ret = QJsonObject());
     void init(WebSocketServer *ws);
+    QString getSceneTypeString();
 public slots:
     void triggered();
 private:
@@ -31,6 +32,7 @@ private:
     bool flashEnabled;
     QTime time;
     int smoothDuration;//in ms
+    int flashDuration;//in ms
     int beatSpeed;
     float timePer;
 

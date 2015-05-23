@@ -24,6 +24,7 @@ public:
     virtual void start() {};
     virtual bool exitRequested() { return false;};
     virtual QJsonObject serialize(QJsonObject inherited = QJsonObject());
+    virtual QString getSceneTypeString() = 0;
 
 signals:
 

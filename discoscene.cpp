@@ -45,6 +45,11 @@ QList<Device> DiscoScene::getUsedLights()
     return useedLights;
 }
 
+QString DiscoScene::getSceneTypeString()
+{
+    return "discoScene";
+}
+
 void DiscoScene::clientRegistered(QJsonObject msg, int id)
 {
     QJsonObject response = getStatus(true,true,false);

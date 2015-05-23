@@ -8,23 +8,29 @@ void FlashScene::init(WebSocketServer *ws)
     connect(&trigger,SIGNAL(trigger()),this,SLOT(triggered()));
     foreach (Device dev, availableDevices) {
         foreach (int c, dev.getChannels()) {
-            dev.setChannel(c,254.0f);
+            dev.setChannel(c,1.0f);
         }
         flashState.append(dev);
     }
 }
 
+QString FlashScene::getSceneTypeString()
+{
+    return "flashScene";
+}
+
 FlashScene::FlashScene(QString name, WebSocketServer *ws,QList<Device> avDevP,JackProcessor *jackP) : Scene(name),
-    WebSocketServerProvider(ws),trigger(ws,jackP),availableDevices(avDevP),flashEnabled(false),flashState(),time(),smoothDuration(200),beatSpeed(INT_MAX),timePer(0.0f)
+    WebSocketServerProvider(ws),trigger(ws,jackP),availableDevices(avDevP),
+        flashEnabled(false),flashState(),time(),smoothDuration(0),flashDuration(40),beatSpeed(INT_MAX),timePer(0.0f)
 {
     init(ws);
 }
 
 FlashScene::FlashScene(QJsonObject serialized,WebSocketServer *ws,QList<Device> avDevP,JackProcessor *jackP) : Scene(serialized),
         WebSocketServerProvider(ws),trigger(ws,jackP),availableDevices(avDevP),
-        flashEnabled(false),flashState(),time(),smoothDuration(200),beatSpeed(INT_MAX),timePer(0.0f)
+        flashEnabled(false),flashState(),time(),smoothDuration(0),flashDuration(40),beatSpeed(INT_MAX),timePer(0.0f)
 {
-
+    init(ws);
 }
 
 
@@ -36,12 +42,13 @@ QList<Device> FlashScene::getLights()
             realSmoothDuration = beatSpeed;//optherwise the animation will get cut
 
 
-        if(time.elapsed() > smoothDuration){
+        if(time.elapsed() > flashDuration){
             flashEnabled = false;
         }
 
         // mit weiß beim beat:
         float timePer = 0;
+     /*
         if(time.elapsed() < smoothDuration){
             timePer = 1.0f - (float(time.elapsed()) / float(smoothDuration));
             if(timePer > 1)
@@ -52,6 +59,7 @@ QList<Device> FlashScene::getLights()
             if(timePer > 1)
                 timePer = 1-timePer;
         }
+        */
 
 /*
         //start width beat
@@ -68,9 +76,10 @@ QList<Device> FlashScene::getLights()
         if(timePer < 0)
             timePer = 0;
 
+
         QList<Device> ret;
         foreach (Device d, flashState) {
-            ret.append(d*timePer);
+            ret.append(d*flashEnabled);
         }
 
         return ret;
@@ -129,7 +138,7 @@ QJsonObject FlashScene::serialize(QJsonObject ret){
 
 void FlashScene::triggered()
 {
-    flashEnabled = 1;
+    flashEnabled = true;
     beatSpeed = time.elapsed();
     time.restart();
 }

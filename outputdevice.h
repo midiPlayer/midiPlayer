@@ -7,7 +7,7 @@ class OutputDevice
 {
 public:
     OutputDevice();
-    virtual void publish(QList<Device> devices) = 0;
+    virtual void publish(QList<Device> devices,QList<Device> changes) = 0;
 };
 
 #endif // OUTPUTDEVICE_H

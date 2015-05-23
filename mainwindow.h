@@ -10,6 +10,7 @@
 #include "device.h"
 #include "websocketserver.h"
 #include "beamerdeviceprovider.h"
+#include "oladeviceprovider.h"
 #include <QList>
 #include "outputdevice.h"
 #include <QTimer>
@@ -71,6 +72,7 @@ private:
     DiscoScene discoscene;
     BeamerShutterSceneManager beamerShutterSceneManager;
     beamerDeviceProvider myBeamerDeviceProvider;
+    OlaDeviceProvider olaDeviceProvider;
 
 };
 

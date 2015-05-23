@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets websockets
 TARGET = MidiPlayer
 TEMPLATE = app
 LIBS += -L C:\\JACK -ljack -laubio
+LIBS      += -L/usr/local/lib -lolaserver -lola -lolacommon -lprotobuf
 
 SOURCES += main.cpp\
         mainwindow.cpp\
@@ -35,7 +36,9 @@ SOURCES += main.cpp\
     circularbeamershutterscene.cpp \
     beamershutterscenemanager.cpp \
     serializable.cpp \
-    discosubscene.cpp
+    discosubscene.cpp \
+    scenebuilder.cpp \
+    oladeviceprovider.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
@@ -59,6 +62,8 @@ HEADERS  += mainwindow.h\
     circularbeamershutterscene.h \
     beamershutterscenemanager.h \
     serializable.h \
-    discosubscene.h
+    discosubscene.h \
+    scenebuilder.h \
+    oladeviceprovider.h
 
 FORMS    += mainwindow.ui

@@ -16,7 +16,7 @@ public:
     DiscoScene(QString name,WebSocketServer *ws);
     QList<Device> getLights();
     QList<Device> getUsedLights();
-
+    QString getSceneTypeString();
     void clientRegistered(QJsonObject msg, int id);
     void clientUnregistered(QJsonObject msg, int id);
     void clientMessage(QJsonObject msg, int id);

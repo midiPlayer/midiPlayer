@@ -54,9 +54,9 @@ Item {
                         if(modelData.sceneId === msg.muteChanged.sceneId){
                              console.log("new mute state:");
                             if(msg.muteChanged.state)
-                                mtBtn.setOn(false)
+                                activeBtn.setOn(false)
                             else
-                                mtBtn.setOff(false)
+                                activeBtn.setOff(false)
                         }
                     }
                 }
@@ -141,22 +141,19 @@ Item {
                     PushLockBtn{
                         id: soloBtn
                         onStateOn: {
-                            mtBtn.setOff(true);
                         }
-                        anchors.right: mtBtn.left;
+                        anchors.right: activeBtn.left;
                         anchors.margins: 10;
                     }
 
                     PushLockBtn{
-                        id:mtBtn
-                        mute: "true"
+                        id:activeBtn
+                        mute: true
                         onStateOn: {
-                            soloBtn.setOff(true);
-                            muteStateChanged(modelData.sceneId,true);
+                            muteStateChanged(modelData.sceneId,false);
                         }
                         onStateOff: {
-                            modelData.mute = false;
-                            muteStateChanged(modelData.sceneId,false);
+                            muteStateChanged(modelData.sceneId,true);
                         }
 
                         isOn: modelData.mute;

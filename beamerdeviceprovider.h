@@ -16,7 +16,7 @@ public:
     void clientUnregistered(QJsonObject msg,int clientIdCounter);
     void clientMessage(QJsonObject msg,int clientIdCounter);
     QString getRequestType();
-    void publish(QList<Device> targetDevices);
+    void publish(QList<Device> targetDevices, QList<Device> changes);
     void publishShutter(QList<Device> beamer);
     void publishShutter(BeamerDevice beamer, bool dismissDevID = false);
 private:

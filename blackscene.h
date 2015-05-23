@@ -11,6 +11,7 @@ public:
     QList<Device> getLights();
     QList<Device> getUsedLights();
     QJsonObject serialize(QJsonObject inherited = QJsonObject());
+    QString getSceneTypeString();
 private:
     QList<Device> devices;
 };

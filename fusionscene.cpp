@@ -56,3 +56,8 @@ QJsonObject FusionScene::serialize()
     return ret;
 }
 
+QString FusionScene::getSceneTypeString()
+{
+    return "fusionScene";
+}
+

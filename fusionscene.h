@@ -19,6 +19,7 @@ public:
     QList<Device> getUsedLights();
 
     QJsonObject serialize();
+    QString getSceneTypeString();
 
 private:
     QList<Device> devices;

@@ -38,20 +38,20 @@ QString beamerDeviceProvider::getRequestType()
     return "asBeamer";
 }
 
-void beamerDeviceProvider::publish(QList<Device> targetDevices)
+void beamerDeviceProvider::publish(QList<Device> targetDevices,QList<Device> changes)
 {
-    foreach(Device d, targetDevices){
+    foreach(Device d, changes){
             QList<int> devIDs = devices.keys(d);
             if(devIDs.length() == 0) continue;
             QJsonObject msg;
             QColor c;
-            c.setRed(d.getChannelValue(0));
-            c.setGreen(d.getChannelValue(1));
-            c.setBlue(d.getChannelValue(2));
+            c.setRed(d.getChannelValue(0)*255);
+            c.setGreen(d.getChannelValue(1)*255);
+            c.setBlue(d.getChannelValue(2)*255);
             msg.insert("color",c.name());
-            c.setRed(d.getChannelValue(3));
-            c.setGreen(d.getChannelValue(4));
-            c.setBlue(d.getChannelValue(5));
+            c.setRed(d.getChannelValue(3)*255);
+            c.setGreen(d.getChannelValue(4)*255);
+            c.setBlue(d.getChannelValue(5)*255);
             msg.insert("highlightedColor",c.name());
             foreach(int devId,devIDs)
                 sendMsg(msg,devId);

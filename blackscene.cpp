@@ -25,6 +25,11 @@ QJsonObject BlackScene::serialize(QJsonObject inherited)
     return Scene::serialize(inherited);
 }
 
+QString BlackScene::getSceneTypeString()
+{
+    return "blackscene";
+}
+
 QList<Device> BlackScene::getLights()
 {
     return devices;

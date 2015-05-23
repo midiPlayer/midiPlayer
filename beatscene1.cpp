@@ -19,13 +19,11 @@ BeatScene1::BeatScene1(QString name, QList<Device> avDev, JackProcessor* p,WebSo
 
 
     foregroundTrigger.triggerConfig.insert(Trigger::ONSET);
-    backgroundTrigger.triggerConfig.insert(Trigger::ONSET);
+    backgroundTrigger.triggerConfig.insert(Trigger::BEAT );
 
     usedDevices.clear();
     foreach (Device d, availableDevices) {
-        if(d.getType() == Device::Beamer){
-            usedDevices.append(d);
-        }
+        usedDevices.append(d);
     }
 
     connect(&foregroundTrigger,SIGNAL(trigger()),this,SLOT(changeForeground()));
@@ -37,13 +35,16 @@ QList<Device> BeatScene1::getLights()
 {
     QList<Device> ret;
     foreach (Device d, usedDevices) {
-        d.setChannel(0,c.red());
-        d.setChannel(1,c.green());
-        d.setChannel(2,c.blue());
+        int firstChannel = d.getFirstChannel();
+        d.setChannel(firstChannel + 0,c.red()/255.0f);
+        d.setChannel(firstChannel + 1,c.green()/255.0f);
+        d.setChannel(firstChannel + 2,c.blue()/255.0f);
 
-        d.setChannel(3,highlighted.red());
-        d.setChannel(4,highlighted.green());
-        d.setChannel(5,highlighted.blue());
+        if(d.getType() == Device::Beamer){
+            d.setChannel(firstChannel + 3,highlighted.red()/255.0f);
+            d.setChannel(firstChannel + 4,highlighted.green()/255.0f);
+            d.setChannel(firstChannel + 5,highlighted.blue()/255.0f);
+        }
         ret.append(d);
     }
     return ret;
@@ -100,6 +101,11 @@ QJsonObject BeatScene1::serialize()
     ret.insert("foregroundTrigger",foregroundTrigger.serialize());
     ret.insert("backgroundTrigger",backgroundTrigger.serialize());
     return ret;
+}
+
+QString BeatScene1::getSceneTypeString()
+{
+    return "beatScene1";
 }
 
 

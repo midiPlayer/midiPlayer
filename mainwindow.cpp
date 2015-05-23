@@ -20,7 +20,8 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),p(this),scenes(),overlays(),usedLamps(),status(),currentScene(0),currentOverlay(-1),offsetRequested(true),fading(0),nextOnMusic(false),overlayOnMusic(false),availableDevices(),
-    wss(this),outDevices(), timer(this),getChangesRunning(false), ui(new Ui::MainWindow),discoscene("disco",&wss),myBeamerDeviceProvider(&wss,&availableDevices),beamerShutterSceneManager(&myBeamerDeviceProvider,&wss,&p)
+    wss(this),outDevices(), timer(this),getChangesRunning(false), ui(new Ui::MainWindow),discoscene("disco",&wss),myBeamerDeviceProvider(&wss,&availableDevices),beamerShutterSceneManager(&myBeamerDeviceProvider,&wss,&p),
+    olaDeviceProvider()
 {
     //availableDevices = Device::loadDevicesFromXml("~/devices.xml");
 
@@ -29,11 +30,19 @@ MainWindow::MainWindow(QWidget *parent) :
     channels.insert(1,0.0f);
     channels.insert(2,0.0f);
     channels.insert(3,0.0f);
-    channels.insert(4,0.0f);
-    channels.insert(5,0.0f);
+    availableDevices.append(Device(channels,"rgbw1",Device::RGBW));
+    channels.clear();
+    channels.insert(10,0.0f);
+    channels.insert(11,0.0f);
+    channels.insert(12,0.0f);
+    channels.insert(13,0.0f);
+    channels.insert(14,0.0f);
+    channels.insert(15,0.0f);
     availableDevices.append(Device(channels,"beamer1",Device::Beamer));
 
+
     outDevices.append(&myBeamerDeviceProvider);
+    outDevices.append(&olaDeviceProvider);
     //connect(p,SIGNAL(midiRequest()),this,SLOT(getChanges()));
     ui->setupUi(this);
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(testMidi()));
@@ -184,7 +193,7 @@ void MainWindow::getChanges()
 
 
     foreach (OutputDevice *out,outDevices) {
-        out->publish(changes);
+        out->publish(newState,changes);
     }
 
     getChangesRunning = false;
