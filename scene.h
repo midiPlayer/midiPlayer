@@ -22,10 +22,10 @@ public:
     virtual void stop() {};
     virtual void start() {};
     virtual bool exitRequested() { return false;};
-    virtual QJsonObject serialize(QJsonObject inherited = QJsonObject());
     virtual QString getSceneTypeString() = 0;
 
     void setDesc(const QString &value);
+    virtual QJsonObject serialize() = 0;
 
 signals:
 
@@ -35,6 +35,8 @@ private:
     long startS, startMs;
     QString name;
     QString desc;
+protected:
+    QJsonObject serializeScene(QJsonObject inherited = QJsonObject());
 };
 
 #endif // SCENE_H

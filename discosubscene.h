@@ -6,11 +6,11 @@
 #include "scene.h"
 #include <QSharedPointer>
 #include "scenebuilder.h"
-class DiscoSubScene : public Serializable
+class DiscoSubScene
 {
 public:
     DiscoSubScene(int idP, QSharedPointer<Scene>sceneP, Device::FusionType fusionTypeP, bool muteP = false, float opacityP = 1.0);
-    DiscoSubScene(QJsonObject serialized, SceneBuilder *sceneBuilder);
+    DiscoSubScene(QJsonObject serialized, SceneBuilder *sceneBuilder, int idP);
     int id;
     QSharedPointer<Scene> scene;
     bool mute;

@@ -5,7 +5,7 @@
 class Serializable
 {
 public:
-    virtual QJsonObject serialize(QJsonObject inherited = QJsonObject());
+    virtual QJsonObject serialize() = 0;
 };
 
 #endif // SERIALIZABLE_H

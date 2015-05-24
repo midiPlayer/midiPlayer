@@ -2,6 +2,10 @@
 #include <QDebug>
 #include "websocketserver.h"
 
+#define KEY_SMOOTHNESS "smoothness"
+#define KEY_FOREGROUNDTRIGGER "foregroundTrigger"
+#define KEY_BACKGROUNDTRIGGER "backgroundTrigger"
+
 #define l1 12
 #define l2 13
 #define l3 14
@@ -9,7 +13,7 @@
 #define MAX_SMOOTHNESS_DUR 2000
 
 
-BeatScene1::BeatScene1(QList<Device>avDev, JackProcessor* p, WebSocketServer* ws,QString name,QJsonObject serialized) :
+BeatScene1::BeatScene1(QList<Device> avDev, JackProcessor* p, WebSocketServer* ws,QString name,QJsonObject serialized) :
     Scene(name,serialized),WebSocketServerProvider(ws),
     c(0,0,0),highlighted(0,0,0) , availableDevices(avDev),options(),usedDevices(),foregroundTrigger(ws,p),
     backgroundTrigger(ws,p),smoothDuration(200),smoothTimer(),next("next"),prev("prev")
@@ -20,6 +24,15 @@ BeatScene1::BeatScene1(QList<Device>avDev, JackProcessor* p, WebSocketServer* ws
     options.append(QColor(255,255,0));
     options.append(QColor(255,0,255));
     options.append(QColor(0,255,255));
+
+    if(serialized.length() != 0){
+        if(serialized.contains(KEY_SMOOTHNESS)){
+            smoothDuration = serialized.value(KEY_SMOOTHNESS).toInt();
+        }
+        /*if(serialized.contains(KEY_FOREGROUNDTRIGGER)){
+            foregroundTrigger()
+        }*/
+    }
 
     foregroundTrigger.triggerConfig.insert(Trigger::ONSET);
     backgroundTrigger.triggerConfig.insert(Trigger::BEAT );
@@ -104,9 +117,10 @@ QString BeatScene1::getRequestType()
 QJsonObject BeatScene1::serialize()
 {
     QJsonObject ret;
-    ret.insert("foregroundTrigger",foregroundTrigger.serialize());
-    ret.insert("backgroundTrigger",backgroundTrigger.serialize());
-    return ret;
+    ret.insert(KEY_FOREGROUNDTRIGGER,foregroundTrigger.serialize());
+    ret.insert(KEY_BACKGROUNDTRIGGER,backgroundTrigger.serialize());
+    ret.insert(KEY_SMOOTHNESS,smoothDuration);
+    return serializeScene(ret);
 }
 
 QString BeatScene1::getSceneTypeString()

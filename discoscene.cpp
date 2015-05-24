@@ -14,7 +14,7 @@ DiscoScene::DiscoScene(WebSocketServer *ws, SceneBuilder *sceneBuilderP, QString
     if(serialized.length() != 0 && serialized.contains(STATUS_KEY_EFFECTS) && serialized.value(STATUS_KEY_EFFECTS).isArray()){
         foreach (QJsonValue effectVal, serialized.value(STATUS_KEY_EFFECTS).toArray()) {
             QJsonObject effectJson = effectVal.toObject();
-            addSubScene(QSharedPointer<DiscoSubScene>(new DiscoSubScene(effectJson,sceneBuilder)));
+            addSubScene(QSharedPointer<DiscoSubScene>(new DiscoSubScene(effectJson,sceneBuilder,sceneIdCounter)));
         }
     }
 }
@@ -125,8 +125,8 @@ void DiscoScene::start()
 
 QJsonObject DiscoScene::serialize()
 {
-    QJsonObject ret = getStatus(true,true,true);
-    return Scene::serialize(ret);
+    QJsonObject ret = getStatus(true,false,true);
+    return serializeScene(ret);
 }
 
 
@@ -153,7 +153,8 @@ QJsonObject DiscoScene::getStatus(bool showEffects,bool showOrder,bool serialize
     QJsonObject status;
     if(showEffects){
         QJsonArray effectsObj;
-        foreach(QSharedPointer<DiscoSubScene> effect,effects){
+        foreach(int id,order){
+            QSharedPointer<DiscoSubScene> effect = effects.value(id);
             if(serialize)
                 effectsObj.append(effect.data()->serialize(sceneBuilder));
             else

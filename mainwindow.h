@@ -19,6 +19,7 @@
 #include <QSharedPointer>
 #include "beamershutterscenemanager.h"
 #include "scenebuilder.h"
+#include <QSettings>
 namespace Ui {
 class MainWindow;
 }
@@ -74,6 +75,8 @@ private:
     beamerDeviceProvider myBeamerDeviceProvider;
     OlaDeviceProvider olaDeviceProvider;
     SceneBuilder sceneBuilder;
+    QSettings settings;
+    QJsonObject getDiscoScenSettings();
 
 };
 

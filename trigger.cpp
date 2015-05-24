@@ -51,7 +51,7 @@ QJsonObject Trigger::serialize()
 {
     QJsonObject ret;
     ret.insert(KEY_SOURCE,getTriggerSourceJson());
-    return Serializable::serialize(ret);
+    return ret;
 }
 
 void Trigger::beat()

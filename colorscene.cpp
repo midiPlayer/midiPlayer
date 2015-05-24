@@ -20,10 +20,10 @@ QList<Device> ColorScene::getUsedLights()
     return devices;
 }
 
-QJsonObject ColorScene::serialize(QJsonObject inherited)
+QJsonObject ColorScene::serialize()
 {
     //nothing to erialize as this is an really trivial scenen
-    return Scene::serialize(inherited);
+    return serializeScene(QJsonObject());
 }
 
 QString ColorScene::getSceneTypeString()

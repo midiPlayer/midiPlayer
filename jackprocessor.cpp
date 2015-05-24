@@ -33,7 +33,7 @@ JackProcessor::~JackProcessor() {
   del_aubio_onset(o);
   del_aubio_tempo(tempo);
 
-  delete[] ibuf;
+  //delete[] ibuf;
 
 }
 

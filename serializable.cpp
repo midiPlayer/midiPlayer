@@ -1,7 +1,2 @@
-#include "serializable.h"m
+#include "serializable.h"
 
-
-QJsonObject Serializable::serialize(QJsonObject inherited)
-{
-    return inherited;
-}

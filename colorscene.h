@@ -9,7 +9,7 @@ public:
     ColorScene(QList<Device> avDev,QString name,QJsonObject serialized = QJsonObject());
     QList<Device> getLights();
     QList<Device> getUsedLights();
-    QJsonObject serialize(QJsonObject inherited = QJsonObject());
+    QJsonObject serialize();
     QString getSceneTypeString();
     static QString getSceneTypeStringStaticaly();
 private:

@@ -19,7 +19,7 @@ public:
     void clientUnregistered(QJsonObject msg,int clientIdCounter);
     void clientMessage(QJsonObject msg,int clientIdCounter);
     QString getRequestType();
-    QJsonObject serialize(QJsonObject ret = QJsonObject());
+    QJsonObject serialize();
     QString getSceneTypeString();
     static QString getSceneTypeStringStaticaly();
 public slots:

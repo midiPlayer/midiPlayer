@@ -60,11 +60,11 @@ int Scene::getDeltaTime()
     return deltaMs + deltaS * 1000;;
 }
 
-QJsonObject Scene::serialize(QJsonObject inherited)
+QJsonObject Scene::serializeScene(QJsonObject inherited)
 {
     inherited.insert(KEY_NAME,name);
     inherited.insert(KEY_DESC,desc);
-    return  Serializable::serialize(inherited);
+    return  inherited;
 }
 void Scene::setDesc(const QString &value)
 {

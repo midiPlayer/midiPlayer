@@ -128,10 +128,11 @@ QString FlashScene::getRequestType()
     return "falshScene";
 }
 
-QJsonObject FlashScene::serialize(QJsonObject ret){
+QJsonObject FlashScene::serialize(){
+    QJsonObject ret;
     ret.insert("trigger",trigger.serialize());
     ret.insert("smoothDuration",smoothDuration);
-    return Scene::serialize(ret);
+    return serializeScene(ret);
 }
 
 void FlashScene::triggered()

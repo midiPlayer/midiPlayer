@@ -12,7 +12,7 @@ DiscoSubScene::DiscoSubScene(int idP, QSharedPointer<Scene> sceneP, Device::Fusi
 
 }
 
-DiscoSubScene::DiscoSubScene(QJsonObject serialized, SceneBuilder *sceneBuilder): mute(true)
+DiscoSubScene::DiscoSubScene(QJsonObject serialized, SceneBuilder *sceneBuilder, int idP): mute(true),id(idP)
 {
     if(serialized.contains(KEY_MUTE)){
         mute = serialized.value(KEY_MUTE).toBool(true);
@@ -79,7 +79,7 @@ QJsonObject DiscoSubScene::serialize(SceneBuilder *builder)
 {
  QJsonObject effectObj = getBasicJson();
  effectObj.insert(KEY_SCENE,builder->serializeScene(scene.data(),scene.data()->serialize()));
- return scene.data(),Serializable::serialize(effectObj);
+ return effectObj;
 }
 
 void DiscoSubScene::setFusinType(QString fusionTypeStr)

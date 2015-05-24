@@ -71,7 +71,7 @@ QList<Device> FusionScene::getUsedLights()
 QJsonObject FusionScene::serialize()
 {
     QJsonObject ret;//it is useless to serialize a fusion scene!
-    return ret;
+    return serializeScene(ret);
 }
 
 QString FusionScene::getSceneTypeString()

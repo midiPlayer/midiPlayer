@@ -40,7 +40,7 @@ private:
     int sceneIdCounter;
     FusionScene fusion;
     SceneBuilder* sceneBuilder;
-    QJsonObject getStatus(bool showEffects, bool showOrder,bool serialize);
+    QJsonObject getStatus(bool showEffects, bool showOrder,bool serializeScene);
 };
 
 #endif // DISCOSCENE_H
