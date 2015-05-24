@@ -9,8 +9,8 @@
 #define MAX_SMOOTHNESS_DUR 2000
 
 
-BeatScene1::BeatScene1(QString name, QList<Device> avDev, JackProcessor *p, WebSocketServer *ws) :
-    Scene(name),WebSocketServerProvider(ws),
+BeatScene1::BeatScene1(QList<Device>avDev, JackProcessor* p, WebSocketServer* ws,QString name,QJsonObject serialized) :
+    Scene(name,serialized),WebSocketServerProvider(ws),
     c(0,0,0),highlighted(0,0,0) , availableDevices(avDev),options(),usedDevices(),foregroundTrigger(ws,p),
     backgroundTrigger(ws,p),smoothDuration(200),smoothTimer(),next("next"),prev("prev")
 {
@@ -110,6 +110,11 @@ QJsonObject BeatScene1::serialize()
 }
 
 QString BeatScene1::getSceneTypeString()
+{
+    return getSceneTypeStringStaticaly();
+}
+
+QString BeatScene1::getSceneTypeStringStaticaly()
 {
     return "beatScene1";
 }

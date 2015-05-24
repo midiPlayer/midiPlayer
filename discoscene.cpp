@@ -3,13 +3,21 @@
 #include "websocketserver.h"
 #include <QJsonArray>
 
-DiscoScene::DiscoScene(QString name, WebSocketServer *ws) : Scene(name),WebSocketServerProvider(ws), fusion("fusion"),solo(false),sceneIdCounter(0),
-    order()
+
+#define STATUS_KEY_EFFECTS "effects"
+
+DiscoScene::DiscoScene(WebSocketServer *ws, SceneBuilder *sceneBuilderP, QString name, QJsonObject serialized) : Scene(name,serialized),
+    WebSocketServerProvider(ws), fusion("fusion"),solo(false),sceneIdCounter(0),order(),sceneBuilder(sceneBuilderP)
 {
     ws->registerProvider(this);
+
+    if(serialized.length() != 0 && serialized.contains(STATUS_KEY_EFFECTS) && serialized.value(STATUS_KEY_EFFECTS).isArray()){
+        foreach (QJsonValue effectVal, serialized.value(STATUS_KEY_EFFECTS).toArray()) {
+            QJsonObject effectJson = effectVal.toObject();
+            addSubScene(QSharedPointer<DiscoSubScene>(new DiscoSubScene(effectJson,sceneBuilder)));
+        }
+    }
 }
-
-
 
 QList<Device> DiscoScene::getLights()
 {
@@ -47,6 +55,11 @@ QList<Device> DiscoScene::getUsedLights()
 
 QString DiscoScene::getSceneTypeString()
 {
+    return getSceneTypeStringStaticaly();
+}
+
+QString DiscoScene::getSceneTypeStringStaticaly()
+{
     return "discoScene";
 }
 
@@ -74,22 +87,8 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
         QJsonObject fusionTypeChange = msg.value("fusionTypeChanged").toObject();
         int sceneId = fusionTypeChange.value("sceneId").toInt(-1);
         QString fusionTypeStr = fusionTypeChange.value("fusionType").toString("");
-        Device::FusionType fusionType;
-
-        if(fusionTypeStr == "max")
-            fusionType = Device::MAX;
-        else if(fusionTypeStr == "min")
-            fusionType = Device::MIN;
-        else if(fusionTypeStr == "maxg")
-            fusionType = Device::MAXG;
-        else if(fusionTypeStr == "ming")
-            fusionType = Device::MING;
-        else if(fusionTypeStr == "av")
-            fusionType = Device::AV;
-        else if(fusionTypeStr == "override")
-            fusionType = Device::OVERRIDE;
         DiscoSubScene *sub = effects.value(sceneId).data();
-        sub->fusionType = fusionType;
+        sub->setFusinType(fusionTypeStr);
     }
     if(msg.contains("orderChanged")){
         QJsonArray readOrder = msg.value("orderChanged").toArray();
@@ -133,7 +132,11 @@ QJsonObject DiscoScene::serialize()
 
 void DiscoScene::addEffect(QSharedPointer<Scene> scene)
 {
-    effects.insert(sceneIdCounter,QSharedPointer<DiscoSubScene>(new DiscoSubScene(sceneIdCounter,scene,Device::MAX,false,1.0)));
+    addSubScene(QSharedPointer<DiscoSubScene>(new DiscoSubScene(sceneIdCounter,scene,Device::MAX,false,1.0)));
+}
+
+void DiscoScene::addSubScene(QSharedPointer<DiscoSubScene> subScene){
+    effects.insert(sceneIdCounter,subScene);
     order.append(sceneIdCounter);
     sceneIdCounter++;
 }
@@ -152,11 +155,11 @@ QJsonObject DiscoScene::getStatus(bool showEffects,bool showOrder,bool serialize
         QJsonArray effectsObj;
         foreach(QSharedPointer<DiscoSubScene> effect,effects){
             if(serialize)
-                effectsObj.append(effect.data()->serialize());
+                effectsObj.append(effect.data()->serialize(sceneBuilder));
             else
                 effectsObj.append(effect.data()->getJsonForClient());
         }
-        status.insert("effects",effectsObj);
+        status.insert(STATUS_KEY_EFFECTS,effectsObj);
     }
     if(showOrder && order.size() > 0){
         QJsonArray orderObj;

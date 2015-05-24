@@ -6,13 +6,12 @@
 class ColorScene : public Scene
 {
 public:
-    ColorScene(QString name, QList<Device> avDev);
-    ColorScene(QJsonObject serialized, QList<Device> avDev);
+    ColorScene(QList<Device> avDev,QString name,QJsonObject serialized = QJsonObject());
     QList<Device> getLights();
     QList<Device> getUsedLights();
     QJsonObject serialize(QJsonObject inherited = QJsonObject());
     QString getSceneTypeString();
-    void init();
+    static QString getSceneTypeStringStaticaly();
 private:
     QList<Device> devices;
 };

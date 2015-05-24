@@ -14,7 +14,7 @@ class BeatScene1 : public Scene, public WebSocketServerProvider
 {
     Q_OBJECT
 public:
-    BeatScene1(QString name, QList<Device>avDev, JackProcessor* p, WebSocketServer* ws);
+    BeatScene1(QList<Device>avDev, JackProcessor* p, WebSocketServer* ws,QString name,QJsonObject serialized = QJsonObject());
     QList<Device>getLights();
     QList<Device> getUsedLights();
     void stop();
@@ -25,6 +25,7 @@ public:
     QString getRequestType();
     QJsonObject serialize();
     QString getSceneTypeString();
+    static QString getSceneTypeStringStaticaly();
 public slots:
     void changeForeground();
     void changeBackground();

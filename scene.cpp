@@ -8,16 +8,13 @@
 #define KEY_DESC "sceneDesc"
 #define KEY_SCENE_TYPE "sceneType"
 
-Scene::Scene(QString nameP, QString descP, QObject *parent) : name(nameP),desc(descP),
-    QObject(parent)
+Scene::Scene(QString nameP, QJsonObject serialized) : name(nameP),desc(""),
+    QObject(0)
 {
-
-}
-
-Scene::Scene(QJsonObject serialized)
-{
-    name = serialized.value(KEY_NAME).toString();
-    desc = serialized.value(KEY_DESC).toString();
+    if(serialized.length() != 0){
+        name = serialized.value(KEY_NAME).toString();
+        desc = serialized.value(KEY_DESC).toString();
+    }
 }
 
 int Scene::getFadeOutDuration()
@@ -65,11 +62,15 @@ int Scene::getDeltaTime()
 
 QJsonObject Scene::serialize(QJsonObject inherited)
 {
-    inherited.insert(KEY_SCENE_TYPE,getSceneTypeString());
     inherited.insert(KEY_NAME,name);
     inherited.insert(KEY_DESC,desc);
-    return Serializable::serialize(inherited);
+    return  Serializable::serialize(inherited);
 }
+void Scene::setDesc(const QString &value)
+{
+    desc = value;
+}
+
 
 /*
  * Problem: I have no Idea how to find an elegant way to dynamicly generate the scenes by a name string as

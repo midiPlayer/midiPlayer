@@ -19,9 +19,12 @@
 
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),jackProcessor(this),scenes(),overlays(),usedLamps(),status(),currentScene(0),currentOverlay(-1),offsetRequested(true),fading(0),nextOnMusic(false),overlayOnMusic(false),availableDevices(),
-    wss(this),outDevices(), timer(this),getChangesRunning(false), ui(new Ui::MainWindow),discoscene(new DiscoScene("disco",&wss)),myBeamerDeviceProvider(&wss,&availableDevices),beamerShutterSceneManager(&myBeamerDeviceProvider,&wss,&jackProcessor),
-    olaDeviceProvider(),remoteBeat(&wss,&jackProcessor)
+    QMainWindow(parent),jackProcessor(this),scenes(),overlays(),usedLamps(),status(),currentScene(0),currentOverlay(-1),offsetRequested(true),
+    fading(0),nextOnMusic(false),overlayOnMusic(false),availableDevices(), wss(this),outDevices(),
+    timer(this),getChangesRunning(false), ui(new Ui::MainWindow),sceneBuilder(&wss,&availableDevices,&jackProcessor),
+    discoscene(new DiscoScene(&wss,&sceneBuilder,"disco")),myBeamerDeviceProvider(&wss,&availableDevices),
+    beamerShutterSceneManager(&myBeamerDeviceProvider,&wss,&jackProcessor),  olaDeviceProvider(),
+    remoteBeat(&wss,&jackProcessor)
 {
     //availableDevices = Device::loadDevicesFromXml("~/devices.xml");
 
@@ -54,17 +57,26 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->jumpBtn,SIGNAL(clicked()),this,SLOT(jumpClicked()));
     connect(ui->playOverlay,SIGNAL(clicked()),this,SLOT(playOverlayBtn()));
 
-    discoscene.data()->addEffect(QSharedPointer<BeatScene1>(new BeatScene1("beat",availableDevices,&jackProcessor,&wss)));
-    discoscene.data()->addEffect(QSharedPointer<ColorScene>(new ColorScene("black",availableDevices)));
+    discoscene.data()->addEffect(QSharedPointer<BeatScene1>(new BeatScene1(availableDevices,&jackProcessor,&wss,"beat")));
+    discoscene.data()->addEffect(QSharedPointer<ColorScene>(new ColorScene(availableDevices,"black")));
   //  discoscene.addEffect(new FlashScene("flash",&wss,availableDevices,&p));
     //scenes.append(new FlashScene("flash",&wss,availableDevices,p));
     scenes.append(discoscene);
-    scenes.append(QSharedPointer<ColorScene>(new ColorScene("black",availableDevices)));
+    scenes.append(QSharedPointer<ColorScene>(new ColorScene(availableDevices,"black")));
     //scenes.append(new BeatScene1("beat",availableDevices,p));
    // scenes.append(new BeatScene1("beat",availableDevices,p));
 //    scenes.append(new KeyFrameScene("/media/daten/Jakob/Schule/FDG/12/theater/scene1.playable","overtuere",true,"Das ist die Beschreibung zur Overtuere un es ist schoen, dass du dir so viel zeit nimmst das zu Lesen!"));
     scenes.at(currentScene)->resetTime();
     scenes.at(currentScene)->start();
+
+    QJsonDocument d;
+    QJsonObject obj = discoscene.data()->serialize();
+    d.setObject(obj);
+    qDebug() << d.toJson();
+    DiscoScene disco2(&wss,&sceneBuilder,"disco2",obj);
+    QJsonDocument d2;
+    d2.setObject(disco2.serialize());
+    qDebug() << d2.toJson();
 
 
    // overlays.append(new OverlayScene("magic1",new KeyFrameScene("/media/daten/Jakob/Schule/FDG/12/theater/scene1.playable","overtuere",true,"Das ist die Beschreibung zur Overtuere un es ist schoen, dass du dir so viel zeit nimmst das zu Lesen!"),false));

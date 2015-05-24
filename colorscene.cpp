@@ -1,7 +1,9 @@
 #include "colorscene.h"
 #include <QListIterator>
 
-void ColorScene::init()
+
+
+ColorScene::ColorScene(QList<Device> avDev, QString name, QJsonObject serialized) : Scene(name,serialized),devices(avDev)
 {
     QList<Device>::iterator deviceIter = devices.begin();
     while(deviceIter != devices.end()){
@@ -11,16 +13,6 @@ void ColorScene::init()
         }
         deviceIter++;
     }
-}
-
-ColorScene::ColorScene(QString name,QList<Device> avDev) : Scene(name),devices(avDev)
-{
-    init();
-}
-
-ColorScene::ColorScene(QJsonObject serialized,QList<Device> avDev) : Scene(serialized),devices(avDev)
-{
-    init();
 }
 
 QList<Device> ColorScene::getUsedLights()
@@ -35,6 +27,11 @@ QJsonObject ColorScene::serialize(QJsonObject inherited)
 }
 
 QString ColorScene::getSceneTypeString()
+{
+    return getSceneTypeStringStaticaly();
+}
+
+QString ColorScene::getSceneTypeStringStaticaly()
 {
     return "blackscene";
 }

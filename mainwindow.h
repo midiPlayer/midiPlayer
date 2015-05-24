@@ -18,7 +18,7 @@
 #include "discoscene.h"
 #include <QSharedPointer>
 #include "beamershutterscenemanager.h"
-
+#include "scenebuilder.h"
 namespace Ui {
 class MainWindow;
 }
@@ -73,6 +73,7 @@ private:
     BeamerShutterSceneManager beamerShutterSceneManager;
     beamerDeviceProvider myBeamerDeviceProvider;
     OlaDeviceProvider olaDeviceProvider;
+    SceneBuilder sceneBuilder;
 
 };
 

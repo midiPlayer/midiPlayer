@@ -9,7 +9,7 @@
 class FusionScene : public Scene
 {
 public:
-    FusionScene(QString name);
+    FusionScene(QString name,QJsonObject serialized = QJsonObject());
     void fusion(QSharedPointer<Scene> with, Device::FusionType fusionType, float opacity);
     void fusion(Scene *with, Device::FusionType fusionType, float opacity);
     void fusion(QList<Device> with, Device::FusionType fusionType, float opacity);

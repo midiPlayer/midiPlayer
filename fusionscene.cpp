@@ -2,7 +2,7 @@
 #include <QDebug>
 
 
-FusionScene::FusionScene(QString name) : Scene(name)
+FusionScene::FusionScene(QString name,QJsonObject serialized) : Scene(name,serialized)
 {
 
 }
