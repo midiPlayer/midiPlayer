@@ -8,12 +8,13 @@
 #include <QColor>
 #include "websocketserverprovider.h"
 #include "trigger.h"
+#include "fusionscene.h"
 
 class BeatScene1 : public Scene, public WebSocketServerProvider
 {
     Q_OBJECT
 public:
-    BeatScene1(QString name, QList<Device>avDev, JackProcessor* p, WebSocketServer *ws);
+    BeatScene1(QString name, QList<Device>avDev, JackProcessor* p, WebSocketServer* ws);
     QList<Device>getLights();
     QList<Device> getUsedLights();
     void stop();
@@ -35,6 +36,12 @@ private:
     QList<Device> usedDevices;
     Trigger foregroundTrigger;
     Trigger backgroundTrigger;
+    int smoothDuration;
+    QTime smoothTimer;
+    FusionScene prev;
+    FusionScene next;
+    void generateNextScene();
+
 };
 
 #endif // BEATSCENE1_H

@@ -2,7 +2,7 @@
 #include "websocketserver.h"
 
 #define KEY_SOURCE "source"
-Trigger::Trigger(WebSocketServer *ws, JackProcessor *jackP, QJsonObject serialized) : QObject(0),
+Trigger::Trigger(WebSocketServer* ws, JackProcessor* jackP, QJsonObject serialized) : QObject(0),
     WebSocketServerProvider(ws),jack(jackP)
 {
     ws->registerProvider(this);

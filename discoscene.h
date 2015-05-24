@@ -9,11 +9,12 @@
 #include "fusionscene.h"
 #include "websocketserverprovider.h"
 #include "discosubscene.h"
+#include <QSharedPointer>
 
 class DiscoScene : public Scene, public WebSocketServerProvider
 {
 public:
-    DiscoScene(QString name,WebSocketServer *ws);
+    DiscoScene(QString name,WebSocketServer* ws);
     QList<Device> getLights();
     QList<Device> getUsedLights();
     QString getSceneTypeString();
@@ -25,13 +26,13 @@ public:
     void start();
     QJsonObject serialize();
 public:
-    void addEffect(Scene *scene);
+    void addEffect(QSharedPointer<Scene> scene);
 private:
     bool solo;
     Scene* soloScene;
 
 
-    QMap<int,DiscoSubScene*> effects;
+    QMap<int,QSharedPointer<DiscoSubScene> > effects;
     QList<int> order;
     int sceneIdCounter;
     FusionScene fusion;

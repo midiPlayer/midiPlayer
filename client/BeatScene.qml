@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.1
+import QtQuick.Controls 1.2
 import WebSocketConnector 1.1
 
 Item{
@@ -31,7 +32,27 @@ Item{
                 TriggerSourceBtn{
                     id:backroundBtn
                 }
+            }
+            RowLayout{
+                width: parent.width
+                Text{
+                    text:qsTr("Smoothness")
+                    color:"#fff";
                 }
+                Slider{
+                    id: smoothnessSlider
+                    minimumValue: 0
+                    maximumValue: 1.0
+                    onValueChanged: {
+                        if(pressed){
+                            var mesage = new Object();
+                            mesage.smoothnessChanged = value;
+                            wsc.send = JSON.stringify(mesage);
+                        }
+                    }
+                }
+
+            }
 
     }
 
@@ -39,12 +60,14 @@ Item{
     WebSocketConnector{
         id: wsc
         onMessage: {
-            if(msg.config.foregroundTrigger !== undefined){
+            if(msg.config.foregroundTrigger !== undefined)
                 foregroundBtn.requestId = msg.config.foregroundTrigger;
-            }
             if(msg.config.backgroundTrigger !== undefined)
                 backroundBtn.requestId = msg.config.backgroundTrigger;
-
+            if(msg.config.smoothnessChanged !== undefined)
+                smoothnessSlider.value  = msg.config.smoothnessChanged;
+            if(msg.smoothnessChanged !== undefined)
+                smoothnessSlider.value  = msg.smoothnessChanged;
         }
     }
 

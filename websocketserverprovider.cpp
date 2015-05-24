@@ -1,6 +1,7 @@
 #include "websocketserverprovider.h"
 #include "websocketserver.h"
-WebSocketServerProvider::WebSocketServerProvider(WebSocketServer *s) : server(s), connectedSockets(),clientIdCounter(0),providerId(-1)
+WebSocketServerProvider::WebSocketServerProvider(WebSocketServer *s) :
+    server(s), connectedSockets(),clientIdCounter(0),providerId(-1)
 {
 
 }

@@ -23,7 +23,6 @@ SOURCES += main.cpp\
     discoscene.cpp \
     device.cpp \
     fusionscene.cpp \
-    blackscene.cpp \
     websocketserver.cpp \
     websocketserverprovider.cpp \
     beamershutterscene.cpp \
@@ -38,7 +37,8 @@ SOURCES += main.cpp\
     serializable.cpp \
     discosubscene.cpp \
     scenebuilder.cpp \
-    oladeviceprovider.cpp
+    oladeviceprovider.cpp \
+    colorscene.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
@@ -49,7 +49,6 @@ HEADERS  += mainwindow.h\
     discoscene.h \
     device.h \
     fusionscene.h \
-    blackscene.h \
     websocketserver.h \
     websocketserverprovider.h \
     beamershutterscene.h \
@@ -64,6 +63,7 @@ HEADERS  += mainwindow.h\
     serializable.h \
     discosubscene.h \
     scenebuilder.h \
-    oladeviceprovider.h
+    oladeviceprovider.h \
+    colorscene.h
 
 FORMS    += mainwindow.ui

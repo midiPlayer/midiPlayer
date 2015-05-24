@@ -16,6 +16,8 @@
 #include <string.h>             /* for strcmp */
 #include "device.h"
 
+//#define DISSABLE_ANALYSE
+
 JackProcessor::JackProcessor(QObject *parent) : QObject(parent), musicNotificationRequested(false),
     beatRequested(true),pos(0),buffer_size(512),hop_size(256) {
 }
@@ -25,6 +27,14 @@ JackProcessor::~JackProcessor() {
   //jack_port_unregister (jackHandle, jackMidi);
   jack_port_unregister (jackHandle, jackMidiOut);
   jack_client_close (jackHandle);
+  del_fvec(smpl);
+  del_fvec(onset);
+  del_fvec(tempo_out);
+  del_aubio_onset(o);
+  del_aubio_tempo(tempo);
+
+  delete[] ibuf;
+
 }
 
 int JackProcessor::initJack(MainWindow* m) {
@@ -87,6 +97,7 @@ int JackProcessor::jack_callback(jack_nframes_t nframes)
     emit midiEvent(type, ch, index, val);
   }*/
 
+#ifndef DISSABLE_ANALYSE
     ibuf = (jack_sample_t *)jack_port_get_buffer (jackAudioIn, nframes);
 
     for (int j=0;j<(unsigned)nframes;j++) {
@@ -113,6 +124,7 @@ int JackProcessor::jack_callback(jack_nframes_t nframes)
          }
          pos++;
     }
+
 /*
   //playback
     void* buffer = jack_port_get_buffer(jackMidiOut, nframes);
@@ -164,7 +176,7 @@ int JackProcessor::jack_callback(jack_nframes_t nframes)
                emit musicNotification();
            }
 
-
+#endif
 
 /*
 

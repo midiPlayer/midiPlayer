@@ -16,7 +16,7 @@
 #include <QTimer>
 #include "remotebeat.h"
 #include "discoscene.h"
-
+#include <QSharedPointer>
 #include "beamershutterscenemanager.h"
 
 namespace Ui {
@@ -47,8 +47,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    JackProcessor p;
-    QList<Scene*> scenes;
+    JackProcessor jackProcessor;
+    QList<QSharedPointer<Scene> > scenes;
     QList<OverlayScene*> overlays;
     QList<Device> usedLamps;
     QList<Device> status;
@@ -68,8 +68,8 @@ private:
     QList<OutputDevice*> outDevices;
     bool getChangesRunning;
     QTimer timer;
-    RemoteBeat *remoteBeat;
-    DiscoScene discoscene;
+    RemoteBeat remoteBeat;
+    QSharedPointer<DiscoScene> discoscene;
     BeamerShutterSceneManager beamerShutterSceneManager;
     beamerDeviceProvider myBeamerDeviceProvider;
     OlaDeviceProvider olaDeviceProvider;

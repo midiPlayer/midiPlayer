@@ -10,8 +10,8 @@ class FlashScene : public Scene, public WebSocketServerProvider
 {
     Q_OBJECT
 public:
-    FlashScene(QString name, WebSocketServer *ws, QList<Device> avDevP, JackProcessor *jackP);
-    FlashScene(QJsonObject serialized, WebSocketServer *ws, QList<Device> avDevP, JackProcessor *jackP);
+    FlashScene(QString name, WebSocketServer* ws, QList<Device> avDevP, JackProcessor *jackP);
+    FlashScene(QJsonObject serialized, WebSocketServer* ws, QList<Device> avDevP, JackProcessor *jackP);
     QList<Device>getLights();
     QList<Device> getUsedLights();
     void start();
@@ -21,8 +21,8 @@ public:
     void clientMessage(QJsonObject msg,int clientIdCounter);
     QString getRequestType();
     QJsonObject serialize(QJsonObject ret = QJsonObject());
-    void init(WebSocketServer *ws);
     QString getSceneTypeString();
+    static QString getSceneTypeStringStaticaly();
 public slots:
     void triggered();
 private:
@@ -35,8 +35,7 @@ private:
     int flashDuration;//in ms
     int beatSpeed;
     float timePer;
-
-
+    void init(WebSocketServer* ws);
 };
 
 #endif // FLASHSCENE_H

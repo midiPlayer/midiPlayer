@@ -4,12 +4,13 @@
 #include <QJsonObject>
 #include <serializable.h>
 #include "scene.h"
+#include <QSharedPointer>
 class DiscoSubScene : public Serializable
 {
 public:
-    DiscoSubScene(int idP, Scene* sceneP, Device::FusionType fusionTypeP, bool muteP = false, float opacityP = 1.0);
+    DiscoSubScene(int idP, QSharedPointer<Scene>sceneP, Device::FusionType fusionTypeP, bool muteP = false, float opacityP = 1.0);
     int id;
-    Scene* scene;
+    QSharedPointer<Scene> scene;
     bool mute;
     float opacity;
     Device::FusionType fusionType;

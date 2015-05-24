@@ -8,7 +8,7 @@
 class BeamerShutterSceneManager : WebSocketServerProvider
 {
 public:
-    BeamerShutterSceneManager(beamerDeviceProvider *provider, WebSocketServer *ws,JackProcessor *p);
+    BeamerShutterSceneManager(beamerDeviceProvider *provider, WebSocketServer* ws,JackProcessor* p);
     void addScene(BeamerShutterScene *scene, bool activate  =false);
     void clientRegistered(QJsonObject msg,int clientId);
     void clientUnregistered(QJsonObject msg, int clientId);

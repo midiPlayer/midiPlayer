@@ -1,14 +1,19 @@
 #include "scenebuilder.h"
 #include "flashscene.h"
-SceneBuilder::SceneBuilder()
+SceneBuilder::SceneBuilder(WebSocketServer *wssP, QList<Device> avDev, JackProcessor *jackP):wss(wssP),availableDevices(avDev),
+    jack(jackP)
 {
 
 }
 
-Scene *SceneBuilder::build(QString sceneType, QString name)
+QSharedPointer<Scene> SceneBuilder::build(QString sceneType, QString name)
 {
-    /*if(FlashScene::getSceneTypeString() == sceneType){
+    if(sceneType == FlashScene::getSceneTypeStringStaticaly()){
+        QSharedPointer<Scene>(new FlashScene(name,wss,availableDevices,jack));
+    }
+}
 
-    }*/
+QSharedPointer<Scene> SceneBuilder::build(QString sceneType, QJsonObject serialied)
+{
 }
 

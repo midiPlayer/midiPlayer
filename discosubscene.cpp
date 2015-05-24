@@ -1,8 +1,8 @@
 #include "discosubscene.h"
 #include "websocketserverprovider.h"
 
-DiscoSubScene::DiscoSubScene(int idP, Scene *sceneP, Device::FusionType fusionTypeP, bool muteP, float opacityP):
-    id(idP),scene(sceneP),fusionType(fusionTypeP),mute(muteP),opacity(opacity)
+DiscoSubScene::DiscoSubScene(int idP, QSharedPointer<Scene> sceneP, Device::FusionType fusionTypeP, bool muteP, float opacityP):
+    id(idP),scene(sceneP),fusionType(fusionTypeP),mute(muteP),opacity(opacityP)
 {
 
 }
@@ -11,12 +11,12 @@ QJsonObject DiscoSubScene::getJsonForClient()
 {
     QJsonObject effectObj = getBasicJson();
 
-    WebSocketServerProvider *provider = dynamic_cast<WebSocketServerProvider*>(scene);
+    WebSocketServerProvider *provider = dynamic_cast<WebSocketServerProvider*>(scene.data());
     if(provider != 0){
         effectObj.insert("requestType",provider->getRequestType());
         effectObj.insert("providerId",provider->providerId);
     }
-    effectObj.insert("name",scene->getName());
+    effectObj.insert("name",scene.data()->getName());
     return effectObj;
 }
 
@@ -56,7 +56,7 @@ QJsonObject DiscoSubScene::getBasicJson()
 QJsonObject DiscoSubScene::serialize()
 {
  QJsonObject effectObj = getBasicJson();
- effectObj.insert("scene",scene->serialize());
+ effectObj.insert("scene",scene.data()->serialize());
  return Serializable::serialize(effectObj);
 }
 

@@ -5,6 +5,7 @@
 #include <QString>
 #include <QJsonObject>
 #include <QWebSocket>
+
 class WebSocketServer;
 
 class WebSocketServerProvider
@@ -29,7 +30,7 @@ protected:
 
     int clientIdCounter;
     QMap<QWebSocket*,int> connectedSockets;
-    WebSocketServer *server;
+    WebSocketServer* server;
 };
 
 #endif // WEBSOCKETSERVERPROVIDER_H

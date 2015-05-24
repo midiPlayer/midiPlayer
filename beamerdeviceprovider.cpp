@@ -1,7 +1,8 @@
 #include "beamerdeviceprovider.h"
 #include <QColor>
 
-beamerDeviceProvider::beamerDeviceProvider(WebSocketServer *server, QList<Device> *availableVirtualDevicesP) : WebSocketServerProvider(server), OutputDevice(),
+beamerDeviceProvider::beamerDeviceProvider(WebSocketServer *server, QList<Device> *availableVirtualDevicesP) :
+    WebSocketServerProvider(server), OutputDevice(),
     availableVirtualDevices(availableVirtualDevicesP)
 {
     server->registerProvider(this);
@@ -45,13 +46,16 @@ void beamerDeviceProvider::publish(QList<Device> targetDevices,QList<Device> cha
             if(devIDs.length() == 0) continue;
             QJsonObject msg;
             QColor c;
-            c.setRed(d.getChannelValue(0)*255);
-            c.setGreen(d.getChannelValue(1)*255);
-            c.setBlue(d.getChannelValue(2)*255);
+            if(d.getType() != Device::Beamer)
+                continue;
+            int lowestChannel = d.getFirstChannel();
+            c.setRed(d.getChannelValue(lowestChannel + 0)*255);
+            c.setGreen(d.getChannelValue(lowestChannel + 1)*255);
+            c.setBlue(d.getChannelValue(lowestChannel + 2)*255);
             msg.insert("color",c.name());
-            c.setRed(d.getChannelValue(3)*255);
-            c.setGreen(d.getChannelValue(4)*255);
-            c.setBlue(d.getChannelValue(5)*255);
+            c.setRed(d.getChannelValue(lowestChannel + 3)*255);
+            c.setGreen(d.getChannelValue(lowestChannel + 4)*255);
+            c.setBlue(d.getChannelValue(lowestChannel + 5)*255);
             msg.insert("highlightedColor",c.name());
             foreach(int devId,devIDs)
                 sendMsg(msg,devId);

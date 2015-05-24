@@ -10,7 +10,7 @@ class Trigger : public QObject, public WebSocketServerProvider, public Serializa
 {
 Q_OBJECT
 public:
-    Trigger(WebSocketServer *ws,JackProcessor *jackP,QJsonObject serialized = QJsonObject());
+    Trigger(WebSocketServer *ws, JackProcessor *jackP, QJsonObject serialized = QJsonObject());
     enum TriggerType{BEAT,TIMER,ONSET};
     void start();
     void stop();
@@ -27,7 +27,7 @@ public slots:
 signals:
     void trigger();
 private:
-    JackProcessor *jack;
+    JackProcessor* jack;
     QJsonObject getState();
     void setState(QJsonObject fgt);
 };

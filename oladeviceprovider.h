@@ -11,6 +11,7 @@ class OlaDeviceProvider : public OutputDevice
 {
 public:
     OlaDeviceProvider();
+    ~OlaDeviceProvider();
     void publish(QList<Device> outDevices,QList<Device> changes);
 private:
     bool active;

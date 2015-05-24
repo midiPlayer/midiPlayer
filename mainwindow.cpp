@@ -8,7 +8,7 @@
 #include "math.h"
 #include "beatscene1.h"
 #include "fusionscene.h"
-#include "blackscene.h"
+#include "colorscene.h"
 #include "flashscene.h"
 
 
@@ -19,9 +19,9 @@
 
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),p(this),scenes(),overlays(),usedLamps(),status(),currentScene(0),currentOverlay(-1),offsetRequested(true),fading(0),nextOnMusic(false),overlayOnMusic(false),availableDevices(),
-    wss(this),outDevices(), timer(this),getChangesRunning(false), ui(new Ui::MainWindow),discoscene("disco",&wss),myBeamerDeviceProvider(&wss,&availableDevices),beamerShutterSceneManager(&myBeamerDeviceProvider,&wss,&p),
-    olaDeviceProvider()
+    QMainWindow(parent),jackProcessor(this),scenes(),overlays(),usedLamps(),status(),currentScene(0),currentOverlay(-1),offsetRequested(true),fading(0),nextOnMusic(false),overlayOnMusic(false),availableDevices(),
+    wss(this),outDevices(), timer(this),getChangesRunning(false), ui(new Ui::MainWindow),discoscene(new DiscoScene("disco",&wss)),myBeamerDeviceProvider(&wss,&availableDevices),beamerShutterSceneManager(&myBeamerDeviceProvider,&wss,&jackProcessor),
+    olaDeviceProvider(),remoteBeat(&wss,&jackProcessor)
 {
     //availableDevices = Device::loadDevicesFromXml("~/devices.xml");
 
@@ -48,18 +48,18 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(testMidi()));
     connect(ui->nextBtn,SIGNAL(clicked()),this,SLOT(nextScene()));
     connect(ui->prevBtn,SIGNAL(clicked()),this,SLOT(prevScene()));
-    connect(&p,SIGNAL(musicNotification()),this,SLOT(onMusic()));
+    connect(&jackProcessor,SIGNAL(musicNotification()),this,SLOT(onMusic()));
     connect(ui->nextWidthNusic,SIGNAL(stateChanged(int)),this,SLOT(requestNextOnMusic(int)));
     connect(ui->playOverlayWidthMusic,SIGNAL(stateChanged(int)),this,SLOT(requestOverlayOnMusic(int)));
     connect(ui->jumpBtn,SIGNAL(clicked()),this,SLOT(jumpClicked()));
     connect(ui->playOverlay,SIGNAL(clicked()),this,SLOT(playOverlayBtn()));
 
-    discoscene.addEffect(new BeatScene1("beat",availableDevices,&p,&wss));
-    discoscene.addEffect(new FlashScene("flash",&wss,availableDevices,&p));
+    discoscene.data()->addEffect(QSharedPointer<BeatScene1>(new BeatScene1("beat",availableDevices,&jackProcessor,&wss)));
+    discoscene.data()->addEffect(QSharedPointer<ColorScene>(new ColorScene("black",availableDevices)));
+  //  discoscene.addEffect(new FlashScene("flash",&wss,availableDevices,&p));
     //scenes.append(new FlashScene("flash",&wss,availableDevices,p));
-    scenes.append(&discoscene);
-    qDebug() << discoscene.serialize();
-    scenes.append(new BlackScene("black",availableDevices));
+    scenes.append(discoscene);
+    scenes.append(QSharedPointer<ColorScene>(new ColorScene("black",availableDevices)));
     //scenes.append(new BeatScene1("beat",availableDevices,p));
    // scenes.append(new BeatScene1("beat",availableDevices,p));
 //    scenes.append(new KeyFrameScene("/media/daten/Jakob/Schule/FDG/12/theater/scene1.playable","overtuere",true,"Das ist die Beschreibung zur Overtuere un es ist schoen, dass du dir so viel zeit nimmst das zu Lesen!"));
@@ -72,10 +72,8 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->selectOverlay->addItem(overlay->getName(),overlays.indexOf(overlay));
     }
 
-    QListIterator<Scene*> scenesIter(scenes);
-    while(scenesIter.hasNext()){
-        Scene* scene = scenesIter.next();
-        usedLamps += scene->getUsedLights();
+    foreach(QSharedPointer<Scene> scene,scenes){
+        usedLamps += scene.data()->getUsedLights();
     }
     QListIterator<Device> lampIter(usedLamps);
     while(lampIter.hasNext()){
@@ -87,17 +85,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //qDebug() << "" << usedLamps;
 
-    p.initJack(this);
+    jackProcessor.initJack(this);
 
-    foreach (Scene* scene, scenes) {
-        ui->sceneSelector->addItem(scene->getName(),scenes.indexOf(scene));
+    foreach (QSharedPointer<Scene> scene, scenes) {
+        ui->sceneSelector->addItem(scene.data()->getName(),scenes.indexOf(scene));
     }
 
     connect(&timer,SIGNAL(timeout()),this,SLOT(trigger()));
     timer.setInterval(10);
     timer.start();
-
-    remoteBeat = new RemoteBeat(&wss,&p);
 
 }
 
@@ -119,15 +115,15 @@ void MainWindow::getChanges()
 
     getChangesRunning = true;
     QList<Device> changes;
-    Scene* scene = scenes.at(currentScene);
+    QSharedPointer<Scene> scene = scenes.at(currentScene);
     QList<Device> newState;
 
     if(fading != 0){
         int dur;
         if(fading > 0)
-            dur = scene->getFadeOutDuration();
+            dur = scene.data()->getFadeOutDuration();
         else
-            dur = scenes.at(currentScene-1)->getFadeOutDuration();
+            dur = scenes.at(currentScene-1).data()->getFadeOutDuration();
         float per = getTimeSinceFadePercentage(dur);
         qDebug() << "percentage: " << per;
         if(per < 0){//error
@@ -135,7 +131,7 @@ void MainWindow::getChanges()
             return;
         }
         else if(per > 1){//fading done;
-            scene->stop();
+            scene.data()->stop();
             currentScene +=fading;
             fading = 0;
             scene = scenes.at(currentScene);
@@ -144,7 +140,7 @@ void MainWindow::getChanges()
         else{
             FusionScene fusion("fusion");
             fusion.import(scenes.at(currentScene));
-            Scene* nextScene = scenes.at(currentScene+fading);
+            QSharedPointer<Scene> nextScene = scenes.at(currentScene+fading);
             fusion.fusion(nextScene,Device::AV,per);
             newState = fusion.getLights();
         }
@@ -154,8 +150,8 @@ void MainWindow::getChanges()
 
 
     if(fading ==0){
-         newState = scene->getLights();
-         if(scene->exitRequested()){
+         newState = scene.data()->getLights();
+         if(scene.data()->exitRequested()){
              nextScene();
          }
     }
@@ -244,9 +240,9 @@ void MainWindow::jumpClicked()
 {
     scenes.at(currentScene)->stop();
     int index = (ui->sceneSelector->itemData(ui->sceneSelector->currentIndex())).toInt();
-    Scene* scene = scenes.at(index);
-    scene->resetTime();
-    scene->start();
+    QSharedPointer<Scene> scene = scenes.at(index);
+    scene.data()->resetTime();
+    scene.data()->start();
     currentScene = index;
     fading = 0;
     updateSceneLables();
@@ -276,13 +272,13 @@ void MainWindow::playOverlayBtn()
 void MainWindow::requestNextOnMusic(int state)
 {
     nextOnMusic = state != 0;
-    p.requestMusicNotification();
+    jackProcessor.requestMusicNotification();
 }
 
 void MainWindow::requestOverlayOnMusic(int state)
 {
     overlayOnMusic = state != 0;
-    p.requestMusicNotification();
+    jackProcessor.requestMusicNotification();
 }
 
 void MainWindow::trigger()
@@ -344,17 +340,17 @@ void MainWindow::updateSceneLables()
     }
 
     if(fading == 0){
-        Scene* currentSceneP = scenes.at(currentScene);
-        ui->pushButton->setText(currentSceneP->getName());
-        ui->descLable->setText(currentSceneP->getDesc());
+        QSharedPointer<Scene> currentSceneP = scenes.at(currentScene);
+        ui->pushButton->setText(currentSceneP.data()->getName());
+        ui->descLable->setText(currentSceneP.data()->getDesc());
     }
     else
-        ui->pushButton->setText("Fading from:" + scenes.at(currentScene)->getName() + " to: " + scenes.at(currentScene + fading)->getName());
+        ui->pushButton->setText("Fading from:" + scenes.at(currentScene).data()->getName() + " to: " + scenes.at(currentScene + fading).data()->getName());
     ui->pushButton->setEnabled(fading == 0);
 
     if(n < scenes.length()){
-        Scene* nextScene = scenes.at(n);
-        ui->nextBtn->setText(nextScene->getName());
+        QSharedPointer<Scene> nextScene = scenes.at(n);
+        ui->nextBtn->setText(nextScene.data()->getName());
         ui->nextBtn->setEnabled(fading == 0);
     }
     else{
@@ -363,8 +359,8 @@ void MainWindow::updateSceneLables()
     }
 
     if(p >= 0){
-        Scene* prevScene = scenes.at(p);
-        ui->prevBtn->setText(prevScene->getName());
+        QSharedPointer<Scene> prevScene = scenes.at(p);
+        ui->prevBtn->setText(prevScene.data()->getName());
         ui->prevBtn->setEnabled(fading == 0);
     }
     else{

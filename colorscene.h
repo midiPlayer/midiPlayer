@@ -1,19 +1,20 @@
-#ifndef BLACKSCENE_H
-#define BLACKSCENE_H
+#ifndef COLORSCENE_H
+#define COLORSCENE_H
 #include "scene.h"
 #include <QJsonObject>
 
-class BlackScene : public Scene
+class ColorScene : public Scene
 {
 public:
-    BlackScene(QString name, QList<Device> avDev);
-    BlackScene(QJsonObject serialized, QList<Device> avDev);
+    ColorScene(QString name, QList<Device> avDev);
+    ColorScene(QJsonObject serialized, QList<Device> avDev);
     QList<Device> getLights();
     QList<Device> getUsedLights();
     QJsonObject serialize(QJsonObject inherited = QJsonObject());
     QString getSceneTypeString();
+    void init();
 private:
     QList<Device> devices;
 };
 
-#endif // BLACKSCENE_H
+#endif // COLORSCENE_H

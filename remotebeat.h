@@ -8,7 +8,7 @@ class RemoteBeat :  public QObject, public WebSocketServerProvider
 {
 Q_OBJECT
 public:
-    RemoteBeat(WebSocketServer *ws,JackProcessor *jp,QObject * parent = 0);
+    RemoteBeat(WebSocketServer* ws,JackProcessor*jp,QObject * parent = 0);
     void clientRegistered(QJsonObject msg,int clientIdCounter);
     void clientUnregistered(QJsonObject msg,int clientIdCounter);
     void clientMessage(QJsonObject msg,int clientIdCounter);

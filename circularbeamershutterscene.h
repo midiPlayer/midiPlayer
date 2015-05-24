@@ -11,7 +11,7 @@ class CircularBeamerShutterScene : public QObject, public BeamerShutterScene
 {
 Q_OBJECT
 public:
-    CircularBeamerShutterScene(QString nameP, beamerDeviceProvider *providerP, WebSocketServer *ws, JackProcessor *p);
+    CircularBeamerShutterScene(QString nameP, beamerDeviceProvider* providerP, WebSocketServer* ws, JackProcessor* p);
     void start();
     void stop();
 
@@ -23,7 +23,7 @@ public:
 public slots:
     void triggered();
 private:
-    beamerDeviceProvider *provider;
+    beamerDeviceProvider* provider;
     Trigger trigger;
     bool isRunning;
     float x,y,radius;

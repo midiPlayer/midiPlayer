@@ -1,7 +1,7 @@
 #include "circularbeamershutterscene.h"
 #include "websocketserver.h"
 
-CircularBeamerShutterScene::CircularBeamerShutterScene(QString nameP ,beamerDeviceProvider *providerP,
+CircularBeamerShutterScene::CircularBeamerShutterScene(QString nameP , beamerDeviceProvider *providerP,
                                                        WebSocketServer *ws, JackProcessor *p) :
     QObject(0),BeamerShutterScene(nameP,ws), provider(providerP),trigger(ws,p),isRunning(false),x(0.5),y(0.5),radius(0.5),oldPos(-1)
 {

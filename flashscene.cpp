@@ -16,17 +16,22 @@ void FlashScene::init(WebSocketServer *ws)
 
 QString FlashScene::getSceneTypeString()
 {
+    return getSceneTypeStringStaticaly();
+}
+
+QString FlashScene::getSceneTypeStringStaticaly()
+{
     return "flashScene";
 }
 
-FlashScene::FlashScene(QString name, WebSocketServer *ws,QList<Device> avDevP,JackProcessor *jackP) : Scene(name),
+FlashScene::FlashScene(QString name, WebSocketServer *ws, QList<Device> avDevP, JackProcessor *jackP) : Scene(name),
     WebSocketServerProvider(ws),trigger(ws,jackP),availableDevices(avDevP),
         flashEnabled(false),flashState(),time(),smoothDuration(0),flashDuration(40),beatSpeed(INT_MAX),timePer(0.0f)
 {
     init(ws);
 }
 
-FlashScene::FlashScene(QJsonObject serialized,WebSocketServer *ws,QList<Device> avDevP,JackProcessor *jackP) : Scene(serialized),
+FlashScene::FlashScene(QJsonObject serialized, WebSocketServer *ws, QList<Device> avDevP, JackProcessor *jackP) : Scene(serialized),
         WebSocketServerProvider(ws),trigger(ws,jackP),availableDevices(avDevP),
         flashEnabled(false),flashState(),time(),smoothDuration(0),flashDuration(40),beatSpeed(INT_MAX),timePer(0.0f)
 {

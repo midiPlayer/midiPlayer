@@ -21,16 +21,23 @@ Device Device::fusionWith(Device upper, Device::FusionType type, float opacity)
         throw "not compatible";//we can only fusion equal devices
     Device ret(this);
     switch(type){
-        case MAX:
+     case MAX:
         foreach (int channel, getChannels()) {
             ret.setChannel(channel,upper.getChannelValue(channel)>getChannelValue(channel) ? upper.getChannelValue(channel) : getChannelValue(channel));
         }
         break;
-        case MIN:
+     case MIN:
         foreach (int channel, getChannels()) {
             ret.setChannel(channel,upper.getChannelValue(channel)<getChannelValue(channel) ? upper.getChannelValue(channel) : getChannelValue(channel));
         }
         break;
+     case AV:
+        foreach (int channel, getChannels()) {
+            ret.setChannel(channel,upper.getChannelValue(channel)*opacity+getChannelValue(channel)*(1.0f-opacity));
+        }
+
+        break;
+
     default :
         qDebug() << "this Fusiontype is currently not implemented";
         break;

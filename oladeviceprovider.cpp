@@ -1,6 +1,6 @@
 #include "oladeviceprovider.h"
 #include <QDebug>
-OlaDeviceProvider::OlaDeviceProvider(): active(false)
+OlaDeviceProvider::OlaDeviceProvider(): active(false), wrapper()
 {
     ola::InitLogging(ola::OLA_LOG_WARN, ola::OLA_LOG_STDERR);
     if (wrapper.Setup())
@@ -9,8 +9,11 @@ OlaDeviceProvider::OlaDeviceProvider(): active(false)
         qDebug() << "Setup failed";
         return;
     }
+}
 
-
+OlaDeviceProvider::~OlaDeviceProvider()
+{
+    wrapper.Cleanup();
 }
 
 void OlaDeviceProvider::publish(QList<Device> outDevices, QList<Device> changes)

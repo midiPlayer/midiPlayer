@@ -1,7 +1,8 @@
 #include "beamershutterscenemanager.h"
 #include "websocketserver.h"
 #include <QJsonArray>
-BeamerShutterSceneManager::BeamerShutterSceneManager(beamerDeviceProvider *provider,WebSocketServer *ws,JackProcessor *p) : shutterScenes(), shutterScenesIdCounter(0),currentScene(-1),
+BeamerShutterSceneManager::BeamerShutterSceneManager(beamerDeviceProvider *provider, WebSocketServer *ws, JackProcessor *p) :
+    shutterScenes(), shutterScenesIdCounter(0),currentScene(-1),
     circularBeamerShutterScene("Circular",provider,ws,p),WebSocketServerProvider(ws)
 {
     addScene(&circularBeamerShutterScene,true);
