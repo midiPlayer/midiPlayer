@@ -1,16 +1,24 @@
 #include "device.h"
 #include <QDebug>
-Device::Device(QMap<int,float> channelsP, QString devIdP,DeviceType typeP) : dmxChannels(channelsP),devId(devIdP),type(typeP)
+Device::Device(QMap<int,float> channelsP, QString devIdP, DeviceType typeP, QVector3D pos) : dmxChannels(channelsP),devId(devIdP),type(typeP),position(pos)
 {
 
 }
 
-Device::Device(const Device &d) : dmxChannels(d.dmxChannels),devId(d.devId),type(d.type)
+Device::Device(int firstChannel, int numChannels, QString devIdP, Device::DeviceType typeP, QVector3D pos):
+    dmxChannels(),devId(devIdP),type(typeP),position(pos)
+{
+    for(int  i = firstChannel; i <firstChannel+numChannels; i++){
+        dmxChannels.insert(i,0.0f);
+    }
+}
+
+Device::Device(const Device &d) : Device(&d)
 {
 
 }
 
-Device::Device(const Device *d) : dmxChannels(d->dmxChannels),devId(d->devId),type(d->type)
+Device::Device(const Device *d) : dmxChannels(d->dmxChannels),devId(d->devId),type(d->type),position(d->position)
 {
 
 }
@@ -155,6 +163,16 @@ int Device::getFirstChannel()
 {
     return dmxChannels.keys().at(0);
 }
+QVector3D Device::getPosition() const
+{
+    return position;
+}
+
+void Device::setPosition(const QVector3D &value)
+{
+    position = value;
+}
+
 
 /*
 QDebug operator<<(QDebug dbg, Device &type)

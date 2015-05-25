@@ -33,7 +33,7 @@ private:
     void addSubScene(QSharedPointer<DiscoSubScene> subScene);
     bool solo;
     Scene* soloScene;
-
+    bool isRunning;
 
     QMap<int,QSharedPointer<DiscoSubScene> > effects;
     QList<int> order;

@@ -27,7 +27,7 @@ void OlaDeviceProvider::publish(QList<Device> outDevices, QList<Device> changes)
         if(!(d.getType() == Device::RGB || d.getType() == Device::RGBW))
             continue;
           foreach(int c,d.getChannels()){
-            buffer.SetChannel(c,d.getChannelValue(c)*100);
+            buffer.SetChannel(c,d.getChannelValue(c)*255);
         }
     }
     wrapper.GetClient()->SendDMX(universe, buffer, ola::client::SendDMXArgs());

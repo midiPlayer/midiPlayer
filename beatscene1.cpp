@@ -136,7 +136,7 @@ QString BeatScene1::getSceneTypeStringStaticaly()
 
 void BeatScene1::changeForeground()
 {
-    QColor last = highlighted;
+     QColor last = highlighted;
     while(last == highlighted|| c == highlighted)
     {
         int i = double(options.length())*double(rand())/RAND_MAX - 0.0001;

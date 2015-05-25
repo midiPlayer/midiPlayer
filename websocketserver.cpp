@@ -121,6 +121,8 @@ void WebSocketServer::onTextMessage(QString message)
     else if(data.contains("provider")){
         QString rqt = data.value("provider").toString("");
         foreach (WebSocketServerProvider *p, provider) {
+            if(!provider.contains(p))
+                continue;//provider was deleted
             if(p->getRequestType() == rqt){
                 p->onMessage(data.value("data").toObject(),pClient);
             }
@@ -129,6 +131,8 @@ void WebSocketServer::onTextMessage(QString message)
     else if(data.contains("providerId")){
         int  pid = data.value("providerId").toInt(-2);
         foreach (WebSocketServerProvider *p, provider) {
+            if(!provider.contains(p))
+                continue;//provider was deleted
             if(p->providerId == pid){
                 p->onMessage(data.value("data").toObject(),pClient);
             }

@@ -24,5 +24,6 @@
         <file>ColorPicker.qml</file>
         <file>BeamerShutterControlImporter.js</file>
         <file>CircularShutterScene.qml</file>
+        <file>DiscoSceneAddScene.qml</file>
     </qresource>
 </RCC>

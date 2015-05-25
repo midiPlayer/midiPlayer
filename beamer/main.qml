@@ -12,7 +12,7 @@ ApplicationWindow {
     height: 480
     visible: true
 
-    // visibility: "FullScreen"
+     visibility: "FullScreen"
 
 
 
@@ -39,7 +39,7 @@ ApplicationWindow {
                         target: linien
                         from: 0;
                         to: 360;
-                        duration: 20000
+                        duration: 10000
                         running: true
                         loops: Animation.Infinite;
 

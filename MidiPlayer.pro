@@ -38,7 +38,9 @@ SOURCES += main.cpp\
     discosubscene.cpp \
     scenebuilder.cpp \
     oladeviceprovider.cpp \
-    colorscene.cpp
+    colorscene.cpp \
+    colorwheelscene.cpp \
+    colorwavescene.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
@@ -64,6 +66,8 @@ HEADERS  += mainwindow.h\
     discosubscene.h \
     scenebuilder.h \
     oladeviceprovider.h \
-    colorscene.h
+    colorscene.h \
+    colorwheelscene.h \
+    colorwavescene.h
 
 FORMS    += mainwindow.ui

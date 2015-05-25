@@ -12,6 +12,7 @@ class WebSocketServerProvider
 {
 public:
     WebSocketServerProvider(WebSocketServer* s);
+    ~WebSocketServerProvider();
     virtual QString getRequestType() = 0;
     void registerClient(QJsonObject msg, QWebSocket *client);
     void unregisterClient(QJsonObject msg, QWebSocket *client);

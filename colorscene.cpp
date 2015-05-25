@@ -9,7 +9,7 @@ ColorScene::ColorScene(QList<Device> avDev, QString name, QJsonObject serialized
     while(deviceIter != devices.end()){
         Device d = *deviceIter;
         foreach (int channel, d.getChannels()) {
-            (*deviceIter).setChannel(channel,1.0f);
+            (*deviceIter).setChannel(channel,0.05f);
         }
         deviceIter++;
     }

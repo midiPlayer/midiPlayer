@@ -10,9 +10,15 @@ Item {
     width: parent.width
     height: parent.height
     id: discoScene
-    ListView {
-        id: listView
-        anchors.fill: parent
+    ColumnLayout{
+        anchors.fill: parent;
+    Item{
+        Layout.fillWidth: true;
+        Layout.fillHeight: true;
+
+        ListView {
+            anchors.fill: parent;
+            id: listView
 
         property int dragItemIndex: -1
 
@@ -138,6 +144,16 @@ Item {
                         }
                     }
 
+                    Button{
+                        id: delBtn
+                        text:qsTr("Delete")
+                        onClicked: {
+                            var msg = new Object();
+                            msg.deleteScene = modelData.sceneId;
+                            ws.send = JSON.stringify(msg);
+                        }
+                    }
+
                     PushLockBtn{
                         id: soloBtn
                         onStateOn: {
@@ -156,7 +172,7 @@ Item {
                             muteStateChanged(modelData.sceneId,true);
                         }
 
-                        isOn: modelData.mute;
+                        isOn: !modelData.mute;
 
                         anchors.right: parent.right;
                         anchors.margins: 10;
@@ -292,7 +308,19 @@ Item {
             }
         }
     }
+    }
+    RowLayout{
+        Layout.preferredHeight: 50;
+        Layout.fillWidth: true;
+        Button{
+            text: "+"
+            onClicked: {
+                stackView.push(Qt.resolvedUrl("DiscoSceneAddScene.qml"),{properties:{onSceneSelected:function() { console.log("asdf");   }}});
+            }
+        }
+    }
 
+    }
     ListModel{
         id: fusionTypeModel
         ListElement{

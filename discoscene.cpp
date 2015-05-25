@@ -7,7 +7,7 @@
 #define STATUS_KEY_EFFECTS "effects"
 
 DiscoScene::DiscoScene(WebSocketServer *ws, SceneBuilder *sceneBuilderP, QString name, QJsonObject serialized) : Scene(name,serialized),
-    WebSocketServerProvider(ws), fusion("fusion"),solo(false),sceneIdCounter(0),order(),sceneBuilder(sceneBuilderP)
+    WebSocketServerProvider(ws), fusion("fusion"),solo(false),sceneIdCounter(0),order(),sceneBuilder(sceneBuilderP),isRunning(false)
 {
     ws->registerProvider(this);
 
@@ -79,16 +79,20 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
     if(msg.contains("muteChanged")){
         QJsonObject muteChange = msg.value("muteChanged").toObject();
         int sceneId = muteChange.value("sceneId").toInt(-1);
-        bool muteState = muteChange.value("state").toBool(false);
-        DiscoSubScene *sub = effects.value(sceneId).data();
-        sub->mute = muteState;
+        if(effects.contains(sceneId)){
+            bool muteState = muteChange.value("state").toBool(false);
+            DiscoSubScene *sub = effects.value(sceneId).data();
+            sub->mute = muteState;
+        }
     }
     if(msg.contains("fusionTypeChanged")){
         QJsonObject fusionTypeChange = msg.value("fusionTypeChanged").toObject();
         int sceneId = fusionTypeChange.value("sceneId").toInt(-1);
-        QString fusionTypeStr = fusionTypeChange.value("fusionType").toString("");
-        DiscoSubScene *sub = effects.value(sceneId).data();
-        sub->setFusinType(fusionTypeStr);
+        if(effects.contains(sceneId)){
+            QString fusionTypeStr = fusionTypeChange.value("fusionType").toString("");
+            DiscoSubScene *sub = effects.value(sceneId).data();
+            sub->setFusinType(fusionTypeStr);
+        }
     }
     if(msg.contains("orderChanged")){
         QJsonArray readOrder = msg.value("orderChanged").toArray();
@@ -101,6 +105,22 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
         order.clear();
         order = newOrder;
     }
+    if(msg.contains("addScene")){
+        QJsonObject addCmd = msg.value("addScene").toObject();
+        QSharedPointer<Scene> newScene = sceneBuilder->build(addCmd.value("type").toString(),addCmd.value("name").toString());
+        if(newScene.isNull()){
+           qDebug("duscoScene: ERROR: unknown scene type");
+           return;
+        }
+        addSubScene(QSharedPointer<DiscoSubScene>(new DiscoSubScene(sceneIdCounter,newScene,Device::MAX,true,1.0f)));
+    }
+    if(msg.contains("deleteScene")){
+        int id = msg.value("deleteScene").toInt(-1);
+        if(id != -1){
+            order.removeAll(id);
+            effects.remove(id);
+        }
+    }
     sendMsgButNotTo(msg,id);
 }
 
@@ -111,6 +131,7 @@ QString DiscoScene::getRequestType()
 
 void DiscoScene::stop()
 {
+    isRunning = false;
     foreach (QSharedPointer<DiscoSubScene> dss, effects.values()) {
         dss.data()->scene.data()->stop();
     }
@@ -118,6 +139,7 @@ void DiscoScene::stop()
 
 void DiscoScene::start()
 {
+    isRunning = true;
     foreach (QSharedPointer<DiscoSubScene> dss, effects.values()) {
         dss.data()->scene.data()->start();
     }
@@ -139,6 +161,10 @@ void DiscoScene::addSubScene(QSharedPointer<DiscoSubScene> subScene){
     effects.insert(sceneIdCounter,subScene);
     order.append(sceneIdCounter);
     sceneIdCounter++;
+    if(isRunning)
+        subScene.data()->scene.data()->start();
+    else
+        subScene.data()->scene.data()->stop();
 }
 
 /**

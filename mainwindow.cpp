@@ -32,20 +32,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QCoreApplication::setOrganizationDomain("fdg-ab.de");
     QCoreApplication::setApplicationName("light master");
 
-    QMap<int,float> channels;
-    channels.insert(0,0.0f);
-    channels.insert(1,0.0f);
-    channels.insert(2,0.0f);
-    channels.insert(3,0.0f);
-    availableDevices.append(Device(channels,"rgbw1",Device::RGBW));
-    channels.clear();
-    channels.insert(10,0.0f);
-    channels.insert(11,0.0f);
-    channels.insert(12,0.0f);
-    channels.insert(13,0.0f);
-    channels.insert(14,0.0f);
-    channels.insert(15,0.0f);
-    availableDevices.append(Device(channels,"beamer1",Device::Beamer));
+    availableDevices.append(Device(0,4,"rgbw1",Device::RGBW,QVector3D(-2,-3,0)));
+    availableDevices.append(Device(4,4,"rgbw2",Device::RGBW,QVector3D(-1,1,0)));
+    availableDevices.append(Device(8,4,"rgbw3",Device::RGBW,QVector3D(2,-2,0)));
+    availableDevices.append(Device(0,6,"beamer1",Device::Beamer,QVector3D(3,0,0)));
 
 
     discoscene = QSharedPointer<DiscoScene>(new DiscoScene(&wss,&sceneBuilder,"disco",getDiscoScenSettings()));

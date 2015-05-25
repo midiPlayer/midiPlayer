@@ -6,6 +6,11 @@ WebSocketServerProvider::WebSocketServerProvider(WebSocketServer *s) :
 
 }
 
+WebSocketServerProvider::~WebSocketServerProvider()
+{
+    server->unregisterProvider(this);
+}
+
 void WebSocketServerProvider::registerClient(QJsonObject msg, QWebSocket *client)
 {
     if(connectedSockets.contains(client))
