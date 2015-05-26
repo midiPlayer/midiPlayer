@@ -4,7 +4,8 @@ import WebSocketConnector 1.1
 Item{
     id: cpb
     property string myColor: "#FFFFFF"
-    property bool onlyOne
+    property bool onlyOne: false
+    property int minColorNum: 4
     property alias requestId : colorPickerWSC.requestId
 
 

@@ -63,6 +63,7 @@ Item{
                 }
                 ColorPickerButton{
                     id: colorPickerButton
+
                 }
             }
 

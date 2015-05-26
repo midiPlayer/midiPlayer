@@ -1,6 +1,7 @@
 import QtQuick 2.4
 import QtQuick.Controls 1.3
 import QtQuick.Layouts 1.1
+import QtQuick.Dialogs 1.2
 
 Item{
     property ColorPickerButton button
@@ -19,6 +20,16 @@ Item{
         button.myColor=colorString
     }
 
+    MessageDialog{
+        id: msgdialog
+        title: qsTr("Message")
+        text: qsTr("This Scene needs at least %L1 colors! Please choose some more!").arg(button.minColorNum)
+        onAccepted: {
+            visible = false;
+        }
+        Component.onCompleted: visible = false
+   }
+
     Component.onCompleted: {
         applicationWindow.backPressHandler=function() {
         if (colorPickerStackView.depth > 1) //d.h. im Submenu
@@ -27,9 +38,15 @@ Item{
             return true;
         }
         else {
+            if(button.minColorNum > selectedColorLVModel.count){
+                msgdialog.visible = true
+                return true;
+            }
+
             applicationWindow.backPressHandler=function() {
                 return false;
             }
+
             save()
 
             return false;
@@ -44,15 +61,17 @@ Item{
     }
 
     ColumnLayout{
+
+
         id: colorPicker
+        spacing: 10
         function colorSelected(color) {
-            if(button.onlyOne){
+            if(button.onlyOne){             //es darf (für diese Szene) nur eine Farbe ausgewählt werden
                 button.myColor = color;
                 stackView.pop()
             }
             else{
-                console.log(selectedColorLVModel.count)
-                var found = false;
+                var found = false;  //es wird geprüft, ob die hinzuzufügende Farbe schon vorhanden ist
                 for(var i = 0; i < selectedColorLVModel.count; i++){
                    if(color==selectedColorLVModel.get(i).color){
                        found=true
@@ -60,8 +79,8 @@ Item{
                        break
                    }
                 }
-                if(found == false) {
-                   addColor.sendMessage({"action":"add","color":color,"model":selectedColorLVModel})
+                if(found == false) {  //folgendes passiert, wenn hinzuzufügende Farbe noch nicht enthalten ist
+                    addColor.sendMessage({"action":"add","color":color,"model":selectedColorLVModel})
                 }
             }
 
@@ -78,6 +97,7 @@ Item{
 
             ListView{
                 id: selectedColorLV
+
                 model: ListModel{
                     id: selectedColorLVModel
                    /* ListElement{
@@ -85,7 +105,9 @@ Item{
                     }
                     */
                 }
-                anchors.fill: parent
+                width: parent.width*0.975
+                height: parent.height
+                anchors.centerIn: parent
                 orientation: Qt.Horizontal
                 layoutDirection: Qt.LeftToRight
 
