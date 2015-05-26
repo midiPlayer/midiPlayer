@@ -18,12 +18,13 @@
         <file>icons/settings.png</file>
         <file>MainMenuItem.qml</file>
         <file>ColorButton.qml</file>
-        <file>ColorButton2.qml</file>
         <file>images/schatten.png</file>
         <file>ColorPickerView.qml</file>
         <file>ColorPicker.qml</file>
         <file>BeamerShutterControlImporter.js</file>
         <file>CircularShutterScene.qml</file>
         <file>DiscoSceneAddScene.qml</file>
+        <file>ColorPickerAddColor.js</file>
+        <file>ColorPickerButton.qml</file>
     </qresource>
 </RCC>

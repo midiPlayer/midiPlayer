@@ -4,13 +4,18 @@ import QtQuick.Window 2.2
 import QtQuick.Dialogs 1.2
 import Qt.WebSockets 1.0
 import QtQuick.Layouts 1.1
+
 ApplicationWindow {
+    id: applicationWindow
     title: qsTr("Hello World")
     width: 640
     height: 600
     visible: true
+    property var backPressHandler: function() {return false};
 
     color:"#002b38"
+
+
 
     menuBar: MenuBar {
         Menu {
@@ -35,8 +40,10 @@ ColumnLayout{
         Button{
             text: "back"
                 onClicked: {
-                    console.log(stackView.currentItem);
-                    console.log(stackView.pop(stackView.currentItem.Stack.index));
+                    //console.log(stackView.pop(stackView.currentItem.Stack.index));
+
+                    if(!backPressHandler())
+                        stackView.pop()
                 }
             }
         }
@@ -48,7 +55,8 @@ ColumnLayout{
         // Implements back key navigation
         focus: true
         Keys.onReleased: if (event.key === Qt.Key_Back && stackView.depth > 1) {
-                             stackView.pop();
+                             if(!backPressHandler())
+                                 stackView.pop()
                              event.accepted = true;
                          }
 

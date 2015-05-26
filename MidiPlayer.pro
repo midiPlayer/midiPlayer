@@ -40,7 +40,8 @@ SOURCES += main.cpp\
     oladeviceprovider.cpp \
     colorscene.cpp \
     colorwheelscene.cpp \
-    colorwavescene.cpp
+    colorwavescene.cpp \
+    colorbutton.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
@@ -68,6 +69,7 @@ HEADERS  += mainwindow.h\
     oladeviceprovider.h \
     colorscene.h \
     colorwheelscene.h \
-    colorwavescene.h
+    colorwavescene.h \
+    colorbutton.h
 
 FORMS    += mainwindow.ui

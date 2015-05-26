@@ -16,7 +16,7 @@
 BeatScene1::BeatScene1(QList<Device> avDev, JackProcessor* p, WebSocketServer* ws,QString name,QJsonObject serialized) :
     Scene(name,serialized),WebSocketServerProvider(ws),
     c(0,0,0),highlighted(0,0,0) , availableDevices(avDev),options(),usedDevices(),foregroundTrigger(ws,p),
-    backgroundTrigger(ws,p),smoothDuration(200),smoothTimer(),next("next"),prev("prev")
+    backgroundTrigger(ws,p),smoothDuration(200),smoothTimer(),next("next"),prev("prev"), colorButton(ws)
 {
     options.append(QColor(255,0,0));
     options.append(QColor(0,255,0));
@@ -92,6 +92,7 @@ void BeatScene1::clientRegistered(QJsonObject msg, int id)
     config.insert("foregroundTrigger",foregroundTrigger.providerId);
     config.insert("backgroundTrigger",backgroundTrigger.providerId);
     config.insert("smoothnessChanged",double(smoothDuration)/double(MAX_SMOOTHNESS_DUR));
+    config.insert("colorButton", colorButton.providerId);
     replay.insert("config",config);
     sendMsg(replay,id,true);
 }
@@ -136,8 +137,9 @@ QString BeatScene1::getSceneTypeStringStaticaly()
 
 void BeatScene1::changeForeground()
 {
-     QColor last = highlighted;
-    while(last == highlighted|| c == highlighted)
+    QList <QColor> options=colorButton.getColors();
+    QColor last = highlighted;
+    while((last == highlighted|| c == highlighted) && options.length() > 2)
     {
         int i = double(options.length())*double(rand())/RAND_MAX - 0.0001;
         highlighted = options.at(i);
@@ -147,8 +149,9 @@ void BeatScene1::changeForeground()
 
 void BeatScene1::changeBackground()
 {
+    QList <QColor> options=colorButton.getColors();
     QColor last = c;
-    while(last == c || c == highlighted)
+    while((last == c || c == highlighted) && options.length() > 2)
     {
         int i = double(options.length())*double(rand())/RAND_MAX - 0.0001;
         c = options.at(i);

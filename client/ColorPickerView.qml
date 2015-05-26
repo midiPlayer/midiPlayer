@@ -13,6 +13,8 @@ import QtQuick.Layouts 1.1
         onHeightChanged: {
             gv.cellHeight=height/qh
         }
+        signal colorSelected(string color);
+
 
     GridView{
 
@@ -31,20 +33,25 @@ import QtQuick.Layouts 1.1
          Item{
             width : gv.cellWidth;
             height : gv.cellHeight;
-                ColorButton2{
+            property int myIndex: index
+                ColorButton{
                     anchors.centerIn: parent
                     width: parent.width*0.9
                     height: parent.height*0.9
                     bcolor: color
                     subColorsJson: {
-                        if(subcolors !== undefined) return subcolors;
+                        if(subcolors != undefined) return subcolors;
                         return "";
                     }
                     onSelected: {
                         if(subColors.count == 0)
-                            ;
+                        {
+                            colorPicker.colorSelected(color)
+                            colorPickerStackView.pop(null);
+                        }
                         else{
-                            colorPickerStackView.push(Qt.resolvedUrl("ColorPickerView.qml"),{"lmodel":subColors})
+                            colorPickerStackView.push(Qt.resolvedUrl("ColorPickerView.qml"),{"lmodel":subColors});
+
                         }
                     }
                 }

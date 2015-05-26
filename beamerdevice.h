@@ -14,6 +14,7 @@ public:
     QJsonObject shutterParams;
 private:
     ShutterType shutterType;
+
 };
 
 #endif // BEAMERDEVICE_H
