@@ -225,6 +225,8 @@ Item {
                             var filename = "";
                             if(modelData.requestType === "beatScene1")
                                 filename = "BeatScene.qml";
+                            if(modelData.requestType === "beatScene2")
+                                filename = "BeatScene2.qml";
                             if(modelData.requestType === "falshScene")
                                 filename = "FlashScene.qml";
                             if(filename != ""){

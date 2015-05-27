@@ -7,8 +7,6 @@
  * - smoothmodus
 */
 
-
-
 #include "beatscene2.h"
 #include <QDebug>
 #include "websocketserver.h"

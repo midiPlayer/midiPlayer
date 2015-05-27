@@ -26,5 +26,6 @@
         <file>DiscoSceneAddScene.qml</file>
         <file>ColorPickerAddColor.js</file>
         <file>ColorPickerButton.qml</file>
+        <file>BeatScene2.qml</file>
     </qresource>
 </RCC>
