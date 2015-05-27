@@ -1,31 +1,46 @@
 #include "colorbutton.h"
 #include "websocketserver.h"
+#define KEY_COLORS "colors"
 
-
-ColorButton::ColorButton(WebSocketServer*ws):WebSocketServerProvider(ws)
+ColorButton::ColorButton(WebSocketServer*ws,QJsonObject serialized):WebSocketServerProvider(ws)
 {
     ws->registerProvider(this);
+    if(serialized.length() != 0)
+    loadSerialized(serialized);
 }
 
 void ColorButton::clientRegistered(QJsonObject msg, int clientId)
 {
-    sendMsg(sendState(),clientId,true);
+    sendMsg(getState(),clientId,true);
 }
 
 void ColorButton::clientUnregistered(QJsonObject msg, int clientId)
 {
 
+
+}
+
+void ColorButton::loadSerialized(QJsonObject serialized)
+{
+    if(serialized.contains(KEY_COLORS)){
+        loadColosFromString(serialized.value(KEY_COLORS).toString(""));
+    }
+}
+
+void ColorButton::loadColosFromString(QString colorString)
+{
+    colors.clear();
+    QStringList colorsRead = colorString.split(",", QString::SkipEmptyParts);
+    foreach (QString colorString, colorsRead) {
+        colors.append(QColor(colorString));
+    }
 }
 
 void ColorButton::clientMessage(QJsonObject msg, int clientId)
 {
     if(msg.contains("colorChanged")){
         QString colorString = msg.value("colorChanged").toString("");
-        colors.clear();
-        QStringList colorsRead = colorString.split(",", QString::SkipEmptyParts);
-        foreach (QString colorString, colorsRead) {
-            colors.append(QColor(colorString));
-        }
+        loadColosFromString(colorString);
     }
     sendMsgButNotTo(msg, clientId, true);
 }
@@ -45,7 +60,7 @@ void ColorButton::setColors(const QList<QColor> &value)
     colors = value;
 }
 
-QJsonObject ColorButton::sendState()
+QString ColorButton::getColorString()
 {
     QString colorString;
     bool isFirst = true;
@@ -56,9 +71,24 @@ QJsonObject ColorButton::sendState()
         isFirst = false;
         colorString+=color.name();
     }
+
+    return colorString;
+}
+
+QJsonObject ColorButton::getState()
+{
+    QString colorString = getColorString();
     QJsonObject message;
     message.insert("colorChanged", colorString);
     return message;
 }
+
+QJsonObject ColorButton::serialize()
+{
+    QJsonObject ret;
+    ret.insert(KEY_COLORS,getColorString());
+    return ret;
+}
+
 
 

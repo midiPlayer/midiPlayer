@@ -5,6 +5,7 @@
 #define KEY_SMOOTHNESS "smoothness"
 #define KEY_FOREGROUNDTRIGGER "foregroundTrigger"
 #define KEY_BACKGROUNDTRIGGER "backgroundTrigger"
+#define KEY_COLOR "color"
 
 #define l1 12
 #define l2 13
@@ -13,7 +14,7 @@
 #define MAX_SMOOTHNESS_DUR 2000
 
 
-BeatScene1::BeatScene1(QList<Device> avDev, JackProcessor* p, WebSocketServer* ws,QString name,QJsonObject serialized) :
+BeatScene1::BeatScene1(QList<Device> avDev, JackProcessor* p, WebSocketServer* ws, QString name, QJsonObject serialized) :
     Scene(name,serialized),WebSocketServerProvider(ws),
     c(0,0,0),highlighted(0,0,0) , availableDevices(avDev),options(),usedDevices(),foregroundTrigger(ws,p),
     backgroundTrigger(ws,p),smoothDuration(200),smoothTimer(),next("next"),prev("prev"), colorButton(ws)
@@ -28,6 +29,9 @@ BeatScene1::BeatScene1(QList<Device> avDev, JackProcessor* p, WebSocketServer* w
     if(serialized.length() != 0){
         if(serialized.contains(KEY_SMOOTHNESS)){
             smoothDuration = serialized.value(KEY_SMOOTHNESS).toInt();
+        }
+        if(serialized.contains(KEY_COLOR)){
+            colorButton.loadSerialized(serialized.value(KEY_COLOR).toObject());
         }
         /*if(serialized.contains(KEY_FOREGROUNDTRIGGER)){
             foregroundTrigger()
@@ -120,6 +124,7 @@ QJsonObject BeatScene1::serialize()
     QJsonObject ret;
     ret.insert(KEY_FOREGROUNDTRIGGER,foregroundTrigger.serialize());
     ret.insert(KEY_BACKGROUNDTRIGGER,backgroundTrigger.serialize());
+    ret.insert(KEY_COLOR,colorButton.serialize());
     ret.insert(KEY_SMOOTHNESS,smoothDuration);
     return serializeScene(ret);
 }

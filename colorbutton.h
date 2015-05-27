@@ -8,7 +8,7 @@
 class ColorButton: public WebSocketServerProvider
 {
 public:
-    ColorButton(WebSocketServer *ws);
+    ColorButton(WebSocketServer *ws, QJsonObject serialized = QJsonObject());
 
     void clientRegistered(QJsonObject msg,int clientId);
     void clientUnregistered(QJsonObject msg,int clientId);
@@ -18,9 +18,13 @@ public:
     QList<QColor> getColors() const;
     void setColors(const QList<QColor> &value);
 
+    void loadSerialized(QJsonObject serialized);
+    QJsonObject serialize();
 private:
     QList<QColor>colors;
-    QJsonObject sendState();
+    QJsonObject getState();
+    QString getColorString();
+    void loadColosFromString(QString colorString);
 };
 
 #endif // COLORBUTTON_H
