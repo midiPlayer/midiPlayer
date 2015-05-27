@@ -32,7 +32,7 @@ Item{
                 Slider{
                     id: smoothnessSlider
                     minimumValue: 0
-                    maximumValue: 1.0
+                    maximumValue: 0.5
                     onValueChanged: {
                         if(pressed){
                             var mesage = new Object();
@@ -63,14 +63,16 @@ Item{
     WebSocketConnector{
         id: wsc
         onMessage: {
-            if(msg.config.trigger !== undefined)
-                triggerBtn.requestId = msg.config.trigger;
-            if(msg.config.smoothnessChanged !== undefined)
-                smoothnessSlider.value  = msg.config.smoothnessChanged;
+            if(msg.config !== undefined){
+                if(msg.config.trigger !== undefined)
+                    triggerBtn.requestId = msg.config.trigger;
+                if(msg.config.smoothnessChanged !== undefined)
+                    smoothnessSlider.value  = msg.config.smoothnessChanged;
+                if(msg.config.colorButton!==undefined)
+                    colorPickerButton.requestId = msg.config.colorButton;
+            }
             if(msg.smoothnessChanged !== undefined)
                 smoothnessSlider.value  = msg.smoothnessChanged;
-            if(msg.config.colorButton!==undefined)
-                colorPickerButton.requestId = msg.config.colorButton;
         }
     }
 

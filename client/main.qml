@@ -7,7 +7,7 @@ import QtQuick.Layouts 1.1
 
 ApplicationWindow {
     id: applicationWindow
-    title: qsTr("Hello World")
+    title: qsTr("light client")
     width: 640
     height: 600
     visible: true
@@ -35,18 +35,48 @@ ApplicationWindow {
 ColumnLayout{
     anchors.fill: parent;
     Item{
-        Layout.fillWidth: true;
-        Layout.preferredHeight: 30
-        Button{
-            text: "back"
-                onClicked: {
-                    //console.log(stackView.pop(stackView.currentItem.Stack.index));
-
-                    if(!backPressHandler())
-                        stackView.pop()
-                }
+        id:backBtn
+        Layout.preferredWidth: 40
+        Layout.preferredHeight: 40
+        Behavior on opacity{
+            NumberAnimation{
+                duration: 200
             }
         }
+
+        Image {
+            source: "icons/back.png"
+           fillMode: Image.PreserveAspectFit
+            height: parent.height * 0.6
+            anchors.centerIn: parent
+        }
+        Image {
+            id: touched
+            source: "icons/backTouched.png"
+           fillMode: Image.PreserveAspectFit
+            height: parent.height * 0.6
+            anchors.centerIn: parent
+            visible: false
+        }
+        MouseArea{
+            anchors.fill: parent;
+            onPressed: {
+                touched.visible = true;
+                if(!backPressHandler())
+                    stackView.pop()
+
+            }
+            onReleased: {
+                touched.visible = false;
+            }
+            onCanceled: {
+                touched.visible = false;
+            }
+            onExited: {
+                touched.visible = false;
+            }
+        }
+    }
 
     StackView {
         id: stackView
@@ -61,6 +91,9 @@ ColumnLayout{
                          }
 
         initialItem: Qt.resolvedUrl("ConnectView.qml")
+        onDepthChanged: {
+            backBtn.opacity = (depth > 1)*1;
+        }
     }
     }
 }

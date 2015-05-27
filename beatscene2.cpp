@@ -14,6 +14,7 @@
 #define KEY_SMOOTHNESS "smoothness"
 #define KEY_TRIGGER "trigger"
 #define MAX_SMOOTHNESS_DUR 2000
+#define KEY_COLOR "color"
 
 BeatScene2::BeatScene2(QList<Device> avDev, JackProcessor* p, WebSocketServer* ws,QString name,QJsonObject serialized) :
     Scene(name,serialized),WebSocketServerProvider(ws),
@@ -37,6 +38,8 @@ BeatScene2::BeatScene2(QList<Device> avDev, JackProcessor* p, WebSocketServer* w
         if(serialized.contains(KEY_SMOOTHNESS)){
             smoothDuration = serialized.value(KEY_SMOOTHNESS).toInt();
         }
+        if(serialized.contains((KEY_COLOR)))
+            colorButton.loadSerialized(serialized.value(KEY_COLOR).toObject());
     }
 
     trigger.triggerConfig.insert(Trigger::BEAT);
@@ -120,6 +123,7 @@ QJsonObject BeatScene2::serialize()
     QJsonObject ret;
     ret.insert(KEY_TRIGGER,trigger.serialize());
     ret.insert(KEY_SMOOTHNESS,smoothDuration);
+    ret.insert(KEY_COLOR,colorButton.serialize());
     return serializeScene(ret);
 }
 
