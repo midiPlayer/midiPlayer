@@ -20,6 +20,7 @@
 #include "beamershutterscenemanager.h"
 #include "scenebuilder.h"
 #include <QSettings>
+#include "diascene.h"
 namespace Ui {
 class MainWindow;
 }
@@ -33,37 +34,19 @@ public:
     void getChanges();
 
 public slots:
-    void testMidi();
-    void nextScene();
-    void prevScene();
-    void onMusic();
-
-private slots:
-    void jumpClicked();
-    void playOverlay();
-    void playOverlayBtn();
-    void requestNextOnMusic(int state);
-    void requestOverlayOnMusic(int state);
     void trigger();
 
 private:
     Ui::MainWindow *ui;
     JackProcessor jackProcessor;
-    QList<QSharedPointer<Scene> > scenes;
-    QList<OverlayScene*> overlays;
     QList<Device> usedLamps;
     QList<Device> status;
-    int currentScene;
-    int currentOverlay;
+
     bool offsetRequested;
-    long fadeStartMs,fadeStartS;
-    int fading;
+
     void resetFadeStart();
     float getTimeSinceFadePercentage(int duration);
-    void updateSceneLables();
-    void stopCurrentOverlay();
-    bool nextOnMusic;
-    bool overlayOnMusic;
+
     QList<Device> availableDevices;
     WebSocketServer wss;
     QList<OutputDevice*> outDevices;
@@ -77,6 +60,8 @@ private:
     SceneBuilder sceneBuilder;
     QSettings settings;
     QJsonObject getDiscoScenSettings();
+
+    QSharedPointer<DiaScene> mainScene;
 
 };
 
