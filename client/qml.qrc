@@ -29,5 +29,6 @@
         <file>BeatScene2.qml</file>
         <file>icons/back.png</file>
         <file>icons/backTouched.png</file>
+        <file>ColorScene.qml</file>
     </qresource>
 </RCC>

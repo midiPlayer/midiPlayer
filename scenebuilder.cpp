@@ -24,7 +24,7 @@ QSharedPointer<Scene> SceneBuilder::build(QString sceneType, QString name,QJsonO
         return QSharedPointer<Scene>(new BeatScene1(*availableDevices,jack,wss,name,serialized));
     }
     else if(sceneType == ColorScene::getSceneTypeStringStaticaly()){
-        return QSharedPointer<Scene>(new ColorScene(*availableDevices,name,serialized));
+        return QSharedPointer<Scene>(new ColorScene(*availableDevices,wss,name,serialized));
     }
     else if(sceneType == ColorWheelScene::getSceneTypeStringStaticaly()){
         return QSharedPointer<Scene>(new ColorWheelScene(*availableDevices,wss,jack,name,serialized));

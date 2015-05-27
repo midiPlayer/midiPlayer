@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     mainScene.data()->addScene(discoscene,1);
-    mainScene.data()->addScene(QSharedPointer<ColorScene>(new ColorScene(availableDevices,"black")),1);
+    mainScene.data()->addScene(QSharedPointer<ColorScene>(new ColorScene(availableDevices,&wss,"black")),1);
     mainScene.data()->start();
 
 

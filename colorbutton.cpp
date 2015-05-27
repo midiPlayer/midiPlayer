@@ -2,7 +2,7 @@
 #include "websocketserver.h"
 #define KEY_COLORS "colors"
 
-ColorButton::ColorButton(WebSocketServer*ws,QJsonObject serialized):WebSocketServerProvider(ws)
+ColorButton::ColorButton(WebSocketServer*ws,QJsonObject serialized):QObject(0), WebSocketServerProvider(ws)
 {
     ws->registerProvider(this);
     if(serialized.length() != 0)
@@ -23,6 +23,7 @@ void ColorButton::clientUnregistered(QJsonObject msg, int clientId)
 void ColorButton::loadSerialized(QJsonObject serialized)
 {
     if(serialized.contains(KEY_COLORS)){
+        colors.clear();
         loadColosFromString(serialized.value(KEY_COLORS).toString(""));
     }
 }
@@ -41,6 +42,7 @@ void ColorButton::clientMessage(QJsonObject msg, int clientId)
     if(msg.contains("colorChanged")){
         QString colorString = msg.value("colorChanged").toString("");
         loadColosFromString(colorString);
+        emit colorChanged();
     }
     sendMsgButNotTo(msg, clientId, true);
 }

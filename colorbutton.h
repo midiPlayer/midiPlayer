@@ -5,8 +5,9 @@
 #include <QList>
 
 
-class ColorButton: public WebSocketServerProvider
+class ColorButton: public QObject, public WebSocketServerProvider
 {
+Q_OBJECT
 public:
     ColorButton(WebSocketServer *ws, QJsonObject serialized = QJsonObject());
 
@@ -20,6 +21,8 @@ public:
 
     void loadSerialized(QJsonObject serialized);
     QJsonObject serialize();
+signals:
+    void colorChanged();
 private:
     QList<QColor>colors;
     QJsonObject getState();

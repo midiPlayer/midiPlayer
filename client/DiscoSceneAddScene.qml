@@ -17,7 +17,7 @@ Item{
         }
         ListElement{
             text:qsTr("ColorScene")
-            type:"blackscene"
+            type:"colorScene"
         }
         ListElement{
             text:qsTr("Color Wheel Scene")
