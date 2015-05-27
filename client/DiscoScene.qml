@@ -60,9 +60,9 @@ Item {
                         if(modelData.sceneId === msg.muteChanged.sceneId){
                              console.log("new mute state:");
                             if(msg.muteChanged.state)
-                                activeBtn.setOn(false)
-                            else
                                 activeBtn.setOff(false)
+                            else
+                                activeBtn.setOn(false)
                         }
                     }
                 }
