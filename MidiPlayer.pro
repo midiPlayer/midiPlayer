@@ -41,7 +41,7 @@ SOURCES += main.cpp\
     colorscene.cpp \
     colorwheelscene.cpp \
     colorwavescene.cpp \
-    diascene.cpp
+    diascene.cpp \
     colorbutton.cpp
 
 HEADERS  += mainwindow.h\
@@ -71,7 +71,7 @@ HEADERS  += mainwindow.h\
     colorscene.h \
     colorwheelscene.h \
     colorwavescene.h \
-    diascene.h
+    diascene.h \
     colorbutton.h
 
 FORMS    += mainwindow.ui
