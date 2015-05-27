@@ -43,6 +43,7 @@ Item {
                 }
                 onConnectionFailed: {
                     mainForm.state = "failed";
+                    stackView.pop(null);
                 }
             }
             Settings {

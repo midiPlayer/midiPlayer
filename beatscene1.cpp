@@ -16,16 +16,9 @@
 
 BeatScene1::BeatScene1(QList<Device> avDev, JackProcessor* p, WebSocketServer* ws, QString name, QJsonObject serialized) :
     Scene(name,serialized),WebSocketServerProvider(ws),
-    c(0,0,0),highlighted(0,0,0) , availableDevices(avDev),options(),usedDevices(),foregroundTrigger(ws,p),
-    backgroundTrigger(ws,p),smoothDuration(200),smoothTimer(),next("next"),prev("prev"), colorButton(ws)
+    availableDevices(avDev),c(0,0,0),highlighted(0,0,0),usedDevices(),foregroundTrigger(ws,p),
+    backgroundTrigger(ws,p),smoothDuration(200),smoothTimer(),prev("prev"),next("next"), colorButton(ws)
 {
-    options.append(QColor(255,0,0));
-    options.append(QColor(0,255,0));
-    options.append(QColor(0,0,255));
-    options.append(QColor(255,255,0));
-    options.append(QColor(255,0,255));
-    options.append(QColor(0,255,255));
-
     if(serialized.length() != 0){
         if(serialized.contains(KEY_SMOOTHNESS)){
             smoothDuration = serialized.value(KEY_SMOOTHNESS).toInt();

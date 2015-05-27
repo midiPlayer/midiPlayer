@@ -84,6 +84,7 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
             DiscoSubScene *sub = effects.value(sceneId).data();
             sub->mute = muteState;
         }
+        sendMsgButNotTo(msg,id);
     }
     if(msg.contains("fusionTypeChanged")){
         QJsonObject fusionTypeChange = msg.value("fusionTypeChanged").toObject();
@@ -93,6 +94,7 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
             DiscoSubScene *sub = effects.value(sceneId).data();
             sub->setFusinType(fusionTypeStr);
         }
+        sendMsgButNotTo(msg,id);
     }
     if(msg.contains("orderChanged")){
         QJsonArray readOrder = msg.value("orderChanged").toArray();
@@ -104,6 +106,7 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
         }
         order.clear();
         order = newOrder;
+        sendMsgButNotTo(msg,id);
     }
     if(msg.contains("addScene")){
         QJsonObject addCmd = msg.value("addScene").toObject();
@@ -113,6 +116,7 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
            return;
         }
         addSubScene(QSharedPointer<DiscoSubScene>(new DiscoSubScene(sceneIdCounter,newScene,Device::MAX,true,1.0f)));
+        sendMsg(getStatus(true,true,false),id);
     }
     if(msg.contains("deleteScene")){
         int id = msg.value("deleteScene").toInt(-1);
@@ -120,8 +124,8 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
             order.removeAll(id);
             effects.remove(id);
         }
+        sendMsgButNotTo(msg,id);
     }
-    sendMsgButNotTo(msg,id);
 }
 
 QString DiscoScene::getRequestType()

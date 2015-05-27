@@ -67,16 +67,26 @@ void WebInterface::registerConnectorPassive(WebSocketConnector *connector)
 
 void WebInterface::unregisterConnector(WebSocketConnector *connector)
 {
-    QJsonObject msg;
-    if(connector->getReqestId() == -1)
-        msg.insert("unregister",connector->getRequestType());
-    else
-        msg.insert("unregisterId",connector->getReqestId());
-    QJsonDocument d;
-    d.setObject(msg);
-    ws.sendTextMessage(d.toJson());
+    bool hasOther = false;
     connectors.removeAll(connector);
-    connectedRequestTypes.removeAll(connector->getRequestType());
+    foreach (WebSocketConnector *c, connectors) {
+        if(c->getRequestType() == connector->getRequestType() && connector->getReqestId() == -1)
+            hasOther = true;
+        else if(c->getReqestId() == connector->getReqestId())
+            hasOther = true;
+    }
+    if(!hasOther){
+        QJsonObject msg;
+        if(connector->getReqestId() == -1)
+            msg.insert("unregister",connector->getRequestType());
+        else
+            msg.insert("unregisterId",connector->getReqestId());
+        QJsonDocument d;
+        d.setObject(msg);
+        ws.sendTextMessage(d.toJson());
+        connectedRequestTypes.removeAll(connector->getRequestType());
+    }
+
 }
 
 void WebInterface::sendMsg(WebSocketConnector *connector, QJsonObject msg)

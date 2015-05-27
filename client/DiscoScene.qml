@@ -151,6 +151,7 @@ Item {
                             var msg = new Object();
                             msg.deleteScene = modelData.sceneId;
                             ws.send = JSON.stringify(msg);
+                            importer.sendMessage({"msg":msg,"listModel":listModel});
                         }
                     }
 

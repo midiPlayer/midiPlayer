@@ -63,7 +63,7 @@ Item{
                 }
                 ColorPickerButton{
                     id: colorPickerButton
-
+                    minColorNum: 3
                 }
             }
 

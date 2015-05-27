@@ -34,7 +34,6 @@ private:
     QList<Device> availableDevices;
     QColor c;
     QColor highlighted;
-    QList<QColor> options;
     QList<Device> usedDevices;
     Trigger foregroundTrigger;
     Trigger backgroundTrigger;

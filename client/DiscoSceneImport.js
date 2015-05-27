@@ -1,6 +1,7 @@
 WorkerScript.onMessage = function(params) {
     var msg = params.msg;
     if(msg.effects !== undefined){
+        params.listModel.clear();
         console.log("import started");
         for (var z = 0; z < msg.effects.length; z++){
             var effect = msg.effects[z];
@@ -28,6 +29,14 @@ WorkerScript.onMessage = function(params) {
                     }
                 }
             }
+        }
+        params.listModel.sync();
+    }
+    if(msg.deleteScene !== undefined){
+        for(var y = 0;y < params.listModel.count; y++){
+             if(params.listModel.get(y).modelData.sceneId === msg.deleteScene){
+                params.listModel.remove(y);
+             }
         }
         params.listModel.sync();
     }
