@@ -9,6 +9,7 @@
 #include "websocketserverprovider.h"
 #include "trigger.h"
 #include "fusionscene.h"
+#include "colorbutton.h"
 
 class BeatScene1 : public Scene, public WebSocketServerProvider
 {
@@ -42,6 +43,7 @@ private:
     FusionScene prev;
     FusionScene next;
     void generateNextScene();
+    ColorButton colorButton;
 
 };
 

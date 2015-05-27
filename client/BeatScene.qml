@@ -53,6 +53,19 @@ Item{
                 }
 
             }
+            RowLayout{
+                width: parent.width
+                Text{
+                    height: parent.height
+                    verticalAlignment: Text.AlignVCenter
+                    text:qsTr("Color")
+                    color:"#fff";
+                }
+                ColorPickerButton{
+                    id: colorPickerButton
+
+                }
+            }
 
     }
 
@@ -68,6 +81,8 @@ Item{
                 smoothnessSlider.value  = msg.config.smoothnessChanged;
             if(msg.smoothnessChanged !== undefined)
                 smoothnessSlider.value  = msg.smoothnessChanged;
+            if(msg.config.colorButton!==undefined)
+                colorPickerButton.requestId = msg.config.colorButton;
         }
     }
 
