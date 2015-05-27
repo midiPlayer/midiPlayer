@@ -105,6 +105,7 @@ Item {
                     anchors.top: parent.top
                     width:parent.width
                     height:100
+                    spacing: 10
 
 
                     Rectangle{
@@ -128,6 +129,7 @@ Item {
                     Text {
                         text: modelData.name
                         color:"#fff"
+                        Layout.fillWidth: true;
                     }
 
                     ComboBox {
@@ -155,15 +157,22 @@ Item {
                         }
                     }
 
-                    PushLockBtn{
-                        id: soloBtn
-                        onStateOn: {
+                    Item{
+                        Layout.preferredWidth: activeBtn.width+5;
+                        height: parent.height;
+                        PushLockBtn{
+                            id: soloBtn
+                            onStateOn: {
+                            }
+                            anchors.centerIn: parent;
                         }
-                        anchors.right: activeBtn.left;
-                        anchors.margins: 10;
                     }
 
+                    Item{
+                    Layout.preferredWidth: activeBtn.width+5;
+                    height: parent.height;
                     PushLockBtn{
+                        anchors.centerIn: parent;
                         id:activeBtn
                         mute: true
                         onStateOn: {
@@ -185,6 +194,7 @@ Item {
                             msg.muteChanged.state = stateP;
                             ws.send = JSON.stringify(msg);
                         }
+                    }
                     }
                 }
 
