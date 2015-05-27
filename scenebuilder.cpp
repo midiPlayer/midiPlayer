@@ -5,6 +5,7 @@
 #include "colorscene.h"
 #include "colorwheelscene.h"
 #include "colorwavescene.h"
+#include "beatscene2.h"
 SceneBuilder::SceneBuilder(WebSocketServer *wssP, QList<Device> *avDev, JackProcessor *jackP):wss(wssP),availableDevices(avDev),
     jack(jackP)
 {
@@ -30,6 +31,9 @@ QSharedPointer<Scene> SceneBuilder::build(QString sceneType, QString name,QJsonO
     }
     else if(sceneType == ColorWaveScene::getSceneTypeStringStaticaly()){
         return QSharedPointer<Scene>(new ColorWaveScene(*availableDevices,wss,jack,name,serialized));
+    }
+    else if(sceneType == BeatScene2::getSceneTypeStringStaticaly()){
+        return QSharedPointer<Scene>(new BeatScene2(*availableDevices,jack,wss,name,serialized));
     }
     return QSharedPointer<Scene>();
 }

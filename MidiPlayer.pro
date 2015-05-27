@@ -19,6 +19,7 @@ SOURCES += main.cpp\
     scene.cpp \
     keyframescene.cpp \
     beatscene1.cpp \
+    beatscene2.cpp \
     overlayscene.cpp \
     discoscene.cpp \
     device.cpp \
@@ -49,6 +50,7 @@ HEADERS  += mainwindow.h\
     scene.h \
     keyframescene.h \
     beatscene1.h \
+    beatscene2.h \
     overlayscene.h \
     discoscene.h \
     device.h \

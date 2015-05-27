@@ -27,6 +27,10 @@ Item{
             text:qsTr("Color Wave Scene")
             type:"colorWaveScene"
         }
+        ListElement{
+            text: qsTr("alternating Beat Scene")
+            type:"beatScene2"
+        }
     }
 
     ColumnLayout{

@@ -4,7 +4,9 @@ import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
 
 Item{
+
     property ColorPickerButton button
+
     WorkerScript {
             id: addColor
             source: "ColorPickerAddColor.js"
