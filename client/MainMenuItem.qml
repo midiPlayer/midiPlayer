@@ -29,7 +29,7 @@ Rectangle{
 
     MouseArea{
         anchors.fill: parent
-        onPressed:{
+        onReleased:{
             stackView.push(Qt.resolvedUrl(link),{});
         }
     }

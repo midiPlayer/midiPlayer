@@ -30,5 +30,7 @@
         <file>icons/back.png</file>
         <file>icons/backTouched.png</file>
         <file>ColorScene.qml</file>
+        <file>images/schatten4colorPickerButton.png</file>
+        <file>images/schatten4colorPickerButton.xcf</file>
     </qresource>
 </RCC>

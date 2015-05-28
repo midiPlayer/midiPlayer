@@ -62,12 +62,13 @@ ColumnLayout{
             anchors.fill: parent;
             onPressed: {
                 touched.visible = true;
-                if(!backPressHandler())
-                    stackView.pop()
 
             }
             onReleased: {
                 touched.visible = false;
+                if(!backPressHandler())
+                    stackView.pop()
+
             }
             onCanceled: {
                 touched.visible = false;

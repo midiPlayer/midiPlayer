@@ -19,7 +19,7 @@ Item {
 
         MainMenuItem{
             imageSrc: "icons/trigger.png"
-            name: "configutre Trigger"
+            name: "configure Trigger"
             link:"ColorPickerButton.qml"
         }
 

@@ -13,12 +13,12 @@ Item{
 
     onMyColorChanged: {
        if(myColor.search(",")!=-1){ //wenn nicht -1, dann mehrere Farbwerte
-          buttonRect.color="#AAAAAA"
+          colorPickerButton.color="#AAAAAA"
        }
-       else if(myColor=="") buttonRect.color="#999999"
+       else if(myColor=="") colorPickerButton.color="#999999"
        else{
 
-          buttonRect.color=myColor
+          colorPickerButton.color=myColor
           }
 
        if(initFinished)
@@ -38,7 +38,7 @@ Item{
         }
     }
         Rectangle{
-            id:buttonRect
+            id:colorPickerButton
             x: 50
             radius: height/5
             height: 30
@@ -62,10 +62,31 @@ Item{
                height:parent.height
             }
 
+            Image{
+                id: touched
+                source: "images/schatten4colorPickerButton.png"
+                height: parent.height
+                width: parent.width
+                visible: false
+                anchors.fill: parent
+
+            }
+
             MouseArea{
                 anchors.fill: parent
                 onPressed:{
+
+                    touched.visible = true;
+                }
+                onReleased: {
                     stackView.push(Qt.resolvedUrl("ColorPicker.qml"),{"button":cpb});
+                    touched.visible = false;
+                }
+                onCanceled: {
+                    touched.visible = false;
+                }
+                onExited: {
+                    touched.visible = false;
                 }
 
             }

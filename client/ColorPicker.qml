@@ -152,39 +152,52 @@ Item{
     property ColorPickerView initial: ColorPickerView{
         lmodel: ListModel{ 
             ListElement{
-                color: "blue"
-                subcolors: '["#2020c4","#1883de","#2c58d5"]'
+                //blue
+                color: "#0000ff"
+
+                subcolors: '["#0f00a3","#000e9a","#000fab","#02378e",
+                             "#1500e1","#071bd9","#0000ff","#004cd7",
+                             "#301aff","#2929eb","#1e33ff","#0058f9",
+                             "#4d3de4","#4343ff","#4052ff","#2d63ff"]'
             }
 
             ListElement{
+                //turqouise
                 color: "#03D1D1"
             }
 
             ListElement{
+                //lightgreen
                 color: "#16E635"
             }
 
             ListElement{
+                //green
                 color: "green"
             }
 
             ListElement{
+                //yellow
                 color: "yellow"
             }
 
             ListElement{
+                //orange
                 color: "orange"
             }
 
             ListElement{
+                //red
                 color: "red"
             }
 
             ListElement{
+                //purple
                 color: "purple"
             }
 
             ListElement{
+                //grey
                 color: "grey"
             }
 
