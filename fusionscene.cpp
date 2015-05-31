@@ -30,9 +30,12 @@ QList<Device> FusionScene::passiveFusion(QList<Device> with, Device::FusionType 
             Device my = device.findEqualDevice(devices);
                 ret.removeAll(my);
                 ret.append(my.fusionWith(device,fusionType,opacity));
-
         }
         else
+            ret.append(device);
+    }
+    foreach (Device device, devices) {
+        if(!ret.contains(device))
             ret.append(device);
     }
     return ret;
