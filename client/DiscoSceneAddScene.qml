@@ -13,7 +13,7 @@ Item{
         }
         ListElement{
             text:qsTr("FlashScene")
-            type:"falshScene"
+            type:"flashScene"
         }
         ListElement{
             text:qsTr("ColorScene")

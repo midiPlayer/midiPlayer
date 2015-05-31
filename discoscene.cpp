@@ -30,7 +30,7 @@ QList<Device> DiscoScene::getLights()
         fusion.fusion(soloScene.data()->scene.data()->getLights(),soloScene.data()->fusionType,soloScene.data()->opacity);
     }
     else{
-        foreach (int orderId, order) {
+        foreach  (int orderId, order) {
             if(!effects.contains(orderId))
                 continue;
             QSharedPointer<DiscoSubScene> effect = effects.value(orderId);

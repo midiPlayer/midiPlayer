@@ -5,6 +5,7 @@
 #include "jackprocessor.h"
 #include "trigger.h"
 #include <QTime>
+#include "colorbutton.h"
 
 class FlashScene : public Scene, public WebSocketServerProvider
 {
@@ -17,24 +18,25 @@ public:
     void stop();
     void clientRegistered(QJsonObject msg, int id);
     void clientUnregistered(QJsonObject msg,int clientIdCounter);
-    void clientMessage(QJsonObject msg,int clientIdCounter);
+    void clientMessage(QJsonObject msg, int id);
     QString getRequestType();
     QJsonObject serialize();
     QString getSceneTypeString();
     static QString getSceneTypeStringStaticaly();
 public slots:
     void triggered();
+    void reloadColor();
 private:
     Trigger trigger;
     QList<Device> availableDevices;
     QList<Device>flashState;
     bool flashEnabled;
     QTime time;
-    int smoothDuration;//in ms
+    float smoothness;//0...0.5
     int flashDuration;//in ms
     int beatSpeed;
     float timePer;
-    void init(WebSocketServer* ws);
+    ColorButton colorButton;
 };
 
 #endif // FLASHSCENE_H
