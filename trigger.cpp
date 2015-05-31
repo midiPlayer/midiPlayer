@@ -40,6 +40,9 @@ void Trigger::clientMessage(QJsonObject msg, int clientId)
         setState(fgt);
         sendMsgButNotTo(getState(),clientId);
     }
+    if(msg.contains("manual")){
+        emit trigger();
+    }
 }
 
 QString Trigger::getRequestType()

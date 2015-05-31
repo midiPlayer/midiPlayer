@@ -25,7 +25,7 @@ import WebSocketConnector 1.1
 
         id: box
         height:30
-        width: 180
+        width: 250
         radius: 8
         color:'black'
         RowLayout{
@@ -35,7 +35,7 @@ import WebSocketConnector 1.1
                 id: beatBtn
                 isFirst: true
                 text:"beat"
-                width: parent.width / 3;
+                width: parent.width / 4;
                 cornerRadius: box.radius;
                 onStateOn: {
                     if(radio){
@@ -49,7 +49,7 @@ import WebSocketConnector 1.1
             TriggerSourceBtnItem{
                 id: onsetBtn
                 text:"onset"
-                width: parent.width / 3;
+                width: parent.width / 4;
                 onStateOn: {
                     if(radio){
                         beatBtn.isOn = false;
@@ -62,8 +62,7 @@ import WebSocketConnector 1.1
             TriggerSourceBtnItem{
                 id: timerBtn
                 text:"timer"
-                width: parent.width / 3;
-                isLast: true
+                width: parent.width / 4;
                 cornerRadius: box.radius
                 onStateOn: {
                     if(radio){
@@ -74,11 +73,24 @@ import WebSocketConnector 1.1
                 }
                 onStateOff: sendState();
             }
+            TriggerSourceBtnItem{
+                id: manualBtn
+                text: qsTr("manual")
+                width: parent.width / 4;
+                isLast: true
+                cornerRadius: box.radius
+                onStateOn: {
+                    var msg = Object();
+                    msg.manual = true;
+                    stateWsc.send = JSON.stringify(msg);
+                }
+                snapIn: false
+                onStateOff: sendState();
+            }
         }
 
         function sendState(){
             stateChanged(onsetBtn.isOn,beatBtn.isOn,timerBtn.isOn);
-            console.log(beatBtn.isOn);
             var method = "";
             if(onsetBtn.isOn)
                 method = "onset";

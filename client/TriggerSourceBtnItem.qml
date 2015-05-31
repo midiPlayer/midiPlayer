@@ -11,6 +11,8 @@ Rectangle{
     property color textColor : "#fff";
     property color mColor : setGradient();
 
+    property bool snapIn : true
+
     property int cornerRadius: 0;
 
     signal stateOn();
@@ -98,6 +100,10 @@ Rectangle{
             mColor = setGradient();
         }
         onReleased: {
+            if(!snapIn && isOn){
+                isOn = false;
+                stateOff();
+            }
         }
     }
 
