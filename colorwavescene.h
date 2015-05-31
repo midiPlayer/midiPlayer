@@ -4,6 +4,7 @@
 #include "websocketserverprovider.h"
 #include "trigger.h"
 #include <QTime>
+#include "colorbutton.h"
 class ColorWaveScene : public Scene, public WebSocketServerProvider
 {
 Q_OBJECT
@@ -35,6 +36,8 @@ private:
 
     float activeDistance;// in meters
     float speed;// in m/s
+
+    ColorButton colorButton;
 };
 
 #endif // COLORWAVESCENE_H

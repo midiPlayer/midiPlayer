@@ -6,23 +6,23 @@
 
 ColorWaveScene::ColorWaveScene(QList<Device> avDev, WebSocketServer *ws, JackProcessor *jackP, QString name, QJsonObject serialized):Scene(name,serialized),
     WebSocketServerProvider(ws),trigger(ws,jackP),usedDevices(),onState(),beatStopwatch(),
-    isRunning(false),activeDistance(10),speed(50)
+    isRunning(false),activeDistance(10),speed(50),colorButton(ws)
 {
     foreach (Device dev,avDev) {
         if(dev.getType() == Device::RGB || dev.getType() == Device::RGBW){
             usedDevices.append(dev);
-            foreach (int c, dev.getChannels()) {
                 //dev.setChannel(c,1.0f);//all white
                 int basC = dev.getFirstChannel();
-                dev.setChannel(basC+0,0);
-                dev.setChannel(basC+1,0);
-                dev.setChannel(basC+2,1.0);
+                QColor color;
+                if(colorButton.getColors().length() > 0)
+                    colorButton.getColors().at(0);
+                dev.setChannel(basC+0,color.redF());
+                dev.setChannel(basC+1,color.greenF());
+                dev.setChannel(basC+2,color.blueF());
                 if(dev.getType() == Device::RGBW){
-                    dev.setChannel(basC+3,0.2);
+                    dev.setChannel(basC+3,0.0);
                 }
-            }
             onState.append(dev);
-
         }
     }
     trigger.triggerConfig.insert(Trigger::ONSET);
@@ -57,7 +57,12 @@ QList<Device> ColorWaveScene::getUsedLights()
 
 void ColorWaveScene::clientRegistered(QJsonObject msg, int id)
 {
-
+    QJsonObject config;
+    config.insert("speedChanged",speed);
+    config.insert("activeRadiusChanged",activeDistance);
+    config.insert("colorButton",colorButton.providerId);
+    config.insert("trigger",trigger.providerId);
+    sendMsg(config,id,true);
 }
 
 void ColorWaveScene::clientUnregistered(QJsonObject msg, int id)
@@ -67,7 +72,11 @@ void ColorWaveScene::clientUnregistered(QJsonObject msg, int id)
 
 void ColorWaveScene::clientMessage(QJsonObject msg, int id)
 {
-
+    if(msg.contains("speedChanged"))
+        speed = msg.value("speedChanged").toDouble(5);
+    if(msg.contains("activeRadiusChanged"))
+        activeDistance = msg.value("activeRadiusChanged").toDouble(1);
+    sendMsgButNotTo(msg,id,true);
 }
 
 QString ColorWaveScene::getRequestType()
@@ -122,15 +131,6 @@ void ColorWaveScene::triggered()
  */
 float ColorWaveScene::getPercentageForDistance(float distance)
 {
-    //float percentage = 0;
-    /*if(distance<0 && distance >(-activeDistance)){
-        percentage = distance/(-activeDistance);
-    }
-    else if(distance<0 && distance > (-2*activeDistance)){
-        percentage = 1-(distance+activeDistance)/(-activeDistance);
-    }
-
-    return percentage*percentage*percentage;*/
     if(distance<0 && distance >(-2*activeDistance)){
         float p = distance / (-2*activeDistance);
         p = p*p;
