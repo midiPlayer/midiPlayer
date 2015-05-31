@@ -7,7 +7,7 @@ Trigger::Trigger(WebSocketServer* ws, JackProcessor* jackP, QJsonObject serializ
 {
     ws->registerProvider(this);
     if(serialized.length() != 0){
-        setState(serialized.value(KEY_SOURCE).toObject());
+        loadSerialized(serialized);
     }
 }
 
@@ -74,6 +74,11 @@ QJsonObject Trigger::getTriggerSourceJson()
     triggerObj.insert("onset",triggerConfig.contains(ONSET));
     triggerObj.insert("timer",triggerConfig.contains(TIMER));
     return triggerObj;
+}
+
+void Trigger::loadSerialized(QJsonObject serialized)
+{
+    setState(serialized.value(KEY_SOURCE).toObject());
 }
 
 QJsonObject Trigger::getState()

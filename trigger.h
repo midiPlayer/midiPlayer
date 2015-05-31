@@ -21,6 +21,7 @@ public:
     QSet<TriggerType> triggerConfig;
     QJsonObject serialize();
     QJsonObject getTriggerSourceJson();
+    void loadSerialized(QJsonObject serialized);
 public slots:
     void beat();
     void onset();

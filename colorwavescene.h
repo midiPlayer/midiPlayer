@@ -34,7 +34,7 @@ private:
     QVector3D center;
     float getPercentageForDistance(float distance);
 
-    float activeDistance;// in meters
+    float activeRadius;// in meters
     float speed;// in m/s
 
     ColorButton colorButton;

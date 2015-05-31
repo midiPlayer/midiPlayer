@@ -4,9 +4,14 @@
 #include "math.h"
 #include <QColor>
 
+#define KEY_COLOR "color"
+#define KEY_TRIGGER "trigger"
+#define KEY_SPEED "speed"
+#define KEY_ACTIVE_RADIUS "activeRadius"
+
 ColorWaveScene::ColorWaveScene(QList<Device> avDev, WebSocketServer *ws, JackProcessor *jackP, QString name, QJsonObject serialized):Scene(name,serialized),
     WebSocketServerProvider(ws),trigger(ws,jackP),usedDevices(),onState(),beatStopwatch(),
-    isRunning(false),activeDistance(10),speed(50),colorButton(ws)
+    isRunning(false),activeRadius(10),speed(50),colorButton(ws)
 {
     foreach (Device dev,avDev) {
         if(dev.getType() == Device::RGB || dev.getType() == Device::RGBW){
@@ -25,7 +30,19 @@ ColorWaveScene::ColorWaveScene(QList<Device> avDev, WebSocketServer *ws, JackPro
             onState.append(dev);
         }
     }
-    trigger.triggerConfig.insert(Trigger::ONSET);
+    if(serialized.length() > 0){
+        if(serialized.contains(KEY_TRIGGER))
+            trigger.loadSerialized(serialized.value(KEY_TRIGGER).toObject());
+        if(serialized.contains(KEY_COLOR))
+            colorButton.loadSerialized(serialized.value(KEY_COLOR).toObject());
+        if(serialized.contains(KEY_SPEED))
+            speed = serialized.value(KEY_SPEED).toDouble(10);
+        if(serialized.contains(KEY_ACTIVE_RADIUS))
+            activeRadius = serialized.value(KEY_ACTIVE_RADIUS).toDouble(10);
+    }
+    else{
+     trigger.triggerConfig.insert(Trigger::ONSET);
+    }
     connect(&trigger,SIGNAL(trigger()),this,SLOT(triggered()));
     ws->registerProvider(this);
 }
@@ -43,7 +60,7 @@ QList<Device> ColorWaveScene::getLights()
             dev = dev * percentage;
             ret.append(dev);
         }
-        if(radius > maxDistance + 2*activeDistance)//not interessting anymore
+        if(radius > maxDistance + 2*activeRadius)//not interessting anymore
             isRunning = false;
         return ret;
     }
@@ -59,7 +76,7 @@ void ColorWaveScene::clientRegistered(QJsonObject msg, int id)
 {
     QJsonObject config;
     config.insert("speedChanged",speed);
-    config.insert("activeRadiusChanged",activeDistance);
+    config.insert("activeRadiusChanged",activeRadius);
     config.insert("colorButton",colorButton.providerId);
     config.insert("trigger",trigger.providerId);
     sendMsg(config,id,true);
@@ -75,7 +92,7 @@ void ColorWaveScene::clientMessage(QJsonObject msg, int id)
     if(msg.contains("speedChanged"))
         speed = msg.value("speedChanged").toDouble(5);
     if(msg.contains("activeRadiusChanged"))
-        activeDistance = msg.value("activeRadiusChanged").toDouble(1);
+        activeRadius = msg.value("activeRadiusChanged").toDouble(1);
     sendMsgButNotTo(msg,id,true);
 }
 
@@ -96,7 +113,12 @@ void ColorWaveScene::start()
 
 QJsonObject ColorWaveScene::serialize()
 {
-    return serializeScene(QJsonObject());
+    QJsonObject ret;
+    ret.insert(KEY_TRIGGER,trigger.serialize());
+    ret.insert(KEY_COLOR,colorButton.serialize());
+    ret.insert(KEY_SPEED,speed);
+    ret.insert(KEY_ACTIVE_RADIUS,activeRadius);
+    return serializeScene(ret);
 }
 
 QString ColorWaveScene::getSceneTypeString()
@@ -125,14 +147,14 @@ void ColorWaveScene::triggered()
     beatStopwatch.restart();
 }
 /**
- * @brief ColorWaveScene::getPercentageForDistance
+0 * @brief ColorWaveScene::getPercentageForDistance
  * @param distance from the wave trigger bool to the light in meters
  * @return percentage for the light
  */
 float ColorWaveScene::getPercentageForDistance(float distance)
 {
-    if(distance<0 && distance >(-2*activeDistance)){
-        float p = distance / (-2*activeDistance);
+    if(distance<0 && distance >(-2*activeRadius)){
+        float p = distance / (-2*activeRadius);
         p = p*p;
       /*  if(!distance< -activeDistance )//einblenden
             p=p*p*p;*/
