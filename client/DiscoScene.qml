@@ -275,6 +275,8 @@ Item {
                                 filename = "ColorScene.qml";
                             if(modelData.requestType === "colorWaveScene")
                                 filename = "ColorWaveScene.qml";
+                            if(modelData.requestType === "colorWheel")
+                                filename = "ColorWheelScene.qml";
 
                             if(filename != ""){
                             var obj = Qt.createComponent(filename,0,this);

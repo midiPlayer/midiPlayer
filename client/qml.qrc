@@ -33,5 +33,6 @@
         <file>images/schatten4colorPickerButton.png</file>
         <file>images/schatten4colorPickerButton.xcf</file>
         <file>ColorWaveScene.qml</file>
+        <file>ColorWheelScene.qml</file>
     </qresource>
 </RCC>

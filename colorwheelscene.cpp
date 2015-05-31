@@ -4,9 +4,14 @@
 #include <algorithm>
 #include "math.h"
 
+#define KEY_TRIGGER "trigger"
+#define KEY_DURATION "duration"
+#define KEY_BASIC_SPEED "basicSpeed"
+#define KEY_BUMP_SPEED "bumpSpeed"
+
 ColorWheelScene::ColorWheelScene(QList<Device> avDev, WebSocketServer *ws, JackProcessor *jackP, QString name, QJsonObject serialized) :
     Scene(name,serialized),WebSocketServerProvider(ws), stopwatch(),triggerStopwatch(),positionedDevices(),basicSpeed(0.05),anchor(0.0f),
-    trigger(ws,jackP),duration(0.6),maxSpeed(0.5),usedDevices()
+    trigger(ws,jackP),duration(0.6),bumpSpeed(0.5),usedDevices()
 {
     ws->registerProvider(this);
     trigger.triggerConfig.insert(Trigger::BEAT);
@@ -59,6 +64,17 @@ ColorWheelScene::ColorWheelScene(QList<Device> avDev, WebSocketServer *ws, JackP
             positionedDevices.append(posD);
         }
     }
+
+    if(serialized.length() > 0){
+        if(serialized.contains(KEY_TRIGGER))
+            trigger.loadSerialized(serialized.value(KEY_TRIGGER).toObject());
+        if(serialized.contains(KEY_BASIC_SPEED))
+            basicSpeed = serialized.value(KEY_BASIC_SPEED).toDouble(0);
+        if(serialized.contains(KEY_BUMP_SPEED))
+            bumpSpeed = serialized.value(KEY_BUMP_SPEED).toDouble(0);
+        if(serialized.contains(KEY_DURATION))
+            duration = serialized.value(KEY_DURATION).toDouble(1.0);
+    }
 }
 
 QList<Device> ColorWheelScene::getLights()
@@ -102,7 +118,12 @@ QList<Device> ColorWheelScene::getUsedLights()
 
 void ColorWheelScene::clientRegistered(QJsonObject msg, int id)
 {
-
+    QJsonObject reply;
+    reply.insert("durationChanged",duration);
+    reply.insert("basicSpeedChanged",basicSpeed);
+    reply.insert("bumpSpeedChanged",bumpSpeed);
+    reply.insert("trigger",trigger.providerId);
+    sendMsg(reply,id,true);
 }
 
 void ColorWheelScene::clientUnregistered(QJsonObject msg, int id)
@@ -112,7 +133,13 @@ void ColorWheelScene::clientUnregistered(QJsonObject msg, int id)
 
 void ColorWheelScene::clientMessage(QJsonObject msg, int id)
 {
-
+    if(msg.contains("bumpSpeedChanged"))
+        bumpSpeed = msg.value("bumpSpeedChanged").toDouble(0);
+    if(msg.contains("basicSpeedChanged"))
+        basicSpeed = msg.value("basicSpeedChanged").toDouble(0);
+    if(msg.contains("durationChanged"))
+        duration = msg.value("durationChanged").toDouble(1.0);
+    sendMsgButNotTo(msg,id,true);
 }
 
 QString ColorWheelScene::getRequestType()
@@ -132,7 +159,12 @@ void ColorWheelScene::start()
 
 QJsonObject ColorWheelScene::serialize()
 {
-    return serializeScene(QJsonObject());
+    QJsonObject ret;
+    ret.insert(KEY_TRIGGER,trigger.providerId);
+    ret.insert(KEY_BASIC_SPEED,basicSpeed);
+    ret.insert(KEY_BUMP_SPEED,bumpSpeed);
+    ret.insert(KEY_DURATION,duration);
+    return serializeScene(ret);
 }
 
 QString ColorWheelScene::getSceneTypeString()
@@ -158,8 +190,9 @@ void ColorWheelScene::triggered()
  */
 double ColorWheelScene::getSpeed(double time)
 {
-    double m = (maxSpeed - basicSpeed) / duration;
-    return std::max(maxSpeed - m*time,double(basicSpeed));
+
+    double m = bumpSpeed / duration;
+    return std::max((basicSpeed+bumpSpeed) - m*time,double(basicSpeed));
 }
 
 double ColorWheelScene::getDelta()

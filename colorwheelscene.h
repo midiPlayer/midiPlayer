@@ -35,7 +35,7 @@ private:
     QTime triggerStopwatch;
     Trigger trigger;
     float basicSpeed;//rounds/s
-    float maxSpeed;//rounds/s
+    float bumpSpeed;//rounds/s
     float anchor;
     float duration;
     double getSpeed(double time);
