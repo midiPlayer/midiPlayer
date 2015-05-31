@@ -32,7 +32,7 @@ public:
 private:
     void addSubScene(QSharedPointer<DiscoSubScene> subScene);
     bool solo;
-    Scene* soloScene;
+    QSharedPointer<DiscoSubScene> soloScene;
     bool isRunning;
 
     QMap<int,QSharedPointer<DiscoSubScene> > effects;

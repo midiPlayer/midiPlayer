@@ -10,6 +10,7 @@ Item {
     width: parent.width
     height: parent.height
     id: discoScene
+    property PushLockBtn currentSolo: null
     ColumnLayout{
         anchors.fill: parent;
     Item{
@@ -63,6 +64,17 @@ Item {
                                 activeBtn.setOff(false)
                             else
                                 activeBtn.setOn(false)
+                        }
+                    }
+                    if(msg.soloChanged !== undefined){
+                        if(modelData.sceneId === msg.soloChanged.sceneId){
+                             console.log("new solo state:");
+                            if(msg.soloChanged.state){
+                                soloBtn.setOn(false);
+                                soloBtn.switchOffOthers();
+                            }
+                            else
+                                soloBtn.setOff(false)
                         }
                     }
                 }
@@ -163,7 +175,27 @@ Item {
                         PushLockBtn{
                             id: soloBtn
                             onStateOn: {
+                                soloStateChanged(modelData.sceneId,true);
+                                switchOffOthers();
                             }
+                            onStateOff: {
+                                soloStateChanged(modelData.sceneId,false);
+                            }
+
+                            function soloStateChanged(id,stateP){
+                                var msg = new Object();
+                                msg.soloChanged = new Object();
+                                msg.soloChanged.sceneId = id;
+                                msg.soloChanged.state = stateP;
+                                ws.send = JSON.stringify(msg);
+                            }
+                            function switchOffOthers(){
+                                if(discoScene.currentSolo !== null && discoScene.currentSolo != soloBtn){
+                                    discoScene.currentSolo.setOff(false);
+                                }
+                                discoScene.currentSolo = soloBtn;
+                            }
+
                             anchors.centerIn: parent;
                         }
                     }

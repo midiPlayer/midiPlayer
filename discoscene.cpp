@@ -7,14 +7,15 @@
 #define STATUS_KEY_EFFECTS "effects"
 
 DiscoScene::DiscoScene(WebSocketServer *ws, SceneBuilder *sceneBuilderP, QString name, QJsonObject serialized) : Scene(name,serialized),
-    WebSocketServerProvider(ws), fusion("fusion"),solo(false),sceneIdCounter(0),order(),sceneBuilder(sceneBuilderP),isRunning(false)
+    WebSocketServerProvider(ws), fusion("fusion"),solo(false),soloScene(), sceneIdCounter(0),order(),sceneBuilder(sceneBuilderP),isRunning(false)
 {
     ws->registerProvider(this);
 
     if(serialized.length() != 0 && serialized.contains(STATUS_KEY_EFFECTS) && serialized.value(STATUS_KEY_EFFECTS).isArray()){
         foreach (QJsonValue effectVal, serialized.value(STATUS_KEY_EFFECTS).toArray()) {
             QJsonObject effectJson = effectVal.toObject();
-            QSharedPointer<DiscoSubScene> scene = QSharedPointer<DiscoSubScene>(new DiscoSubScene(effectJson,sceneBuilder,sceneIdCounter));
+            QSharedPointer<DiscoSubScene> scene = QSharedPointer<DiscoSubScene>(
+                        new DiscoSubScene(effectJson,sceneBuilder,sceneIdCounter));
             if(!(scene.isNull() || scene.data()->scene.isNull()))
                 addSubScene(scene);
         }
@@ -26,7 +27,7 @@ QList<Device> DiscoScene::getLights()
     fusion.reset();
     fusion.import(getUsedLights());//all light in off state
     if(solo){
-        fusion.fusion(soloScene->getLights(),Device::OVERRIDE,1.0);
+        fusion.fusion(soloScene.data()->scene.data()->getLights(),soloScene.data()->fusionType,soloScene.data()->opacity);
     }
     else{
         foreach (int orderId, order) {
@@ -86,6 +87,19 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
             DiscoSubScene *sub = effects.value(sceneId).data();
             sub->mute = muteState;
         }
+        sendMsgButNotTo(msg,id);
+    }
+    if(msg.contains("soloChanged")){
+        QJsonObject soloChange = msg.value("soloChanged").toObject();
+        if(soloChange.value("state").toBool()){
+            int sceneId = soloChange.value("sceneId").toInt(-1);
+            if(effects.contains(sceneId)){
+                soloScene = effects.value(sceneId);
+                solo = true;
+            }
+        }
+        else
+            solo = false;
         sendMsgButNotTo(msg,id);
     }
     if(msg.contains("fusionTypeChanged")){
