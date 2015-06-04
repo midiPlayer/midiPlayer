@@ -17,21 +17,6 @@ ApplicationWindow {
 
 
 
-    menuBar: MenuBar {
-        Menu {
-            title: qsTr("&File")
-            MenuItem {
-                text: qsTr("&Open")
-                onTriggered: messageDialog.show(qsTr("Open action triggered"));
-            }
-            MenuItem {
-                text: qsTr("E&xit")
-                onTriggered: Qt.quit();
-            }
-        }
-    }
-
-
 ColumnLayout{
     anchors.fill: parent;
     Item{
