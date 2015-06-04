@@ -15,8 +15,17 @@ QML_IMPORT_PATH =
 # Default rules for deployment.
 include(deployment.pri)
 
-DISTFILES +=
+DISTFILES += \
+    android/AndroidManifest.xml \
+    android/gradle/wrapper/gradle-wrapper.jar \
+    android/gradlew \
+    android/res/values/libs.xml \
+    android/build.gradle \
+    android/gradle/wrapper/gradle-wrapper.properties \
+    android/gradlew.bat
 
 HEADERS += \
 ../webSocketConnector/webinterface.h \
     ../webSocketConnector/websocketconnector.h
+
+ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
