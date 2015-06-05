@@ -293,22 +293,33 @@ Item {
 
                             if(filename != ""){
                             var obj = Qt.createComponent(filename,0,this);
-                                if (obj.status === Component.Ready)
+                                if (obj.status === Component.Ready){
                                         finishCreation(obj);
-                                    else
-                                        obj.statusChanged.connect(finishCreation(obj));
+                                }
+                                else{
+                                    obj.statusChanged.connect(finishCreation(obj));
+                                }
                             }
                         }
 
+                        property var incubator;
                         function finishCreation(obj) {
-                            var incubator = obj.incubateObject(placeholder,{"visible":false,"requestId":modelData.providerId});
+                           incubator = obj.incubateObject(placeholder,{"visible":false,"requestId":modelData.providerId});
                            if (incubator.status !== Component.Ready) {
+                               console.log("incubate later");
                                incubator.onStatusChanged = function(status) {
+                                   console.log("incubate status changed");
                                    if (status === Component.Ready) {
+                                       console.log("incubated");
                                        optionBox.implicitHeight = incubator.object.height;
                                        beatScene = incubator.object;
                                    }
                                }
+                           }
+                           else{
+                                                              console.log("incubated now");
+                               optionBox.implicitHeight = incubator.object.height;
+                               beatScene = incubator.object;
                            }
                         }
 
