@@ -33,6 +33,7 @@ Item{
                     id: activeRadiusSlider
                     minimumValue: 0
                     maximumValue: 100
+                    Layout.preferredWidth: 200
                     onValueChanged: {
                         if(pressed){
                             var mesage = new Object();
@@ -53,6 +54,7 @@ Item{
                     id: speedSlider
                     minimumValue: 1
                     maximumValue: 100
+                    Layout.preferredWidth: 200
                     onValueChanged: {
                         if(pressed){
                             var mesage = new Object();

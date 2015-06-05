@@ -33,6 +33,7 @@ Item{
                     id: smoothnessSlider
                     minimumValue: 0
                     maximumValue: 0.5
+                    Layout.preferredWidth: 200
                     onValueChanged: {
                         if(pressed){
                             var mesage = new Object();

@@ -80,7 +80,7 @@ Item {
                 }
             }
 
-            Rectangle {
+            Item {
                 id: dragRect
                 width: listView.width
                 height: column.height
@@ -94,12 +94,27 @@ Item {
                     anchors.top: parent.top
                     width:parent.width
                     height:row.height + optionBox.height
-                    color: "#333"
-                    border.color: "#000"
+                    color: "#33000000"
+                    border.color: "#55000000"
                     border.width: 1
 
+
+
+                RowLayout{
+                    opacity: 1.0
+                    id: row
+                    z: 2
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                    width:parent.width
+                    height:100
+                    spacing: 10
+
                     MouseArea{
-                        anchors.fill: row
+                        anchors.left:dragger.right
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        anchors.right: fusionTypeCombo.left
                         onPressed: {
                             if(optionBox.height != 0)
                                 optionBox.height = 0;
@@ -109,22 +124,20 @@ Item {
                     }
 
 
-
-                RowLayout{
-                    id: row
-                    z: 2
-                    anchors.left: parent.left
-                    anchors.top: parent.top
-                    width:parent.width
-                    height:100
-                    spacing: 10
-
-
-                    Rectangle{
+                    Item{
+                        id: dragger
                         height: parent.height
                         width:100
                         anchors.left: parent.left
-                        color: "green"
+
+                        Image {
+                            anchors.centerIn: parent
+                            source: "icons/move.png"
+                            fillMode: scale
+                            width: parent.width*0.5
+                            height: parent.height * 0.5
+
+                        }
 
                         MouseArea {
                             id: mouseArea
@@ -170,7 +183,7 @@ Item {
                     }
 
                     Item{
-                        Layout.preferredWidth: activeBtn.width+5;
+                        Layout.preferredWidth: soloBtn.width+5;
                         height: parent.height;
                         PushLockBtn{
                             id: soloBtn

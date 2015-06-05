@@ -117,6 +117,7 @@ Item{
                 id:radiusSlider
                 maximumValue:1
                 minimumValue: 0.1
+                Layout.preferredWidth: 200
                 onValueChanged: {
                     console.log(value);
                     green.width = value*tArea.width;

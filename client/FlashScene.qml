@@ -8,7 +8,7 @@ import QtQuick.Controls 1.0
 
 Item{
     width: parent.width;
-    height:200
+    height:250
     id:main
     property alias requestId : wsc.requestId
 
@@ -36,6 +36,7 @@ Item{
                     id: durationSlider
                     minimumValue: 1
                     maximumValue: 500
+                    Layout.preferredWidth: 200
                     onValueChanged: {
                         if(pressed){
                             var mesage = new Object();
@@ -55,6 +56,7 @@ Item{
                     id: smoothnessSlider
                     minimumValue: 0
                     maximumValue: 0.5
+                    Layout.preferredWidth: 200
                     onValueChanged: {
                         if(pressed){
                             var mesage = new Object();

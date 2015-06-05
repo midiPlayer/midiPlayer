@@ -33,6 +33,7 @@ Item{
                     id: durationSlider
                     minimumValue: 0.1
                     maximumValue: 3
+                    Layout.preferredWidth: 200
                     onValueChanged: {
                         if(pressed){
                             var mesage = new Object();
@@ -53,6 +54,7 @@ Item{
                     id: basicSpeedSlider
                     minimumValue: 0
                     maximumValue: 1
+                    Layout.preferredWidth: 200
                     onValueChanged: {
                         if(pressed){
                             var mesage = new Object();
@@ -72,6 +74,7 @@ Item{
                     id: bumpSpeedSlider
                     minimumValue: 0
                     maximumValue: 3
+                    Layout.preferredWidth: 200
                     onValueChanged: {
                         if(pressed){
                             var mesage = new Object();
