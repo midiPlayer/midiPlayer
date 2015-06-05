@@ -306,18 +306,14 @@ Item {
                         function finishCreation(obj) {
                            incubator = obj.incubateObject(placeholder,{"visible":false,"requestId":modelData.providerId});
                            if (incubator.status !== Component.Ready) {
-                               console.log("incubate later");
                                incubator.onStatusChanged = function(status) {
-                                   console.log("incubate status changed");
                                    if (status === Component.Ready) {
-                                       console.log("incubated");
                                        optionBox.implicitHeight = incubator.object.height;
                                        beatScene = incubator.object;
                                    }
                                }
                            }
                            else{
-                                                              console.log("incubated now");
                                optionBox.implicitHeight = incubator.object.height;
                                beatScene = incubator.object;
                            }
