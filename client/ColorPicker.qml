@@ -34,6 +34,7 @@ Item{
 
     Component.onCompleted: {
         applicationWindow.backPressHandler=function() {
+
         if (colorPickerStackView.depth > 1) //d.h. im Submenu
         {
             colorPickerStackView.pop();
@@ -70,6 +71,9 @@ Item{
         function colorSelected(color) {
             if(button.onlyOne){             //es darf (für diese Szene) nur eine Farbe ausgewählt werden
                 button.myColor = color;
+                applicationWindow.backPressHandler=function() {
+                    return false;
+                }
                 stackView.pop()
             }
             else{

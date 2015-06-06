@@ -4,7 +4,8 @@ import QtQuick.Controls 1.2
 import WebSocketConnector 1.1
 
 Item{
-    signal sceneSelected(string type, string name);
+    property alias requestId: ws.requestId
+    property alias requestType: ws.requestType
     ListModel{
         id: sceneTypeModel
         ListElement{
@@ -71,7 +72,6 @@ Item{
     }
     WebSocketConnector{
         id: ws
-        requestType: "discoScene"
     }
 }
 

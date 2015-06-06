@@ -6,11 +6,12 @@
 #include "fusionscene.h"
 #include <QTime>
 #include "jackprocessor.h"
+#include "dia.h"
 
 class DiaScene : public Scene, public WebSocketServerProvider
 {
 public:
-    DiaScene(QList<Device> avDev, WebSocketServer *ws, JackProcessor *jackP,
+    DiaScene(QList<Device> avDev, WebSocketServer *ws, JackProcessor *jackP, SceneBuilder builder,
              QString name, QJsonObject serialized = QJsonObject());
     QList<Device> getLights();
     QList<Device> getUsedLights();
@@ -24,23 +25,23 @@ public:
     QString getSceneTypeString();
     static QString getSceneTypeStringStaticaly();
 
-    void addScene(QSharedPointer<Scene>scene,float fadeInDuration);
+    void addScene(QSharedPointer<Scene>scene, QString name, QString desc, float fadeInDuration);
 public slots:
     void triggered();
 private:
     QList<Device> availableDevices;
-    struct Dia{
-        QSharedPointer<Scene> scene;
-        float fadeInDuration;
-    };
 
-    QList<Dia> scenes;
+    QJsonObject getState(bool addScenes);
+
+    QList<QSharedPointer<Dia> > scenes;
     int current;
     int fadingTo;
 
     bool nextOnMusic;
     QTime fadeTimer;
     FusionScene fusion;
+    WebSocketServer *wss;
+    SceneBuilder builder;
 
 };
 

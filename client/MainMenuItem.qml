@@ -1,15 +1,13 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.1
-Rectangle{
+Item{
     property alias name : text.text
     property alias imageSrc : img.source
     property string link;
 
     Layout.alignment:Qt.AlignCenter
-    Layout.minimumWidth: 100
-    Layout.preferredWidth: 200
-    height: 200
-    color:"#00000000"
+    Layout.preferredHeight: width
+    Layout.minimumWidth: 200
       ColumnLayout{
           anchors.fill: parent
           spacing: 20

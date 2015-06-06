@@ -14,19 +14,22 @@ Item {
         MainMenuItem{
             imageSrc: "icons/settings.png"
             name: "current Scene"
-            link:"DiscoScene.qml"
+            link:"DiaScene.qml"
+            Layout.preferredWidth: parent.width / 4;
         }
 
         MainMenuItem{
             imageSrc: "icons/trigger.png"
             name: "configure Trigger"
-            link:"ColorPickerButton.qml"
+            link:""
+            Layout.preferredWidth: parent.width / 4;
         }
 
         MainMenuItem{
             imageSrc: "icons/settings.png"
             name: "beamer"
             link:"BeamerShutterControl.qml"
+            Layout.preferredWidth: parent.width / 4;
         }
     }
    }

@@ -7,6 +7,7 @@ import WebSocketConnector 1.1
 
 
 Item {
+    property alias requestId : ws.requestId
     width: parent.width
     height: parent.height
     id: discoScene
@@ -387,7 +388,7 @@ Item {
         Button{
             text: "+"
             onClicked: {
-                stackView.push(Qt.resolvedUrl("DiscoSceneAddScene.qml"),{properties:{onSceneSelected:function() { console.log("asdf");   }}});
+                stackView.push(Qt.resolvedUrl("AddScene.qml"),{"requestId":requestId});
             }
         }
     }
@@ -425,13 +426,11 @@ Item {
     WorkerScript {
             id: importer
             source: "DiscoSceneImport.js"
-            signal fusionTypeChanged();
         }
 
 
     WebSocketConnector{
         id: ws
-        requestType: "discoScene"
         onMessage: {
 
             importer.sendMessage({"msg":msg,"listModel":listModel,"fusionTypeModel":fusionTypeModel});

@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     availableDevices.append(Device(8,4,"rgbw3",Device::RGBW,QVector3D(2,-2,0)));
     availableDevices.append(Device(0,6,"beamer1",Device::Beamer,QVector3D(3,0,0)));
 
-    mainScene = QSharedPointer<DiaScene>(new DiaScene(availableDevices,&wss,&jackProcessor,"main"));
+    mainScene = QSharedPointer<DiaScene>(new DiaScene(availableDevices,&wss,&jackProcessor,sceneBuilder, "main"));
 
     discoscene = QSharedPointer<DiscoScene>(new DiscoScene(&wss,&sceneBuilder,"disco",getDiscoScenSettings()));
 
@@ -47,8 +47,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //connect(p,SIGNAL(midiRequest()),this,SLOT(getChanges()));
     ui->setupUi(this);
 
-    mainScene.data()->addScene(discoscene,1);
-    mainScene.data()->addScene(QSharedPointer<ColorScene>(new ColorScene(availableDevices,&wss,"black")),1);
+    mainScene.data()->addScene(discoscene,"disco1","Das ist die erste Discoscene!",1);
+    mainScene.data()->addScene(QSharedPointer<ColorScene>(new ColorScene(availableDevices,&wss,"black")),"black","eben einfach schwarz - schlicht und doch aufdringlich",1);
     mainScene.data()->start();
 
 

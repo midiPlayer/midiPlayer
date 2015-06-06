@@ -69,7 +69,7 @@ QString DiscoScene::getSceneTypeStringStaticaly()
 void DiscoScene::clientRegistered(QJsonObject msg, int id)
 {
     QJsonObject response = getStatus(true,true,false);
-    sendMsg(response,id);
+    sendMsg(response,id,true);
 }
 
 void DiscoScene::clientUnregistered(QJsonObject msg, int id)
@@ -87,7 +87,7 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
             DiscoSubScene *sub = effects.value(sceneId).data();
             sub->mute = muteState;
         }
-        sendMsgButNotTo(msg,id);
+        sendMsgButNotTo(msg,id,true);
     }
     if(msg.contains("soloChanged")){
         QJsonObject soloChange = msg.value("soloChanged").toObject();
@@ -100,7 +100,7 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
         }
         else
             solo = false;
-        sendMsgButNotTo(msg,id);
+        sendMsgButNotTo(msg,id,true);
     }
     if(msg.contains("fusionTypeChanged")){
         QJsonObject fusionTypeChange = msg.value("fusionTypeChanged").toObject();
@@ -110,7 +110,7 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
             DiscoSubScene *sub = effects.value(sceneId).data();
             sub->setFusinType(fusionTypeStr);
         }
-        sendMsgButNotTo(msg,id);
+        sendMsgButNotTo(msg,id,true);
     }
     if(msg.contains("orderChanged")){
         QJsonArray readOrder = msg.value("orderChanged").toArray();
@@ -122,7 +122,7 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
         }
         order.clear();
         order = newOrder;
-        sendMsgButNotTo(msg,id);
+        sendMsgButNotTo(msg,id,true);
     }
     if(msg.contains("addScene")){
         QJsonObject addCmd = msg.value("addScene").toObject();
@@ -132,7 +132,7 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
            return;
         }
         addSubScene(QSharedPointer<DiscoSubScene>(new DiscoSubScene(sceneIdCounter,newScene,Device::MAX,true,1.0f)));
-        sendMsg(getStatus(true,true,false),id);
+        sendMsg(getStatus(true,true,false),id,true);
     }
     if(msg.contains("deleteScene")){
         int id = msg.value("deleteScene").toInt(-1);
@@ -140,7 +140,7 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
             order.removeAll(id);
             effects.remove(id);
         }
-        sendMsgButNotTo(msg,id);
+        sendMsgButNotTo(msg,id,true);
     }
 }
 

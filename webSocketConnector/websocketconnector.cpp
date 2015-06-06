@@ -64,6 +64,7 @@ int WebSocketConnector::getReqestId()
 void WebSocketConnector::setRequestId(int rqID)
 {
     requestId = rqID;
+    webInterface.unregisterConnector(this);
     webInterface.registerConnector(this);
 }
 
