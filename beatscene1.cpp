@@ -139,7 +139,7 @@ void BeatScene1::changeForeground()
     QColor last = highlighted;
     while((last == highlighted|| c == highlighted) && options.length() > 2)
     {
-        int i = double(options.length())*double(rand())/RAND_MAX - 0.0001;
+        int i = rand() % options.length();
         highlighted = options.at(i);
     }
     generateNextScene();
@@ -151,7 +151,7 @@ void BeatScene1::changeBackground()
     QColor last = c;
     while((last == c || c == highlighted) && options.length() > 2)
     {
-        int i = double(options.length())*double(rand())/RAND_MAX - 0.0001;
+        int i = rand() % options.length();
         c = options.at(i);
     }
     generateNextScene();
