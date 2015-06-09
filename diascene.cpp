@@ -17,10 +17,11 @@ QList<Device> DiaScene::getLights()
         fusion.import(scenes.at(current).data()->scene.data());
     if(fadingTo != -1){
         QSharedPointer<Dia> fadingToDia  =scenes.at(fadingTo);
-        float percentage = fadeTimer.elapsed()/fadingToDia.data()->fadeInDuration;
+        float percentage = fadeTimer.elapsed()/(fadingToDia.data()->fadeInDuration*1000);
         if(percentage> 1){
             percentage = 1;
             current = fadingTo;
+            fadingTo = -1;
         }
         fusion.fusion(fadingToDia.data()->scene,Device::AV,percentage);
     }
