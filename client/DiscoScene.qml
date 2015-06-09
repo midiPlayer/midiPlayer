@@ -20,7 +20,7 @@ Item {
 
         ListView {
             anchors.fill: parent;
-            id: listView
+            id: discolistView
 
         property int dragItemIndex: -1
 
@@ -40,7 +40,7 @@ Item {
 
         delegate: Item {
             id: delegateItem
-            width: listView.width
+            width: discolistView.width
             height: dragRect.height
 
             WebSocketConnector{
@@ -83,7 +83,7 @@ Item {
 
             Item {
                 id: dragRect
-                width: listView.width
+                width: discolistView.width
                 height: column.height
                 //height:60
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -93,43 +93,33 @@ Item {
                     id: column
                     anchors.left: parent.left
                     anchors.top: parent.top
+                    anchors.right: parent.right
                     width:parent.width
-                    height:row.height + optionBox.height
+                    height:discoRow.height + optionBox.height
                     color: "#33000000"
                     border.color: "#55000000"
                     border.width: 1
+                    anchors.margins: 0
 
+                Item{
+                    id:discoRow
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    height:100
 
 
                 RowLayout{
-                    opacity: 1.0
-                    id: row
                     z: 2
-                    anchors.left: parent.left
-                    anchors.top: parent.top
-                    width:parent.width
-                    height:100
-                    spacing: 10
 
-                    MouseArea{
-                        anchors.left:dragger.right
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-                        anchors.right: fusionTypeCombo.left
-                        onPressed: {
-                            if(optionBox.height != 0)
-                                optionBox.height = 0;
-                            else
-                                optionBox.height = optionBox.implicitHeight;
-                        }
-                    }
+                    anchors.fill: parent
+                    spacing: 1
 
 
                     Item{
                         id: dragger
                         height: parent.height
-                        width:100
-                        anchors.left: parent.left
+                        Layout.preferredWidth: 100
 
                         Image {
                             anchors.centerIn: parent
@@ -152,15 +142,30 @@ Item {
                         }
                     }
 
+
+                    Item{
+                        Layout.fillWidth: true;
+                        Layout.fillHeight: true
                     Text {
                         text: modelData.name
                         color:"#fff"
-                        Layout.fillWidth: true;
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                    }
+                    MouseArea{
+                        anchors.fill: parent
+                        onPressed: {
+                            if(optionBox.height != 0)
+                                optionBox.height = 0;
+                            else
+                                optionBox.height = optionBox.implicitHeight;
+                        }
+                    }
                     }
 
                     ComboBox {
                         id:fusionTypeCombo
-                        width: 200
+                        Layout.preferredWidth: 200
                         model: fusionTypeModel
                         currentIndex: modelData.fusionTypeId
                         onActivated: {
@@ -244,11 +249,12 @@ Item {
                     }
                 }
 
+                }
 
 
                     Item{
                         id:optionBox
-                        anchors.top: row.bottom
+                        anchors.top: discoRow.bottom
                         anchors.left: parent.left
                         height:0
                         //implicitHeight: beatScene.height
@@ -330,27 +336,27 @@ Item {
                     if(!dragRect.Drag.active)
                         return;
                     var nextHeight = 100000;
-                    if(listView.itemAt(dragRect.width/2,y+height+listView.contentY) !== null)
-                        nextHeight = listView.itemAt(dragRect.width/2,y+height+listView.contentY).height;
+                    if(discolistView.itemAt(dragRect.width/2,y+height+discolistView.contentY) !== null)
+                        nextHeight = discolistView.itemAt(dragRect.width/2,y+height+discolistView.contentY).height;
 
                     var prevHeight = 100000;
-                    if(listView.itemAt(dragRect.width/2,y+listView.contentY) !== null)
-                        prevHeight = listView.itemAt(dragRect.width/2,y+listView.contentY).height;
+                    if(discolistView.itemAt(dragRect.width/2,y+discolistView.contentY) !== null)
+                        prevHeight = discolistView.itemAt(dragRect.width/2,y+discolistView.contentY).height;
 
-                   if(dragRect.y + listView.contentY - dragStart > nextHeight * 0.75
-                           && index < listView.count-1
-                           && (listView.itemAt(dragRect.width/2,y+height+listView.contentY) !== delegateItem)){
+                   if(dragRect.y + discolistView.contentY - dragStart > nextHeight * 0.75
+                           && index < discolistView.count-1
+                           && (discolistView.itemAt(dragRect.width/2,y+height+discolistView.contentY) !== delegateItem)){
 
                         dragStart = dragStart + nextHeight;
-                        listView.model.move(index,index+1,1);
-                        listView.model.rowMovedManualy();
+                        discolistView.model.move(index,index+1,1);
+                        discolistView.model.rowMovedManualy();
                        jumpedItems++;
                    }
-                   if(dragRect.y + listView.contentY - dragStart < -prevHeight * 0.75
+                   if(dragRect.y + discolistView.contentY - dragStart < -prevHeight * 0.75
                            && index != 0
-                           && (listView.itemAt(dragRect.width/2,y+height+listView.contentY) !== delegateItem)){
-                        listView.model.move(index,index-1,1);
-                       listView.model.rowMovedManualy();
+                           && (discolistView.itemAt(dragRect.width/2,y+height+discolistView.contentY) !== delegateItem)){
+                        discolistView.model.move(index,index-1,1);
+                       discolistView.model.rowMovedManualy();
                        dragStart = dragStart - prevHeight;
                        if(index == 0){
                            mouseArea.drag.minimumY = 0;

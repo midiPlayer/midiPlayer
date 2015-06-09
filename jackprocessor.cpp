@@ -16,7 +16,7 @@
 #include <string.h>             /* for strcmp */
 #include "device.h"
 
-#define DISSABLE_ANALYSE
+//#define DISSABLE_ANALYSE
 
 JackProcessor::JackProcessor(QObject *parent) : QObject(parent), musicNotificationRequested(false),
     beatRequested(true),pos(0),buffer_size(512),hop_size(256) {
