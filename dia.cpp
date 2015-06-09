@@ -6,9 +6,9 @@
 #define KEY_DESC "desc"
 #define KEY_FADE_IN_DUR "fadeInDur"
 
-Dia::Dia(QJsonObject serialized, SceneBuilder builder, WebSocketServer *wss) : WebSocketServerProvider(wss)
+Dia::Dia(QJsonObject serialized, SceneBuilder *builder, WebSocketServer *wss) : WebSocketServerProvider(wss)
 {
-    scene = builder.build(serialized.value(KEY_SCENE).toObject());
+    scene = builder->build(serialized.value(KEY_SCENE).toObject());
     name = serialized.value(KEY_NAME).toString("");
     desc = serialized.value(KEY_DESC).toString("");
     fadeInDuration = serialized.value(KEY_FADE_IN_DUR).toDouble(1.0);
@@ -21,10 +21,10 @@ Dia::Dia(QSharedPointer<Scene> sceneP, QString nameP, QString descP, float fadeI
     wss->registerProvider(this);
 }
 
-QJsonObject Dia::serialize(SceneBuilder builder)
+QJsonObject Dia::serialize(SceneBuilder *builder)
 {
     QJsonObject serialized;
-    serialized.insert(KEY_SCENE,builder.serializeScene(scene.data()));
+    serialized.insert(KEY_SCENE,builder->serializeScene(scene.data()));
     serialized.insert(KEY_NAME,name);
     serialized.insert(KEY_DESC,desc);
     serialized.insert(KEY_FADE_IN_DUR,fadeInDuration);

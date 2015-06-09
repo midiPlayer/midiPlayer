@@ -11,7 +11,7 @@
 class DiaScene : public Scene, public WebSocketServerProvider
 {
 public:
-    DiaScene(QList<Device> avDev, WebSocketServer *ws, JackProcessor *jackP, SceneBuilder builder,
+    DiaScene(QList<Device> avDev, WebSocketServer *ws, JackProcessor *jackP, SceneBuilder *builder,
              QString name, QJsonObject serialized = QJsonObject());
     QList<Device> getLights();
     QList<Device> getUsedLights();
@@ -43,7 +43,7 @@ private:
     QTime fadeTimer;
     FusionScene fusion;
     WebSocketServer *wss;
-    SceneBuilder builder;
+    SceneBuilder *builder;
 
 };
 

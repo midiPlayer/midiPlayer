@@ -11,20 +11,21 @@ FlashScene::FlashScene(WebSocketServer* ws, QList<Device> avDevP, JackProcessor 
         flashEnabled(false),flashState(),time(),smoothness(0),flashDuration(40),beatSpeed(INT_MAX),timePer(0.0f),colorButton(ws)
 {
     ws->registerProvider(this);
-    trigger.triggerConfig.insert(Trigger::BEAT);
     connect(&trigger,SIGNAL(trigger()),this,SLOT(triggered()));
     connect(&colorButton,SIGNAL(colorChanged()),this,SLOT(reloadColor()));
-    reloadColor();
     if(serialized.length() > 0){
         if(serialized.contains(KEY_COLOR))
             colorButton.loadSerialized(serialized.value(KEY_COLOR).toObject());
         if(serialized.contains(KEY_TRIGGER))
             trigger.loadSerialized(serialized.value(KEY_TRIGGER).toObject());
+        else
+            trigger.triggerConfig.insert(Trigger::BEAT);
         if(serialized.contains(KEY_DURATION))
             flashDuration = serialized.value(KEY_DURATION).toDouble(1000);
         if(serialized.contains(KEY_SMOOTHNESS))
             smoothness = serialized.value(KEY_SMOOTHNESS).toDouble(0.2);
     }
+    reloadColor();
 }
 
 void FlashScene::reloadColor()

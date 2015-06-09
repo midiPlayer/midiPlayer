@@ -3,7 +3,7 @@
 #include <QJsonArray>
 #define KEY_DIAS "dias"
 DiaScene::DiaScene(QList<Device> avDev, WebSocketServer *ws,
-                   JackProcessor *jackP,SceneBuilder builderP, QString name, QJsonObject serialized):
+                   JackProcessor *jackP, SceneBuilder *builderP, QString name, QJsonObject serialized):
                 Scene(name,serialized),WebSocketServerProvider(ws),availableDevices(avDev),
                 current(-1),fadingTo(-1),fadeTimer(),fusion("fusion"),wss(ws),builder(builderP)
 {
@@ -92,7 +92,7 @@ void DiaScene::clientMessage(QJsonObject msg, int id)
 
     if(msg.contains("addScene")){
         QJsonObject addCmd = msg.value("addScene").toObject();
-        QSharedPointer<Scene> newScene = builder.build(addCmd.value("type").toString(),addCmd.value("name").toString());
+        QSharedPointer<Scene> newScene = builder->build(addCmd.value("type").toString(),addCmd.value("name").toString());
         if(newScene.isNull()){
            qDebug("duscoScene: ERROR: unknown scene type");
            return;

@@ -32,6 +32,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void getChanges();
+    QList<Device> availableDevices;
 
 public slots:
     void trigger();
@@ -47,7 +48,6 @@ private:
     void resetFadeStart();
     float getTimeSinceFadePercentage(int duration);
 
-    QList<Device> availableDevices;
     WebSocketServer wss;
     QList<OutputDevice*> outDevices;
     bool getChangesRunning;
