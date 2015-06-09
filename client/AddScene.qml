@@ -32,6 +32,10 @@ Item{
             text: qsTr("alternating Beat Scene")
             type:"beatScene2"
         }
+        ListElement{
+            text: qsTr("Disco Scene")
+            type:"discoScene"
+        }
     }
 
     ColumnLayout{

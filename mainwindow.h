@@ -59,7 +59,7 @@ private:
     OlaDeviceProvider olaDeviceProvider;
     SceneBuilder sceneBuilder;
     QSettings settings;
-    QJsonObject getDiscoScenSettings();
+    QJsonObject getMainScenSettings();
 
     QSharedPointer<DiaScene> mainScene;
 

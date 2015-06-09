@@ -1,6 +1,7 @@
 #include "diascene.h"
 #include "websocketserver.h"
 #include <QJsonArray>
+#define KEY_DIAS "dias"
 DiaScene::DiaScene(QList<Device> avDev, WebSocketServer *ws,
                    JackProcessor *jackP,SceneBuilder builderP, QString name, QJsonObject serialized):
                 Scene(name,serialized),WebSocketServerProvider(ws),availableDevices(avDev),
@@ -128,7 +129,14 @@ void DiaScene::start()
 
 QJsonObject DiaScene::serialize()
 {
-    return serializeScene(QJsonObject());
+    QJsonObject serialized;
+
+    QJsonArray dias;
+    foreach(QSharedPointer<Dia> dia,scenes){
+        dias.append(dia.data()->serialize(builder));
+    }
+    serialized.insert(KEY_DIAS,dias);
+    return serializeScene(serialized);
 }
 
 QString DiaScene::getSceneTypeString()
@@ -143,8 +151,25 @@ QString DiaScene::getSceneTypeStringStaticaly()
 
 void DiaScene::addScene(QSharedPointer<Scene> scene,QString name,QString desc,float fadeInDuration)
 {
-    scenes.append(QSharedPointer<Dia>(new Dia(scene,name,desc,fadeInDuration,wss)));
+    addScene(QSharedPointer<Dia>(new Dia(scene,name,desc,fadeInDuration,wss)));
+}
+
+void DiaScene::addScene(QSharedPointer<Dia> dia)
+{
+    scenes.append(dia);
     sendMsg(getState(true),false);
+}
+
+void DiaScene::loadSerialized(QJsonObject serialized)
+{
+    if(serialized.contains(KEY_DIAS))
+    foreach (QJsonValue diaVal, serialized.value(KEY_DIAS).toArray()) {
+        QJsonObject diaJson = diaVal.toObject();
+        QSharedPointer<Dia> scene = QSharedPointer<Dia>(
+                    new Dia(diaJson,builder,wss));
+        if(!(scene.isNull() || scene.data()->scene.isNull()))
+            addScene(scene);
+    }
 }
 
 QJsonObject DiaScene::getState(bool addScenes)

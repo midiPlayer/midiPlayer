@@ -11,7 +11,7 @@
 #include "colorscene.h"
 #include "flashscene.h"
 
-#define SETTING_KEY_DISOCSCENE_JSON "discoscenejson"
+#define SETTING_KEY_MAINSCENE_JSON "mainscenejson"
 
 /*
  *Hier werden alle Szenen sowie die Klasse JackProcessor zur kommunikation über jack  instanziiert.
@@ -39,16 +39,16 @@ MainWindow::MainWindow(QWidget *parent) :
     availableDevices.append(Device(0,6,"beamer1",Device::Beamer,QVector3D(3,0,0)));
 
     mainScene = QSharedPointer<DiaScene>(new DiaScene(availableDevices,&wss,&jackProcessor,sceneBuilder, "main"));
-
-    discoscene = QSharedPointer<DiscoScene>(new DiscoScene(&wss,&sceneBuilder,"disco",getDiscoScenSettings()));
+    mainScene.data()->loadSerialized(getMainScenSettings());
+    //discoscene = QSharedPointer<DiscoScene>(new DiscoScene(&wss,&sceneBuilder,"disco",getDiscoScenSettings()));
 
     outDevices.append(&myBeamerDeviceProvider);
     outDevices.append(&olaDeviceProvider);
     //connect(p,SIGNAL(midiRequest()),this,SLOT(getChanges()));
     ui->setupUi(this);
 
-    mainScene.data()->addScene(discoscene,"disco1","Das ist die erste Discoscene!",1);
-    mainScene.data()->addScene(QSharedPointer<ColorScene>(new ColorScene(availableDevices,&wss,"black")),"black","eben einfach schwarz - schlicht und doch aufdringlich",1);
+    //mainScene.data()->addScene(discoscene,"disco1","Das ist die erste Discoscene!",1);
+    //mainScene.data()->addScene(QSharedPointer<ColorScene>(new ColorScene(availableDevices,&wss,"black")),"black","eben einfach schwarz - schlicht und doch aufdringlich",1);
     mainScene.data()->start();
 
 
@@ -133,9 +133,9 @@ void MainWindow::trigger()
 }
 
 
-QJsonObject MainWindow::getDiscoScenSettings()
+QJsonObject MainWindow::getMainScenSettings()
 {
-    QString settingStr = settings.value(SETTING_KEY_DISOCSCENE_JSON).toString();
+    QString settingStr = settings.value(SETTING_KEY_MAINSCENE_JSON).toString();
     QJsonDocument d = QJsonDocument::fromJson(settingStr.toUtf8());
     return d.object();
 }
@@ -144,9 +144,9 @@ QJsonObject MainWindow::getDiscoScenSettings()
 MainWindow::~MainWindow()
 {
     QJsonDocument d;
-    QJsonObject obj = discoscene.data()->serialize();
+    QJsonObject obj = mainScene.data()->serialize();
     d.setObject(obj);
     qDebug() << d.toJson();
-    settings.setValue(SETTING_KEY_DISOCSCENE_JSON,d.toJson());
+    settings.setValue(SETTING_KEY_MAINSCENE_JSON,d.toJson());
     delete ui;
 }

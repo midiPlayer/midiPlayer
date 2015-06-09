@@ -26,6 +26,8 @@ public:
     static QString getSceneTypeStringStaticaly();
 
     void addScene(QSharedPointer<Scene>scene, QString name, QString desc, float fadeInDuration);
+    void addScene(QSharedPointer<Dia>dia);
+    void loadSerialized(QJsonObject serialized);
 public slots:
     void triggered();
 private:
