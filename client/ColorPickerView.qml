@@ -40,7 +40,7 @@ import QtQuick.Layouts 1.1
                     height: parent.height*0.9
                     bcolor: color
                     subColorsJson: {
-                        if(typeof(subcolor) != 'undefined') return subcolors;
+                        if(subcolors != undefined)  return subcolors;
                         return "";
                     }
                     onSelected: {
