@@ -75,7 +75,7 @@ Item{
                 }
                 ColorPickerButton{
                     id: colorPickerButton
-                    minColorNum: 4
+                    minColorNum: 1
                 }
             }
 

@@ -23,6 +23,7 @@ public:
     static QString getSceneTypeStringStaticaly();
 public slots:
     void triggered();
+    void reinitColors();
 
 private:
     Trigger trigger;

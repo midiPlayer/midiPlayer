@@ -16,20 +16,9 @@ ColorWaveScene::ColorWaveScene(QList<Device> avDev, WebSocketServer *ws, JackPro
     foreach (Device dev,avDev) {
         if(dev.getType() == Device::RGB || dev.getType() == Device::RGBW){
             usedDevices.append(dev);
-                //dev.setChannel(c,1.0f);//all white
-                int basC = dev.getFirstChannel();
-                QColor color;
-                if(colorButton.getColors().length() > 0)
-                    colorButton.getColors().at(0);
-                dev.setChannel(basC+0,color.redF());
-                dev.setChannel(basC+1,color.greenF());
-                dev.setChannel(basC+2,color.blueF());
-                if(dev.getType() == Device::RGBW){
-                    dev.setChannel(basC+3,0.0);
-                }
-            onState.append(dev);
         }
     }
+    connect(&colorButton,SIGNAL(colorChanged()),this,SLOT(reinitColors()));
     if(serialized.length() > 0){
         if(serialized.contains(KEY_TRIGGER))
             trigger.loadSerialized(serialized.value(KEY_TRIGGER).toObject());
@@ -45,6 +34,7 @@ ColorWaveScene::ColorWaveScene(QList<Device> avDev, WebSocketServer *ws, JackPro
     }
     connect(&trigger,SIGNAL(trigger()),this,SLOT(triggered()));
     ws->registerProvider(this);
+    reinitColors();
 }
 
 QList<Device> ColorWaveScene::getLights()
@@ -135,6 +125,7 @@ void ColorWaveScene::triggered()
 {
     if(isRunning)
         return;
+    reinitColors();
     int newCenterPos = -1;
     do
         newCenterPos = rand() % usedDevices.length();
@@ -145,6 +136,26 @@ void ColorWaveScene::triggered()
     center = usedDevices.at(centerDevPos).getPosition();
     isRunning = true;
     beatStopwatch.restart();
+}
+
+void ColorWaveScene::reinitColors()
+{
+    onState.clear();
+    QColor color;
+    if(colorButton.getColors().length() > 0){
+        int rIndex = rand() % colorButton.getColors().length();
+        color = colorButton.getColors().at(rIndex);
+    }
+    foreach(Device dev,usedDevices){
+        int basC = dev.getFirstChannel();
+        dev.setChannel(basC+0,color.redF());
+        dev.setChannel(basC+1,color.greenF());
+        dev.setChannel(basC+2,color.blueF());
+        if(dev.getType() == Device::RGBW){
+            dev.setChannel(basC+3,0.0);
+        }
+    onState.append(dev);
+    }
 }
 /**
 0 * @brief ColorWaveScene::getPercentageForDistance
