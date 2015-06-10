@@ -159,50 +159,67 @@ Item{
                 //blue
                 color: "#0000ff"
 
-                subcolors: '["#0f00a3","#000e9a","#000fab","#02378e",
-                             "#1500e1","#071bd9","#0000ff","#004cd7",
-                             "#301aff","#2929eb","#1e33ff","#0058f9",
-                             "#4d3de4","#4343ff","#4052ff","#2d63ff"]'
+                subcolors: '["#c8b9ff","#2d00d0","#c7e3ff","#02378e",
+                             "#9273ff","#071bd9","#91c8ff","#0062c5",
+                             "#6e46ff","#210097","#5aacff","#003366",
+                             "#3700ff","#0d003b","#007fff","#001831"]'
             }
 
             ListElement{
                 //turqouise
-                color: "#03D1D1"
-            }
-
-            ListElement{
-                //lightgreen
-                color: "#16E635"
+                color: "#0fdad6"
+                subcolors: '["#00dcff","#00d7ff","#00ffbd","#00ffeb",
+                             "#00a1bb","#29bcd7","#00b283","#30d4c7",
+                             "#007183","#4ba1b1","#008a66","#4aafa7",
+                             "#003d46","#5d797f","#004936","#5b7876"]'
             }
 
             ListElement{
                 //green
-                color: "green"
+                color: "#0cff1c"
+                subcolors: '["#00ff5f","#12ff00","#8bff00",
+                             "#009638","#3ecb33","#8cc34b",
+                             "#00511e","#2c6628","#4f6a30"]'
             }
 
             ListElement{
                 //yellow
-                color: "yellow"
+                color: "#f8ff0c"
+                subcolors: '["#d2ff00","#f5ff00","#fff57f",
+                             "#9cb238","#c2c658","#ffeb00",
+                             "#687432","#5e601d","#7b7106"]'
             }
 
             ListElement{
                 //orange
-                color: "orange"
+                color: "#ffae00"
+                subcolors: '["#ffd700","#ffb300",
+                             "#fff09f","#ac6400"]'
             }
 
             ListElement{
                 //red
-                color: "red"
+                color: "#ff0014"
+                subcolors: '["#ffa06c","#ff8580","#ff5678",
+                             "#ff5b00","#ff0b00","#ff0032",
+                             "#973600","#a20700","#9b001f"]'
             }
 
             ListElement{
                 //purple
-                color: "purple"
+                color: "#ff00f6"
+                subcolors: '["#ffdaf4","#b0007b","#fdcfff","#f200ff",
+                             "#ffa9e5","#770054","#fa9dff","#be00c7",
+                             "#ff66d2","#520039","#f87aff","#84008b",
+                             "#ff00b3","#310022","#f538ff","#520057"]'
             }
 
             ListElement{
                 //grey
-                color: "grey"
+                color: "#9f9f9f"
+                subcolors: '["#ffffff","#dddddd","#bbbbbb",
+                             "#999999","#777777","#555555",
+                             "#333333","#111111","#000000"]'
             }
 
         }

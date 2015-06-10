@@ -41,8 +41,7 @@ class JackProcessor : public QObject, public WebSocketServerProvider
      int pos;
      float minLevel;
 
-     QJsonObject serialize();
-     void loadSerialized();
+     void loadSerialized(QJsonObject serialized);
   public:
     JackProcessor(WebSocketServer *ws, QObject* parent=0);
     ~JackProcessor();
@@ -52,6 +51,7 @@ class JackProcessor : public QObject, public WebSocketServerProvider
     void clientUnregistered(QJsonObject msg,int clientIdCounter);
     void clientMessage(QJsonObject msg, int clientId);
     QString getRequestType();
+    QJsonObject serialize();
 public slots:
     void requestMusicNotification();
 

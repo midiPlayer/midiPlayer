@@ -36,6 +36,7 @@ public:
 
 public slots:
     void trigger();
+    void save();
 
 private:
     Ui::MainWindow *ui;

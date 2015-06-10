@@ -12,6 +12,7 @@
 #include "flashscene.h"
 
 #define SETTING_KEY_MAINSCENE_JSON "mainscenejson"
+#define SETTING_KEY_JACKP "jackp"
 
 /*
  *Hier werden alle Szenen sowie die Klasse JackProcessor zur kommunikation über jack  instanziiert.
@@ -46,6 +47,8 @@ MainWindow::MainWindow(QWidget *parent) :
     outDevices.append(&olaDeviceProvider);
     //connect(p,SIGNAL(midiRequest()),this,SLOT(getChanges()));
     ui->setupUi(this);
+
+    connect(ui->saveBtn,SIGNAL(clicked(bool)),this,SLOT(save()));
 
     //mainScene.data()->addScene(discoscene,"disco1","Das ist die erste Discoscene!",1);
     //mainScene.data()->addScene(QSharedPointer<ColorScene>(new ColorScene(availableDevices,&wss,"black")),"black","eben einfach schwarz - schlicht und doch aufdringlich",1);
@@ -140,13 +143,21 @@ QJsonObject MainWindow::getMainScenSettings()
     return d.object();
 }
 
-
-MainWindow::~MainWindow()
+void MainWindow::save()
 {
     QJsonDocument d;
     QJsonObject obj = mainScene.data()->serialize();
     d.setObject(obj);
     qDebug() << d.toJson();
     settings.setValue(SETTING_KEY_MAINSCENE_JSON,d.toJson());
+
+    QJsonDocument jackS;
+    jackS.setObject(jackProcessor.serialize());
+    settings.setValue(SETTING_KEY_JACKP,jackS.toJson());
+}
+
+MainWindow::~MainWindow()
+{
+    save();
     delete ui;
 }

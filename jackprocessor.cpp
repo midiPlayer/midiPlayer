@@ -19,6 +19,8 @@
 
 //#define DISSABLE_ANALYSE
 
+#define KEY_MIN_LEVEL "minLevel"
+
 JackProcessor::JackProcessor(WebSocketServer *ws, QObject *parent) : WebSocketServerProvider(ws), QObject(parent), musicNotificationRequested(false),
     beatRequested(true),pos(0),buffer_size(512),hop_size(256),minLevel(-80.0f) {
     ws->registerProvider(this);
@@ -96,10 +98,12 @@ QString JackProcessor::getRequestType()
 
 QJsonObject JackProcessor::serialize()
 {
-
+    QJsonObject serialized;
+    serialized.insert(KEY_MIN_LEVEL,minLevel);
+    return serialized;
 }
 
-void JackProcessor::loadSerialized()
+void JackProcessor::loadSerialized(QJsonObject serialized)
 {
 
 }
