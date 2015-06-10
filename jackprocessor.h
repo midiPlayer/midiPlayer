@@ -5,10 +5,11 @@
 #include <jack/jack.h>
 #include <QMap>
 #include <aubio/aubio.h>
+#include "websocketserverprovider.h"
 
 class MainWindow;
 
-class JackProcessor : public QObject
+class JackProcessor : public QObject, public WebSocketServerProvider
 {
   Q_OBJECT
 
@@ -38,11 +39,19 @@ class JackProcessor : public QObject
     /** internal fvec */
      fvec_t *smpl;
      int pos;
+     float minLevel;
 
+     QJsonObject serialize();
+     void loadSerialized();
   public:
-    JackProcessor(QObject* parent=0);
+    JackProcessor(WebSocketServer *ws, QObject* parent=0);
     ~JackProcessor();
     int initJack(MainWindow *m);
+
+    void clientRegistered(QJsonObject msg, int id);
+    void clientUnregistered(QJsonObject msg,int clientIdCounter);
+    void clientMessage(QJsonObject msg, int clientId);
+    QString getRequestType();
 public slots:
     void requestMusicNotification();
 

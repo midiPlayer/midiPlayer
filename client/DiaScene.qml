@@ -30,6 +30,8 @@ Item{
                     else{//short click
                         diaWSC.requestId = requestId;
                         diaLayout.visible=true;
+                        diaLayout.id = id;
+                        diaLayout.index = index;
                     }
                 }
             }
@@ -112,6 +114,8 @@ Item{
                         visible: false
                         property string requestType: ""
                         property int requestId: -1
+                        property int id;
+                        property int index;
                         Item{
                             Layout.fillWidth: true;
                             Layout.preferredHeight: nameLabel.height + 5
@@ -229,6 +233,49 @@ Item{
 
                         }
                     }
+                        Item{
+                            Layout.fillWidth: true;
+                            Layout.preferredHeight: 25;
+                            Item{
+                                height: parent.height
+                                width: height
+                                anchors.right: parent.right
+                                anchors.rightMargin: 20
+                                Image{
+                                    source: "icons/delete.png"
+                                    anchors.fill: parent
+                                    fillMode: Image.PreserveAspectFit
+                                }
+                                Image{
+                                    id: deleteAcitve
+                                    source: "icons/deleteActive.png"
+                                    anchors.fill: parent
+                                    fillMode: Image.PreserveAspectFit
+                                    opacity: 0
+                                    PropertyAnimation{
+                                        id:deleteMeNowAnim
+                                        target: deleteAcitve
+                                        property: "opacity"
+                                        running: false
+                                        from: 1
+                                        to:0
+                                        duration: 4000
+                                    }
+                                }
+
+                                MouseArea{
+                                    anchors.fill: parent
+                                    onClicked: {
+                                        if(deleteMeNowAnim.running){//delete
+                                            var msg = {"deleteScene":diaLayout.id};
+                                            wsc.send = JSON.stringify(msg);
+                                        }
+                                        else
+                                            deleteMeNowAnim.start();
+                                    }
+                                }
+                            }
+                        }
                     }
                     WebSocketConnector{
                         id: diaWSC
@@ -328,6 +375,7 @@ Item{
                 setCurentIndex();
             }
             if(msg.scenes !== undefined){
+                diaLayout.visible=false;
                 importer.sendMessage({"msg":msg,"listModel":diaListModel,"diaScene":diaScene});
             }
         }

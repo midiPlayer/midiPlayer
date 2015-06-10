@@ -39,7 +39,6 @@ public slots:
 
 private:
     Ui::MainWindow *ui;
-    JackProcessor jackProcessor;
     QList<Device> usedLamps;
     QList<Device> status;
 
@@ -49,6 +48,7 @@ private:
     float getTimeSinceFadePercentage(int duration);
 
     WebSocketServer wss;
+    JackProcessor jackProcessor;
     QList<OutputDevice*> outDevices;
     bool getChangesRunning;
     QTimer timer;

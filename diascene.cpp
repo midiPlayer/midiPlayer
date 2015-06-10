@@ -99,6 +99,20 @@ void DiaScene::clientMessage(QJsonObject msg, int id)
         }
         addScene(newScene,addCmd.value("name").toString(),"",1.0);
     }
+    if(msg.contains("deleteScene")){
+        int id = msg.value("deleteScene").toInt(-1);
+        if(current = id){
+            scenes.at(current).data()->scene.data()->stop();
+            current = fadingTo == -1 ? -1 : fadingTo;
+        }
+        if(fadingTo = id){
+            scenes.at(fadingTo).data()->scene.data()->stop();
+            fadingTo = -1;
+        }
+        if(id < scenes.length())
+            scenes.removeAt(id);
+        sendMsg(getState(true),false);
+    }
 }
 
 QString DiaScene::getRequestType()

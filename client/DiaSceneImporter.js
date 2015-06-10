@@ -24,15 +24,11 @@ WorkerScript.onMessage = function(params) {
             }
         }
         params.listModel.sync();
-    }
-    if(msg.deleteScene !== undefined){
-        for(var y = 0;y < params.listModel.count; y++){
-             if(params.listModel.get(y).modelData.sceneId === msg.deleteScene){
-                params.listModel.remove(y);
-             }
-        }
-        params.listModel.sync();
     }*/
+    if(msg.deleteScene !== undefined){
+           params.listModel.remove(msg.deleteScene);
+        params.listModel.sync();
+    }
 
 }
 

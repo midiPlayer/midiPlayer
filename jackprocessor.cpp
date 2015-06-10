@@ -15,11 +15,13 @@
 #include <math.h>               /* for isfinite */
 #include <string.h>             /* for strcmp */
 #include "device.h"
+#include "websocketserver.h"
 
 //#define DISSABLE_ANALYSE
 
-JackProcessor::JackProcessor(QObject *parent) : QObject(parent), musicNotificationRequested(false),
-    beatRequested(true),pos(0),buffer_size(512),hop_size(256) {
+JackProcessor::JackProcessor(WebSocketServer *ws, QObject *parent) : WebSocketServerProvider(ws), QObject(parent), musicNotificationRequested(false),
+    beatRequested(true),pos(0),buffer_size(512),hop_size(256),minLevel(-80.0f) {
+    ws->registerProvider(this);
 }
 
 JackProcessor::~JackProcessor() {
@@ -69,6 +71,39 @@ int JackProcessor::initJack(MainWindow* m) {
   return(0);
 }
 
+void JackProcessor::clientRegistered(QJsonObject msg, int id)
+{
+    QJsonObject reply;
+    reply.insert("minLevel",minLevel);
+    sendMsg(reply,id);
+}
+
+void JackProcessor::clientUnregistered(QJsonObject msg, int clientIdCounter)
+{
+}
+
+void JackProcessor::clientMessage(QJsonObject msg, int clientId)
+{
+    if(msg.contains("minLevel"))
+        minLevel = msg.value("minLevel").toDouble(-80.0);
+    sendMsgButNotTo(msg,clientId);
+}
+
+QString JackProcessor::getRequestType()
+{
+    return "JackProcessor";
+}
+
+QJsonObject JackProcessor::serialize()
+{
+
+}
+
+void JackProcessor::loadSerialized()
+{
+
+}
+
 void JackProcessor::requestMusicNotification()
 {
     musicNotificationRequested = true;
@@ -103,7 +138,7 @@ int JackProcessor::jack_callback(jack_nframes_t nframes)
     for (int j=0;j<(unsigned)nframes;j++) {
          fvec_set_sample(smpl, ibuf[j], pos);
          if (pos == (int)(hop_size) - 1) {
-               float silence = aubio_silence_detection(smpl, -80.0f);
+               float silence = aubio_silence_detection(smpl, minLevel);
                //calback:
                aubio_onset_do (o,smpl , onset); //onsets
                float res = fvec_get_sample(onset, 0);

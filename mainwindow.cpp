@@ -19,8 +19,8 @@
 
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),settings(), jackProcessor(this),usedLamps(),status(),offsetRequested(true),
-    availableDevices(), wss(this),outDevices(),
+    QMainWindow(parent),settings(), usedLamps(),status(),offsetRequested(true),
+    availableDevices(), wss(this),jackProcessor(&wss,this),outDevices(),
     timer(this),getChangesRunning(false), ui(new Ui::MainWindow),
     sceneBuilder(&wss,&availableDevices,&jackProcessor),
     myBeamerDeviceProvider(&wss,&availableDevices),

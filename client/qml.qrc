@@ -44,5 +44,8 @@
         <file>icons/reloadTouched.png</file>
         <file>icons/prevTouched.png</file>
         <file>DiaSceneImporter.js</file>
+        <file>TriggerConfig.qml</file>
+        <file>icons/deleteActive.png</file>
+        <file>icons/delete.png</file>
     </qresource>
 </RCC>

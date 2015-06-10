@@ -21,7 +21,7 @@ Item {
         MainMenuItem{
             imageSrc: "icons/trigger.png"
             name: "configure Trigger"
-            link:""
+            link:"TriggerConfig.qml"
             Layout.preferredWidth: parent.width / 4;
         }
 
