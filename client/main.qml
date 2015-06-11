@@ -4,6 +4,7 @@ import QtQuick.Window 2.2
 import QtQuick.Dialogs 1.2
 import Qt.WebSockets 1.0
 import QtQuick.Layouts 1.1
+import QtQuick.Controls.Styles 1.2
 
 ApplicationWindow {
     id: applicationWindow
@@ -14,7 +15,6 @@ ApplicationWindow {
     property var backPressHandler: function() {return false};
 
     color:"#002b38"
-
 
 
 ColumnLayout{

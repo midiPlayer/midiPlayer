@@ -11,6 +11,7 @@ Item {
     property alias urlEdit: urlEdit
 
 
+
     Item {
         id: item2
         x:(parent.width-width)/5
@@ -35,6 +36,17 @@ Item {
             id: urlEdit
             Layout.minimumWidth: 150
             placeholderText: qsTr("z.B. ws:192.168.0.1:8080")
+           /* style: TextFieldStyle {
+                textColor: "#fff"
+                background: Rectangle {
+                            implicitWidth: 100
+                            radius:2
+                            implicitHeight: 24
+                            border.color: "#777"
+                            border.width: 1
+                            color:"#11000000"
+                            }
+            }*/
         }
         Button {
             id: connectBtn
