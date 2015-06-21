@@ -12,7 +12,7 @@ Item{
     property bool initFinished : false;
 
     onMyColorChanged: {
-       if(myColor.search(",")!=-1){ //wenn nicht -1, dann mehrere Farbwerte
+       if(myColor.search(",")!=-1){ //if not -1, more than one color is needed
           colorPickerButton.color="#AAAAAA"
        }
        else if(myColor=="") colorPickerButton.color="#999999"
@@ -53,7 +53,7 @@ Item{
 
             Text{
                id: text
-               text: "Farbe wählen"
+               text: qsTr("Choose Color")
                color:"#000"
                font.pixelSize: parent.height*0.5
                verticalAlignment: Text.AlignVCenter

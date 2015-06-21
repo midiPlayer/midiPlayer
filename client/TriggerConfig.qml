@@ -17,7 +17,7 @@ Item {
                 anchors.fill: parent
                 Text{
                     color:"#fff"
-                    text: qsTr("min Level")
+                    text: qsTr("MinLevel")
                 }
                 Slider{
                     id: minLevelSlider

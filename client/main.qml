@@ -2,13 +2,13 @@ import QtQuick 2.4
 import QtQuick.Controls 1.3
 import QtQuick.Window 2.2
 import QtQuick.Dialogs 1.2
-import Qt.WebSockets 1.0
+import QtWebSockets 1.0
 import QtQuick.Layouts 1.1
 import QtQuick.Controls.Styles 1.2
 
 ApplicationWindow {
     id: applicationWindow
-    title: qsTr("light client")
+    title: qsTr("LightClient")
     width: 640
     height: 600
     visible: true

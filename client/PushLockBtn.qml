@@ -28,7 +28,7 @@ Item{
 
             slider.stdC1 = "#888";
             slider.stdC2 = "#666";
-            textF.text = "A"//acive
+            textF.text = "A" //active
             dot.color = "#b70b48";
             }
 

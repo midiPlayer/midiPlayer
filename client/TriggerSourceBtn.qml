@@ -34,7 +34,7 @@ import WebSocketConnector 1.1
             TriggerSourceBtnItem{
                 id: beatBtn
                 isFirst: true
-                text:"beat"
+                text:qsTr("Beat")
                 width: parent.width / 4;
                 cornerRadius: box.radius;
                 onStateOn: {
@@ -48,7 +48,7 @@ import WebSocketConnector 1.1
             }
             TriggerSourceBtnItem{
                 id: onsetBtn
-                text:"onset"
+                text:qsTr("Onset")
                 width: parent.width / 4;
                 onStateOn: {
                     if(radio){
@@ -61,7 +61,7 @@ import WebSocketConnector 1.1
             }
             TriggerSourceBtnItem{
                 id: timerBtn
-                text:"timer"
+                text:qsTr("Timer")
                 width: parent.width / 4;
                 cornerRadius: box.radius
                 onStateOn: {
@@ -75,7 +75,7 @@ import WebSocketConnector 1.1
             }
             TriggerSourceBtnItem{
                 id: manualBtn
-                text: qsTr("manual")
+                text: qsTr("Manual")
                 width: parent.width / 4;
                 isLast: true
                 cornerRadius: box.radius

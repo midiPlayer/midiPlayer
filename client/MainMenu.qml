@@ -13,21 +13,21 @@ Item {
 
         MainMenuItem{
             imageSrc: "icons/settings.png"
-            name: "current Scene"
+            name: qsTr("Current Scene")
             link:"DiaScene.qml"
             Layout.preferredWidth: parent.width / 4;
         }
 
         MainMenuItem{
             imageSrc: "icons/trigger.png"
-            name: "configure Trigger"
+            name: qsTr("Configure Trigger")
             link:"TriggerConfig.qml"
             Layout.preferredWidth: parent.width / 4;
         }
 
         MainMenuItem{
             imageSrc: "icons/settings.png"
-            name: "beamer"
+            name: qsTr("Beamer")
             link:"BeamerShutterControl.qml"
             Layout.preferredWidth: parent.width / 4;
         }

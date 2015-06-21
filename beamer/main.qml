@@ -7,7 +7,7 @@ import WebSocketConnector 1.1
 
 
 ApplicationWindow {
-    title: qsTr("Hello World")
+    title: qsTr("Beamer")
     width: 640
     height: 480
     visible: true
@@ -66,7 +66,7 @@ ApplicationWindow {
     Rectangle{
         id:blackOvrlay
         anchors.fill: parent
-        color:'black'
+        color:"black"
         visible: false;
 
     }

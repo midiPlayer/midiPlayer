@@ -9,15 +9,15 @@ Item{
     ListModel{
         id: sceneTypeModel
         ListElement{
-            text:qsTr("BeatScene")
+            text:qsTr("Beat Scene")
             type: "beatScene1"
         }
         ListElement{
-            text:qsTr("FlashScene")
+            text:qsTr("Flash Scene")
             type:"flashScene"
         }
         ListElement{
-            text:qsTr("ColorScene")
+            text:qsTr("Color Scene")
             type:"colorScene"
         }
         ListElement{
@@ -29,7 +29,7 @@ Item{
             type:"colorWaveScene"
         }
         ListElement{
-            text: qsTr("alternating Beat Scene")
+            text: qsTr("Alternating Beat Scene")
             type:"beatScene2"
         }
         ListElement{
@@ -52,7 +52,7 @@ Item{
         RowLayout{
             Layout.fillWidth: true;
             Text{
-                text:qsTr("scene name")
+                text:qsTr("Scene name")
                 color:"#fff";
             }
             TextField{
@@ -62,7 +62,7 @@ Item{
         RowLayout{
             spacing: 10
             Button{
-                text: qsTr("add")
+                text: qsTr("Add")
                 onClicked: {
                     var msg = new Object();
                     msg.addScene = new Object();

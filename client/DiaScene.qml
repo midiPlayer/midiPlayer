@@ -162,6 +162,7 @@ Item{
                             MouseArea{
                                 anchors.fill: parent
                                 onClicked:{
+                                    console.log("edit scene")
                                     stackView.push(Qt.resolvedUrl(editSceneBtn.getFileName()),{"requestId":diaLayout.requestId});
                                 }
                             }
@@ -196,7 +197,7 @@ Item{
                             Text{
                                 font.pointSize: 12
                                 color:"#369cb6"
-                                text: qsTr("fade in duration")
+                                text: qsTr("Fade-in duration")
                             }
 
                             Slider{

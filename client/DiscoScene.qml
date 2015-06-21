@@ -413,7 +413,7 @@ Item {
         }
         ListElement{
             name:"min"
-            text: qsTr("minnimum")
+            text: qsTr("minimum")
         }
         ListElement{
             name:"maxg"

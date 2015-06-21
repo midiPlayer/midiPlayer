@@ -26,7 +26,7 @@ Item{
             RowLayout{
                 width: parent.width
                 Text{
-                    text:qsTr("active Radius ( in m )")
+                    text:qsTr("Active radius (in m)")
                     color:"#fff";
                 }
                 Slider{
@@ -47,7 +47,7 @@ Item{
             RowLayout{
                 width: parent.width
                 Text{
-                    text:qsTr("speed ( in m/s )")
+                    text:qsTr("Speed (in m/s)")
                     color:"#fff";
                 }
                 Slider{

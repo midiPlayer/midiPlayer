@@ -15,7 +15,7 @@
 #define SETTING_KEY_JACKP "jackp"
 
 /*
- *Hier werden alle Szenen sowie die Klasse JackProcessor zur kommunikation über jack  instanziiert.
+ *Hier werden alle Szenen sowie die Klasse JackProcessor zur Kommunikation über jack instanziiert.
 */
 
 

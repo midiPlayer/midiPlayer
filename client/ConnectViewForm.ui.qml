@@ -35,7 +35,7 @@ Item {
         TextField {
             id: urlEdit
             Layout.minimumWidth: 150
-            placeholderText: qsTr("z.B. ws:192.168.0.1:8080")
+            placeholderText: qsTr("z.B. ws://192.168.0.1:8080")
            /* style: TextFieldStyle {
                 textColor: "#fff"
                 background: Rectangle {

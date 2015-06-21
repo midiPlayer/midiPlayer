@@ -47,7 +47,7 @@ Item{
             RowLayout{
                 width: parent.width
                 Text{
-                    text:qsTr("Basic Speed")
+                    text:qsTr("Basic speed")
                     color:"#fff";
                 }
                 Slider{

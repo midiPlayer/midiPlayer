@@ -1,7 +1,7 @@
 import QtQuick 2.4
 import QtQuick.Window 2.2
 import QtQuick.Dialogs 1.2
-import Qt.WebSockets 1.0
+import QtWebSockets 1.0
 import QtQuick.Layouts 1.1
 import WebSocketConnector 1.1
 import Qt.labs.settings 1.0

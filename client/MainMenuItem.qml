@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.1
+
 Item{
     property alias name : text.text
     property alias imageSrc : img.source

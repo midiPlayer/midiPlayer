@@ -17,7 +17,7 @@ Item{
         Text{
             anchors.centerIn: parent;
             color:"#555"
-            text:"Touch Control"
+            text:qsTr("Touch Control")
             font.pointSize: 18;
         }
 
@@ -108,7 +108,7 @@ Item{
         RowLayout{
             anchors.fill: parent
             Text{
-                text:"Radius:"
+                text:qsTr("Radius")
                 font.pointSize: 13
                 color:"#fff"
             }
