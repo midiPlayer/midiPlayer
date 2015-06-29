@@ -12,7 +12,7 @@ ApplicationWindow {
     height: 480
     visible: true
 
-     visibility: "FullScreen"
+   //  visibility: "FullScreen"
 
 
 

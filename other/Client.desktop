@@ -1,0 +1,20 @@
+[Desktop Entry]
+Comment[de]=Benutzeroberfläche für das Lichtprojekt, hiermit wird die Beleuchtung gesteuert
+Comment=Benutzeroberfläche für das Lichtprojekt, hiermit wird die Beleuchtung gesteuert
+Encoding=UTF-8
+Exec=/home/jonas/Qt-Workspace/midiPlayer/midiPlayer/build-client-Desktop/client
+GenericName[de]=
+GenericName=
+Icon=/home/jonas/Qt-Workspace/midiPlayer/midiPlayer/client/icons/Client.png
+MimeType=
+Name[de]=Client
+Name=Client
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=

@@ -1,0 +1,20 @@
+[Desktop Entry]
+Comment[de]=zusätzliche Beamervisualisierung für das Lichtprojekt
+Comment=zusätzliche Beamervisualisierung für das Lichtprojekt
+Encoding=UTF-8
+Exec=/home/jonas/Qt-Workspace/midiPlayer/midiPlayer/build-beamer-Desktop/beamer
+GenericName[de]=
+GenericName=
+Icon=/home/jonas/Qt-Workspace/midiPlayer/midiPlayer/beamer/icons/Beamer.png
+MimeType=
+Name[de]=Beamer
+Name=Beamer
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=

@@ -79,3 +79,6 @@ HEADERS  += mainwindow.h\
     dia.h
 
 FORMS    += mainwindow.ui
+
+DISTFILES += \
+    other/Icons/MidiPlayer.png

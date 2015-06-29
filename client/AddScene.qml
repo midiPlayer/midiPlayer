@@ -6,8 +6,30 @@ import WebSocketConnector 1.1
 Item{
     property alias requestId: ws.requestId
     property alias requestType: ws.requestType
+
+    function chooseCorrectListModel(requestType){
+        if(requestType == "diaScene"){
+            return sceneTypeModelDia
+        }
+        else{
+            return sceneTypeModelDisco
+        }
+    }
+
     ListModel{
-        id: sceneTypeModel
+        id: sceneTypeModelDia
+        ListElement{
+            text:qsTr("Color Scene")
+            type:"colorScene"
+        }
+        ListElement{
+            text: qsTr("Disco Scene")
+            type:"discoScene"
+        }
+    }
+
+    ListModel{
+        id: sceneTypeModelDisco
         ListElement{
             text:qsTr("Beat Scene")
             type: "beatScene1"
@@ -15,10 +37,6 @@ Item{
         ListElement{
             text:qsTr("Flash Scene")
             type:"flashScene"
-        }
-        ListElement{
-            text:qsTr("Color Scene")
-            type:"colorScene"
         }
         ListElement{
             text:qsTr("Color Wheel Scene")
@@ -32,10 +50,6 @@ Item{
             text: qsTr("Alternating Beat Scene")
             type:"beatScene2"
         }
-        ListElement{
-            text: qsTr("Disco Scene")
-            type:"discoScene"
-        }
     }
 
     ColumnLayout{
@@ -46,7 +60,7 @@ Item{
             Layout.fillWidth: true;
             ComboBox{
                 id: sceneTypeComo
-                model: sceneTypeModel
+                model:chooseCorrectListModel(requestType)
             }
         }
         RowLayout{
@@ -67,7 +81,10 @@ Item{
                     var msg = new Object();
                     msg.addScene = new Object();
                     msg.addScene.name = nameEdit.text;
-                    msg.addScene.type = sceneTypeModel.get(sceneTypeComo.currentIndex).type;
+                    msg.addScene.type = chooseCorrectListModel(requestType).get(sceneTypeComo.currentIndex).type; //sceneTypeModel.get(sceneTypeComo.currentIndex).type;
+                    console.log("requestType: "+requestType)
+                    console.log("chosen ListModel: "+chooseCorrectListModel(requestType))
+                    console.log("sceneType: "+chooseCorrectListModel(requestType).get(sceneTypeComo.currentIndex).type)
                     ws.send = JSON.stringify(msg);
                     stackView.pop();
                 }
