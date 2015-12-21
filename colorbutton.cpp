@@ -26,6 +26,7 @@ void ColorButton::loadSerialized(QJsonObject serialized)
         colors.clear();
         loadColosFromString(serialized.value(KEY_COLORS).toString(""));
     }
+    emit colorChanged();
 }
 
 void ColorButton::loadColosFromString(QString colorString)

@@ -154,74 +154,96 @@ Item{
     }
 
     property ColorPickerView initial: ColorPickerView{
-        lmodel: ListModel{ 
-            ListElement{
-                //blue
-                color: "#0000ff"
+        lmodel: ListModel{
+                   ListElement{
+                       //blue
+                       color: "#0000ff"
 
-                subcolors: '["#c8b9ff","#2d00d0","#c7e3ff","#02378e",
-                             "#9273ff","#071bd9","#91c8ff","#0062c5",
-                             "#6e46ff","#210097","#5aacff","#003366",
-                             "#3700ff","#0d003b","#007fff","#001831"]'
-            }
+                       subcolors: '["#0f00a3","#000e9a","#000fab","#02378e",
+                                    "#1500e1","#071bd9","#0000ff","#004cd7",
+                                    "#301aff","#2929eb","#1e33ff","#0058f9",
+                                    "#4d3de4","#4343ff","#4052ff","#2d63ff"]'
+                   }
 
-            ListElement{
-                //turqouise
-                color: "#0fdad6"
-                subcolors: '["#00dcff","#00d7ff","#00ffbd","#00ffeb",
-                             "#00a1bb","#29bcd7","#00b283","#30d4c7",
-                             "#007183","#4ba1b1","#008a66","#4aafa7",
-                             "#003d46","#5d797f","#004936","#5b7876"]'
-            }
+                   ListElement{
+                       //turqouise
+                       color: "#03D1D1"
 
-            ListElement{
-                //green
-                color: "#0cff1c"
-                subcolors: '["#00ff5f","#12ff00","#8bff00",
-                             "#009638","#3ecb33","#8cc34b",
-                             "#00511e","#2c6628","#4f6a30"]'
-            }
+                       subcolors: '["#00E2FF","#2BE7FF","#57ECFF","#9CF4FF",
+                                    "#03D1D1","#03E6E6","#00FFFF","#25FFFF",
+                                    "#00FFDE","#23FFE3","#3DFFE6","#74FFED",
+                                    "#00FFC4","#20FFCC","#4EEBC6","#9FFFE9"]'
+                   }
 
-            ListElement{
-                //yellow
-                color: "#f8ff0c"
-                subcolors: '["#d2ff00","#f5ff00","#fff57f",
-                             "#9cb238","#c2c658","#ffeb00",
-                             "#687432","#5e601d","#7b7106"]'
-            }
+                   ListElement{
+                       //lightgreen
+                       color: "#16E635"
 
-            ListElement{
-                //orange
-                color: "#ffae00"
-                subcolors: '["#ffd700","#ffb300",
-                             "#fff09f","#ac6400"]'
-            }
+                       subcolors: '["#00FF1E","#2CFF45","#54FF68","#7FFF8E",
+                                    "#16E635","#2DFD4C","#17FF3A","#00FF26",
+                                    "#00FF49","#1EFF5E","#3FFF75","#69FF93",
+                                    "#00FF44","#23FF5E","#37F068","#61FF8B"]'
+                   }
 
-            ListElement{
-                //red
-                color: "#ff0014"
-                subcolors: '["#ffa06c","#ff8580","#ff5678",
-                             "#ff5b00","#ff0b00","#ff0032",
-                             "#973600","#a20700","#9b001f"]'
-            }
+                   ListElement{
+                       //green
+                       color: "green"
 
-            ListElement{
-                //purple
-                color: "#ff00f6"
-                subcolors: '["#ffdaf4","#b0007b","#fdcfff","#f200ff",
-                             "#ffa9e5","#770054","#fa9dff","#be00c7",
-                             "#ff66d2","#520039","#f87aff","#84008b",
-                             "#ff00b3","#310022","#f538ff","#520057"]'
-            }
+                       subcolors: '["#08B556","#20C56A","#49B77B","#7BCDA0",
+                                                    "#06AE30","#18A63C","#40AA5A","#5F9B6E",
+                                                    "#15A901","#218813","#359029","#6AA463",
+                                                    "#4CAF00","#55A617","#589A26","#699A43"]'
+                   }
 
-            ListElement{
-                //grey
-                color: "#9f9f9f"
-                subcolors: '["#ffffff","#dddddd","#bbbbbb",
-                             "#999999","#777777","#555555",
-                             "#333333","#111111","#000000"]'
-            }
+                   ListElement{
+                       //yellow
+                       color: "yellow"
 
-        }
+                       subcolors: '["#E2FF00","#E7FF2B","#EAFD59","#EFFA98",
+                                    "#F7FF00","#F9FF2E","#FBFF5C","#FCFF92",
+                                    "#FFF701","#FFF921","#FFFB5C","#FFFB5C",
+                                    "#FFE200","#FFE835","#FFEC57","#FFF074"]'
+                   }
+
+                   ListElement{
+                       //orange
+                       color: "orange"
+
+                       subcolors: '["#FF7300","#FF7300","#FFA55B","#FFA55B",
+                                    "#FF4D00","#FF611D","#FF6D2E","#FF814B",
+                                    "#FF8103","#FF901F","#FF9831","#FF9E3C",
+                                    "#FFB300","#FFBD1F","#FFC335","#FFC949"]'
+                   }
+
+                   ListElement{
+                       //red
+                       color: "red"
+
+                       subcolors: '["#FF0000","#FC2222","#FF3737","#FC5050",
+                                    "#FF2B00","#EA3612","#F24D2C","#FD785D",
+                                    "#FF4400","#FF5213","#FF6832","#FF7D4E",
+                                    "#FF5500","#FF6314","#FE712A","#FE8143"]'
+                   }
+
+                   ListElement{
+                       //purple
+                       color: "purple"
+
+                       subcolors: '["#BC00FF","#C21BFF","#CC3FFF","#D661FF",
+                                    "#D500FF","#D923FD","#E14DFF","#EB83FF",
+                                    "#EF00FF","#F234FF","#F666FF","#F990FF",
+                                    "#FF00EF","#F522E7","#FF3FF3","#F961EF"]'
+                   }
+
+                   ListElement{
+                       //grey
+                       color: "grey"
+
+                       subcolors: '["#FFFFFA","#EEEEEE","#E2E2E2","#D3D3BF",
+                                    "#BABAB9","#B8B8A1","#A6A6A6","#A3A388",
+                                    "#7C7C7C","#5F5F5F","#3F3F3F","#000000"]'
+                   }
+
+               }
     }
 }

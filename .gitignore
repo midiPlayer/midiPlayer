@@ -1,3 +1,7 @@
 *.pro.user*
 *~
 build*
+*.directory
+klassendiagramm_neu.dia
+prepareDMX.sh
+

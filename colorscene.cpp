@@ -10,11 +10,11 @@ ColorScene::ColorScene(QList<Device> avDev, WebSocketServer *ws, QString name, Q
     colors.append(QColor(255,255,255));//initial
     colorButton.setColors(colors);
     reloadColor();
+    connect(&colorButton,SIGNAL(colorChanged()),this,SLOT(reloadColor()));
     if(serialized.length() != 0){
         if(serialized.contains(KEY_COLOR))
             colorButton.loadSerialized(serialized.value(KEY_COLOR).toObject());
     }
-    connect(&colorButton,SIGNAL(colorChanged()),this,SLOT(reloadColor()));
     ws->registerProvider(this);
 }
 
@@ -25,7 +25,7 @@ QList<Device> ColorScene::getUsedLights()
 
 QJsonObject ColorScene::serialize()
 {
-    //nothing to erialize as this is an really trivial scenen
+    //nothing to serialize as this is an really trivial scene
     QJsonObject ret;
     ret.insert(KEY_COLOR,colorButton.serialize());
     return serializeScene(ret);
@@ -79,6 +79,24 @@ void ColorScene::reloadColor()
     }
     devices = ret;
 }
+
+/*void ColorScene::reloadColor() //Option zum Farbezuweisen für jedes Device einzeln
+{
+    QList<Device> ret;
+    QList<Device>::iterator deviceIter = devices.begin();
+    while(deviceIter != devices.end()){
+        Device d = *deviceIter;
+        QColor c = colorButton.getColors().at(0);
+        int first = d.getFirstChannel();
+        d.setChannel(first+0,c.redF());
+        d.setChannel(first+1,c.greenF());
+        d.setChannel(first+2,c.blueF());
+        ret.append(d);;
+        deviceIter++;
+    }
+    devices = ret;
+}
+*/
 
 QList<Device> ColorScene::getLights()
 {

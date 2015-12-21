@@ -39,6 +39,10 @@ Item{
             type:"flashScene"
         }
         ListElement{
+            text:qsTr("Color Scene")
+            type:"colorScene"
+        }
+        ListElement{
             text:qsTr("Color Wheel Scene")
             type:"colorWheel"
         }
@@ -61,6 +65,15 @@ Item{
             ComboBox{
                 id: sceneTypeComo
                 model:chooseCorrectListModel(requestType)
+                visible: comboVisible(requestType)
+                function comboVisible(requestType){
+                    if (chooseCorrectListModel(requestType) == sceneTypeModelDia){
+                        return false
+                    }
+                    else {
+                        return true
+                    }
+                }
             }
         }
         RowLayout{
@@ -81,7 +94,18 @@ Item{
                     var msg = new Object();
                     msg.addScene = new Object();
                     msg.addScene.name = nameEdit.text;
-                    msg.addScene.type = chooseCorrectListModel(requestType).get(sceneTypeComo.currentIndex).type; //sceneTypeModel.get(sceneTypeComo.currentIndex).type;
+                    msg.addScene.type = correctTypeChooser(requestType); //sceneTypeModel.get(sceneTypeComo.currentIndex).type;
+                    function correctTypeChooser(requestType){
+                        if (chooseCorrectListModel(requestType) == sceneTypeModelDia){
+                            return "discoScene"
+                        }
+                        else{
+                            if(chooseCorrectListModel(requestType) == sceneTypeModelDisco){
+                                return sceneTypeModelDisco.get(sceneTypeComo.currentIndex).type
+                            }
+                        }
+                    }
+
                     console.log("requestType: "+requestType)
                     console.log("chosen ListModel: "+chooseCorrectListModel(requestType))
                     console.log("sceneType: "+chooseCorrectListModel(requestType).get(sceneTypeComo.currentIndex).type)
