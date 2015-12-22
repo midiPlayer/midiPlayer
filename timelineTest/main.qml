@@ -31,6 +31,7 @@ ApplicationWindow {
       property int x_cord : 0
       property double zoom: 1;
       property double shift: 0;
+      property var points: [{"time":0,"value":{"r":0,"g":0,"b":0,"w":0}},{"time":5,"value":{"r":1,"g":0,"b":0,"w":0}}];
 
       function calcPosX(time){
           return time*zoom*100+shift;
@@ -51,24 +52,61 @@ ApplicationWindow {
               ctx.stroke();
           }
 
+          //draw graph
           ctx.lineWidth = 4
           ctx.strokeStyle = "blue"
           // setup the fill
           ctx.fillStyle = "steelblue"
 
           ctx.beginPath()
-                  // top-left start point
-                  ctx.moveTo(0,height)
-                  // right line
-                  ctx.lineTo(x_cord,150)
-                  // bottom line
-                  ctx.lineTo(width,height)
+          ctx.moveTo(0,height)
+
+          var isFirst = true;
+          var isFirstUnprint = true;
+          for(var i = 0; i <points.length; i++){
+            var point = points[i];
+
+            if(calcPosX(point.time) < 0 && i != points.length - 1)
+                continue;
+
+            var per  = (point.value.r + point.value.g + point.value.b + point.value.w) / 4;
+
+
+            if(isFirst){//vorherigen punkt zeichnen
+              if(i > 0){
+                  var per_prev  = (points[i-1].value.r + points[i-1].value.g + points[i-1].value.b + points[i-1].value.w) / 4;
+                  ctx.moveTo(calcPosX(points[i-1].time),height - height * per_prev);
+                  //ctx.moveTo(calcPosX(-1),height);
+
+              }else{
+               //ctx.moveTo(calcPosX(0),height - height * per);
+              }
+
+              isFirst = false;
+            }
+
+            if(calcPosX(point.time <= width)){
+                ctx.lineTo(calcPosX(point.time),height-height*per);
+            }
+            else if(isFirstUnprint){
+                ctx.lineTo(calcPosX(point.time),height-height*per);
+                isFirstUnprint = false;
+
+            }
+          }
+          if(isFirstUnprint && points.length > 0){
+             var per_prev  = (points[i-1].value.r + points[i-1].value.g + points[i-1].value.b + points[i-1].value.w) / 4;
+             ctx.lineTo(width,height-height*per);
+          }
+
+          ctx.lineTo(width,height)
+
                   // left line through path closing
                   ctx.closePath()
                   // fill using fill style
                   ctx.fill()
                   // stroke using line width and stroke style
-                  ctx.stroke();
+                  //ctx.stroke();
 
       }
       MouseArea{
@@ -91,12 +129,14 @@ ApplicationWindow {
               if(wheel.modifiers & Qt.ShiftModifier){
                 var deltaS = wheel.angleDelta.y / 30 / parent.zoom;
                 parent.shift = Math.min(0, parent.shift + deltaS);
-                console.log(parent.shift);
                   parent.requestPaint();
               }
           }
 
-          onClicked: console.log("test");
+          onClicked: {
+
+          }
+
       }
     }
 
