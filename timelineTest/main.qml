@@ -210,7 +210,10 @@ ApplicationWindow {
               var y = calcPosY(point);
               ctx.fillStyle = "#fff";
               ctx.moveTo(x,y);
-              ctx.arc(x,y,3,0,Math.PI*2,false);
+              var radius = 3;
+              if(point === activePoint)
+                  radius = 5;
+              ctx.arc(x,y,radius,0,Math.PI*2,false);
               ctx.fill();
           }
 
@@ -295,6 +298,7 @@ ApplicationWindow {
             if(pressedButtons & Qt.LeftButton){
               console.log("pressed");
               parent.activePoint = parent.points[getClickedPointIndex()];
+              parent.requestPaint();
             }
           }
 
