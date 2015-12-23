@@ -41,10 +41,10 @@ ApplicationWindow {
         id: keyF1
         time:2;
         value:RGBWColor{
-            r:0
-            g:1
+            r:1
+            g:0
             b:0
-            w:0
+            w:1
         }
     }
     Keyframe{
@@ -52,10 +52,30 @@ ApplicationWindow {
         time:6;
         value:RGBWColor{
             r:1
-            g:0
+            g:1
             b:0
             w:0
         }
+    }
+
+    Rectangle
+    {
+       id:keyfEditMessage
+       visible: false
+       z:5
+       anchors.centerIn: parent
+       width: parent.width
+       height: 50
+       opacity: 0.7
+       color:"#000"
+       Text{
+           text: qsTr("Change values (%1) by scrolling  <Esc> for exit").arg(parent.colors);
+           color:"#fff"
+           anchors.centerIn: parent
+           font.pointSize: 13
+       }
+
+       property string colors: ""
     }
 
     Canvas {
@@ -191,6 +211,8 @@ ApplicationWindow {
 
       }
 
+      property var activePoint: null;
+
 
       MouseArea{
           anchors.fill: parent;
@@ -202,7 +224,25 @@ ApplicationWindow {
           property bool wPressed: false;
           onWheel: {
               console.log("wheel");
-              if(wheel.modifiers & Qt.ControlModifier){//zoom
+              if(rPressed || gPressed || bPressed | wPressed){
+                 if(parent.activePoint != null){
+                    var deltaP = wheel.angleDelta.y / 5000;
+                     if(rPressed){
+                         parent.activePoint.value.r = Math.max(Math.min(parent.activePoint.value.r + deltaP,1),0)
+                     }
+                     if(gPressed){
+                         parent.activePoint.value.g = Math.max(Math.min(parent.activePoint.value.g + deltaP,1),0)
+                     }
+                     if(bPressed){
+                         parent.activePoint.value.b = Math.max(Math.min(parent.activePoint.value.b + deltaP,1),0)
+                     }
+                     if(wPressed){
+                         parent.activePoint.value.w = Math.max(Math.min(parent.activePoint.value.w + deltaP,1),0)
+                     }
+                     parent.requestPaint();
+                 }
+              }
+              else if(wheel.modifiers & Qt.ControlModifier){//zoom
                 var delta = wheel.angleDelta.y / 5000;
                   parent.zoom = Math.min(Math.max(0.1, parent.zoom + delta),2);
                   console.log(parent.zoom);
@@ -236,16 +276,13 @@ ApplicationWindow {
               return null;
           }
 
-          property var activePoint: null;
+
           acceptedButtons : Qt.LeftButton | Qt.RightButton | Qt.MiddleButton;
           onPressed: {
             if(pressedButtons & Qt.LeftButton){
               console.log("pressed");
-              activePoint = parent.points[getClickedPointIndex()];
+              parent.activePoint = parent.points[getClickedPointIndex()];
             }
-          }
-          onReleased: {
-             //activePoint = null;
           }
 
           onClicked: {
@@ -277,8 +314,8 @@ ApplicationWindow {
 
           onPositionChanged: {
               if(pressedButtons & Qt.LeftButton){
-                if(activePoint != null){
-                    activePoint.time = parent.calcTime(mouseX);
+                if(parent.activePoint != null){
+                    parent.activePoint.time = parent.calcTime(mouseX);
                     parent.sortPoints();
                       parent.requestPaint();
                   }
@@ -286,16 +323,26 @@ ApplicationWindow {
           }
 
           Keys.onPressed: {
-             /* if(event.key == Qt.Key_R)
-                  rPressed = true;*/
-            //  console.log("down");
-              //event.accepted = true;
+              event.accepted = true;
 
-          }
-          Keys.onReleased: {
-              if(event.key == Qt.Key_R)
-                  rPressed = false;
-              console.log("up");
+              if(event.key === Qt.Key_R)
+                rPressed = !rPressed;
+              if(event.key === Qt.Key_G)
+                gPressed = !gPressed;
+              if(event.key === Qt.Key_B)
+                bPressed = !bPressed;
+              if(event.key === Qt.Key_W)
+                wPressed = !wPressed;
+              if(event.key === Qt.Key_Escape)
+                rPressed = gPressed = bPressed = wPressed = false;
+              if(rPressed || gPressed || bPressed | wPressed){
+                  keyfEditMessage.colors = (rPressed ? (qsTr("red") + " ") : "") + (gPressed ? (qsTr("green") + " ") : "") + (bPressed ? (qsTr("blue") + " ") : "") + (wPressed ? (qsTr("white")) : "");
+                  keyfEditMessage.visible = true;
+              }
+              else{
+                  keyfEditMessage.visible = false;
+              }
+
           }
 
           focus: true;
