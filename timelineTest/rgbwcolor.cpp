@@ -42,6 +42,11 @@ double RGBWColor::getW()
     return w;
 }
 
+double RGBWColor::getBrightness()
+{
+    return (r+g+b+w)/4;
+}
+
 void RGBWColor::setR(double r)
 {
     this->r = r;

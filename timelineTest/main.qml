@@ -178,7 +178,20 @@ ApplicationWindow {
             var gradient = ctx.createLinearGradient(start,0,end,0);
             for(var i = 0; i < drawedPoints.length;i++){
                 var point = drawedPoints[i];
-                gradient.addColorStop((calcPosX(point.time)-start)/(end-start),point.value.preview);
+                var pos = (calcPosX(point.time)-start)/(end-start);
+                if(point.value.brightness > 0){
+                    gradient.addColorStop(pos,point.value.preview);
+                }
+                else{//workarround für schwarze punkte
+                    console.log(i + "ist black point");
+                    if(i > 0){
+                        gradient.addColorStop(pos-0.0001,drawedPoints[i-1].value.preview);
+                    }
+                    if(i < drawedPoints.length-1){
+                        gradient.addColorStop(pos+0.0001,drawedPoints[i+1].value.preview);
+                    }
+                }
+
             }
           }
 

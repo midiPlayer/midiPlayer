@@ -13,11 +13,13 @@ public:
     Q_PROPERTY(double b READ getB  WRITE setB)
     Q_PROPERTY(double w READ getW  WRITE setW)
     Q_PROPERTY(QString preview READ getRGBPrev)
+    Q_PROPERTY(double brightness READ getBrightness)
 
     double getR();
     double getG();
     double getB();
     double getW();
+    double getBrightness();
 
 public slots:
     void setR(double r);
