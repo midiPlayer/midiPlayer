@@ -101,7 +101,7 @@ ApplicationWindow {
 
 
           //draw graph
-          var gradient = ctx.createLinearGradient(0,0,width,0);
+          var drawedPoints = [];
 
           ctx.lineWidth = 4
           ctx.strokeStyle = "blue"
@@ -113,6 +113,7 @@ ApplicationWindow {
 
           var isFirst = true;
           var isFirstUnprint = true;
+
           for(var i = 0; i <points.length; i++){
             var point = points[i];
 
@@ -122,10 +123,8 @@ ApplicationWindow {
 
             if(isFirst){//vorherigen punkt zeichnen
               if(i > 0){
-                  ctx.moveTo(calcPosX(points[i-1].time),calcPosY(points[i-1]));
-                  //gradient.addColorStop(calcPosX(points[i-1].time)/width,Qt.rgba(point.value.r,point.value.g,point.value.b,1));
-                  //not working: fix: create custom color mix function
-                  //fix 2 expand gradient over size:
+                  ctx.lineTo(calcPosX(points[i-1].time),calcPosY(points[i-1]));
+                  drawedPoints.push(points[i-1]);
               }
 
 
@@ -135,25 +134,39 @@ ApplicationWindow {
 
             if(calcPosX(point.time <= width)){//visible points:
                 ctx.lineTo(calcPosX(point.time),calcPosY(point));
-                gradient.addColorStop(calcPosX(point.time)/width,point.value.preview);
+                drawedPoints.push(point);
             }
             else if(isFirstUnprint){
                 ctx.lineTo(calcPosX(point.time),calcPosY(point));
+                drawedPoints.push(point);
                 isFirstUnprint = false;
 
             }
           }
           if(isFirstUnprint && points.length > 0){
              ctx.lineTo(width,calcPosY(points[i-1]));
+              drawedPoints.push(points[i-1]);
           }
 
           ctx.lineTo(width,height)
-          ctx.closePath()
+          ctx.closePath();
+
+          //generate gradient
+          if(drawedPoints.length > 1){
+            var start = calcPosX(drawedPoints[0].time);
+            var end = calcPosX(drawedPoints[drawedPoints.length - 1].time);
+            var gradient = ctx.createLinearGradient(start,0,end,0);
+            for(var i = 0; i < drawedPoints.length;i++){
+                var point = drawedPoints[i];
+                gradient.addColorStop((calcPosX(point.time)-start)/(end-start),point.value.preview);
+            }
+          }
+
           ctx.fillStyle = gradient;
           ctx.fill()
 
           //draw points:
-          for(var i = 0; i <points.length; i++){
+          for(var i = 0; i < points.length; i++){
             var point = points[i];
 
             if(calcPosX(point.time) < 0)
