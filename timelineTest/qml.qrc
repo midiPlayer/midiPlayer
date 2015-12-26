@@ -2,5 +2,8 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>Keyframe.qml</file>
+        <file>Graph.qml</file>
+        <file>GraphViewer.qml</file>
+        <file>KeyframeCreator.js</file>
     </qresource>
 </RCC>

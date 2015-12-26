@@ -7,6 +7,7 @@ class RGBWColor : public QObject
 Q_OBJECT
 public:
     RGBWColor();
+    RGBWColor(RGBWColor *copy);
     QString getRGBPrev();
     Q_PROPERTY(double r READ getR  WRITE setR)
     Q_PROPERTY(double g READ getG  WRITE setG)
@@ -14,12 +15,14 @@ public:
     Q_PROPERTY(double w READ getW  WRITE setW)
     Q_PROPERTY(QString preview READ getRGBPrev)
     Q_PROPERTY(double brightness READ getBrightness)
+    Q_PROPERTY(RGBWColor* copy READ getCopy)
 
     double getR();
     double getG();
     double getB();
     double getW();
     double getBrightness();
+    RGBWColor* getCopy();
 
 public slots:
     void setR(double r);

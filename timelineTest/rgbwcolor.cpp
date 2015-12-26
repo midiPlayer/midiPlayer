@@ -6,6 +6,14 @@ RGBWColor::RGBWColor()
 
 }
 
+RGBWColor::RGBWColor(RGBWColor *copy)
+{
+ r = copy->getR();
+ g = copy->getG();
+ b = copy->getB();
+ w = copy->getW();
+}
+
 QString RGBWColor::getRGBPrev()
 {
     //TODO: gewichtung anpassen
@@ -45,6 +53,11 @@ double RGBWColor::getW()
 double RGBWColor::getBrightness()
 {
     return (r+g+b+w)/4;
+}
+
+RGBWColor *RGBWColor::getCopy()
+{
+    return new RGBWColor(this);
 }
 
 void RGBWColor::setR(double r)
