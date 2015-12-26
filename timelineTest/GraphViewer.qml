@@ -11,8 +11,9 @@ Rectangle{
 
     Graph{
         id: graph1;
-        anchors.fill: parent;
+        anchors.top: parent.anchors.top;
         viewer: graphViewer
+        height: 100;
     }
 
     property var graphs: [graph1];
@@ -86,9 +87,13 @@ Rectangle{
 
       }
 
+      property alias mouseA: mouseA
 
       MouseArea{
+          id: mouseA
           anchors.fill: parent;
+
+          focus:true;
 
 
           property bool rPressed: false;
@@ -96,13 +101,11 @@ Rectangle{
           property bool bPressed: false;
           property bool wPressed: false;
           onWheel: {
-              for(var i = 0; i < parent.parent.graphs.length; i++){
-                  if(parent.parent.graphs[i].isWheelLocked()){
-                      wheel.accepted = false;
-                      return;
-                  }
+              if(rPressed || gPressed || bPressed || wPressed){
+                //ignore; event is handeled in Graph
+                  wheel.accepted = false;
               }
-              if(wheel.modifiers & Qt.ControlModifier){//zoom
+              else if(wheel.modifiers & Qt.ControlModifier){//zoom
                 var delta = wheel.angleDelta.y / 5000;
                   parent.parent.zoom = Math.min(Math.max(0.1, parent.parent.zoom + delta),2);
                   console.log(parent.parent.zoom);
@@ -149,6 +152,7 @@ Rectangle{
 
           Keys.onPressed: {
               event.accepted = true;
+              console.log("keyEvent");
 
               if(event.key === Qt.Key_R)
                 rPressed = !rPressed;
@@ -167,7 +171,6 @@ Rectangle{
               else{
                   keyfEditMessage.visible = false;
               }
-
           }
 
       }

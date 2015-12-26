@@ -152,32 +152,23 @@ Item{
       }
 
 
-    function isWheelLocked(){
-        return mouseA.rPressed || mouseA.gPressed || mouseA.bPressed || mouseA.wPressed;
-    }
 
     MouseArea{
-        id:mouseA
         anchors.fill: parent;
-
-        property bool rPressed: false;
-        property bool gPressed: false;
-        property bool bPressed: false;
-        property bool wPressed: false;
         onWheel: {
-            if(rPressed || gPressed || bPressed | wPressed){
+            if(viewer.canvas.mouseA.rPressed || viewer.canvas.mouseA.gPressed || viewer.canvas.mouseA.bPressed | viewer.canvas.mouseA.wPressed){
                if(parent.activePoint != null){
                   var deltaP = wheel.angleDelta.y / 5000;
-                   if(rPressed){
+                   if(viewer.canvas.mouseA.rPressed){
                        parent.activePoint.value.r = Math.max(Math.min(parent.activePoint.value.r + deltaP,1),0)
                    }
-                   if(gPressed){
+                   if(viewer.canvas.mouseA.gPressed){
                        parent.activePoint.value.g = Math.max(Math.min(parent.activePoint.value.g + deltaP,1),0)
                    }
-                   if(bPressed){
+                   if(viewer.canvas.mouseA.bPressed){
                        parent.activePoint.value.b = Math.max(Math.min(parent.activePoint.value.b + deltaP,1),0)
                    }
-                   if(wPressed){
+                   if(viewer.canvas.mouseA.wPressed){
                        parent.activePoint.value.w = Math.max(Math.min(parent.activePoint.value.w + deltaP,1),0)
                    }
                    viewer.canvas.requestPaint();
@@ -241,30 +232,6 @@ Item{
             }
         }
 
-        Keys.onPressed: {
-            event.accepted = true;
-
-            if(event.key === Qt.Key_R)
-              rPressed = !rPressed;
-            if(event.key === Qt.Key_G)
-              gPressed = !gPressed;
-            if(event.key === Qt.Key_B)
-              bPressed = !bPressed;
-            if(event.key === Qt.Key_W)
-              wPressed = !wPressed;
-            if(event.key === Qt.Key_Escape)
-              rPressed = gPressed = bPressed = wPressed = false;
-            if(rPressed || gPressed || bPressed | wPressed){
-                keyfEditMessage.colors = (rPressed ? (qsTr("red") + " ") : "") + (gPressed ? (qsTr("green") + " ") : "") + (bPressed ? (qsTr("blue") + " ") : "") + (wPressed ? (qsTr("white")) : "");
-                keyfEditMessage.visible = true;
-            }
-            else{
-                keyfEditMessage.visible = false;
-            }
-
-        }
-
-        focus: true;
     }
 
 
