@@ -45,8 +45,13 @@ Item{
     property var viewer;
 
     function calcPosY(point){
-        return height - height * point.value.brightness
+        return y + height - height * point.value.brightness
     }
+
+    function getAbsHeight(height){
+        return y + height;
+    }
+
 
     function sortPoints(){
         points = points.sort(function(a,b){return a.time - b.time});
@@ -62,7 +67,7 @@ Item{
 
 
         ctx.beginPath()
-        ctx.moveTo(0,height)
+        ctx.moveTo(0,getAbsHeight(height))
 
         var isFirst = true;
         var isFirstUnprint = true;
@@ -101,7 +106,7 @@ Item{
             drawedPoints.push(points[i-1]);
         }
 
-        ctx.lineTo(width,height)
+        ctx.lineTo(width,getAbsHeight(height));
         ctx.closePath();
 
         //generate gradient
@@ -116,7 +121,6 @@ Item{
                   gradient.addColorStop(pos,point.value.preview);
               }
               else{//workarround für schwarze punkte
-                  console.log(i + "ist black point");
                   if(i > 0){
                       gradient.addColorStop(pos-0.0001,drawedPoints[i-1].value.preview);
                   }
@@ -181,7 +185,7 @@ Item{
                 var point = parent.points[i];
                 var x = viewer.calcPosX(point.time);
                 var y = calcPosY(point);
-                if(Math.abs(mouseX - x) < 20 && Math.abs(mouseY - y) < 20){
+                if(Math.abs(mouseX - x) < 20 && Math.abs(mouseY - y + parent.y) < 20){
                     return i;
                 }
             }
@@ -192,8 +196,6 @@ Item{
         acceptedButtons : Qt.LeftButton | Qt.RightButton | Qt.MiddleButton;
         onPressed: {
           if(pressedButtons & Qt.LeftButton){
-            console.log("pressed 2");
-            console.log("index:" + parent.points[getClickedPointIndex()]);
             parent.activePoint = parent.points[getClickedPointIndex()];
             viewer.canvas.requestPaint();
           }

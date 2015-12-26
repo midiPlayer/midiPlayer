@@ -11,12 +11,18 @@ Rectangle{
 
     Graph{
         id: graph1;
-        anchors.top: parent.anchors.top;
+        anchors.top: parent.top;
+        viewer: graphViewer
+        height: 100;
+    }
+    Graph{
+        id: graph2;
+        anchors.top: graph1.bottom;
         viewer: graphViewer
         height: 100;
     }
 
-    property var graphs: [graph1];
+    property var graphs: [graph1,graph2];
 
     color:"#000";
 
