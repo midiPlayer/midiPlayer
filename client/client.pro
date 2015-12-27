@@ -5,7 +5,8 @@ QT += qml quick widgets websockets
 SOURCES += \
     ../webSocketConnector/webinterface.cpp \
     ../webSocketConnector/websocketconnector.cpp \
-    main.cpp
+    main.cpp \
+    rgbwcolor.cpp
 
 RESOURCES += qml.qrc
 
@@ -27,6 +28,13 @@ DISTFILES += \
 
 HEADERS += \
 ../webSocketConnector/webinterface.h \
-    ../webSocketConnector/websocketconnector.h
+    ../webSocketConnector/websocketconnector.h \
+    rgbwcolor.h
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+
+OTHER_FILES += \
+    KeyframeCreator.js \
+    Keyframe.qml \
+    GraphViewer.qml \
+    Graph.qml

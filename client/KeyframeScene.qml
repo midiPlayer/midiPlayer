@@ -13,13 +13,12 @@ Item {
     }
 
     Item{
-
+        id:deviceView
         width: parent.width
         height: parent.height/2
         ScrollView{
             anchors.fill: parent
             ListView {
-                id:deviceView
                 width: 180; height: 200
 
                 model: deviceModell
@@ -58,6 +57,16 @@ Item {
             if(msg.devices !== null)
                 deviceWorker.sendMessage({"model":deviceModell,"lamps":msg.devices});
             //importer.sendMessage({"msg":msg,"listModel":listModel,"fusionTypeModel":fusionTypeModel});
+        }
+    }
+
+    Item{//graph display
+        width: parent.width;
+        height: parent.height/2;
+        anchors.top:deviceView.bottom
+
+        GraphViewer{
+            id:viewer
         }
     }
 }

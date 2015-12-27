@@ -49,5 +49,9 @@
         <file>icons/delete.png</file>
         <file>KeyframeScene.qml</file>
         <file>KeyframeSceneDeviceWorker.js</file>
+        <file>Graph.qml</file>
+        <file>GraphViewer.qml</file>
+        <file>Keyframe.qml</file>
+        <file>KeyframeCreator.js</file>
     </qresource>
 </RCC>
