@@ -10,10 +10,10 @@ class FusionScene : public Scene
 {
 public:
     FusionScene(QString name,QJsonObject serialized = QJsonObject());
-    void fusion(QSharedPointer<Scene> with, Device::FusionType fusionType, float opacity);
-    void fusion(Scene *with, Device::FusionType fusionType, float opacity);
-    void fusion(QList<Device> with, Device::FusionType fusionType, float opacity);
-    QList<Device> passiveFusion(QList<Device> with, Device::FusionType fusionType, float opacity);
+    void fusion(QSharedPointer<Scene> with, DeviceState::FusionType fusionType, float opacity);
+    void fusion(Scene *with, DeviceState::FusionType fusionType, float opacity);
+    void fusion(QList<Device> with, DeviceState::FusionType fusionType, float opacity);
+    QList<Device> passiveFusion(QList<Device> with, DeviceState::FusionType fusionType, float opacity);
     void reset();
     void import(Scene* import);
     void import(QList<Device> ds);

@@ -9,13 +9,13 @@
 class DiscoSubScene
 {
 public:
-    DiscoSubScene(int idP, QSharedPointer<Scene>sceneP, Device::FusionType fusionTypeP, bool muteP = false, float opacityP = 1.0);
+    DiscoSubScene(int idP, QSharedPointer<Scene>sceneP, DeviceState::FusionType fusionTypeP, bool muteP = false, float opacityP = 1.0);
     DiscoSubScene(QJsonObject serialized, SceneBuilder *sceneBuilder, int idP);
     int id;
     QSharedPointer<Scene> scene;
     bool mute;
     float opacity;
-    Device::FusionType fusionType;
+    DeviceState::FusionType fusionType;
     QJsonObject getJsonForClient();
     QJsonObject serialize(SceneBuilder *builder);
     void setFusinType(QString fusionTypeStr);

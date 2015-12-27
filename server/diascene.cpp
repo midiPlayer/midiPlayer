@@ -24,7 +24,7 @@ QList<Device> DiaScene::getLights()
             current = fadingTo;
             fadingTo = -1;
         }
-        fusion.fusion(fadingToDia.data()->scene,Device::AV,percentage);
+        fusion.fusion(fadingToDia.data()->scene,DeviceState::AV,percentage);
     }
 
     return fusion.getLights();

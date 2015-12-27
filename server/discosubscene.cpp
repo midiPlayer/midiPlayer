@@ -6,7 +6,7 @@
 #define KEY_FUSION_TYPE "fusionType"
 #define KEY_SCENE "scene"
 
-DiscoSubScene::DiscoSubScene(int idP, QSharedPointer<Scene> sceneP, Device::FusionType fusionTypeP, bool muteP, float opacityP):
+DiscoSubScene::DiscoSubScene(int idP, QSharedPointer<Scene> sceneP, DeviceState::FusionType fusionTypeP, bool muteP, float opacityP):
     id(idP),scene(sceneP),fusionType(fusionTypeP),mute(muteP),opacity(opacityP)
 {
 
@@ -51,22 +51,22 @@ QJsonObject DiscoSubScene::getBasicJson()
 
     QString fusionTypeStr;
     switch (fusionType) {
-    case Device::MAX:
+    case DeviceState::MAX:
         fusionTypeStr = "max";
         break;
-    case Device::MAXG:
+    case DeviceState::MAXG:
         fusionTypeStr = "maxg";
         break;
-    case Device::MIN:
+    case DeviceState::MIN:
         fusionTypeStr = "min";
         break;
-    case Device::MING:
+    case DeviceState::MING:
         fusionTypeStr = "ming";
         break;
-    case Device::AV:
+    case DeviceState::AV:
         fusionTypeStr = "av";
         break;
-    case Device::OVERRIDE:
+    case DeviceState::OVERRIDE:
         fusionTypeStr = "override";
         break;
     }
@@ -85,16 +85,16 @@ QJsonObject DiscoSubScene::serialize(SceneBuilder *builder)
 void DiscoSubScene::setFusinType(QString fusionTypeStr)
 {
     if(fusionTypeStr == "max")
-        fusionType = Device::MAX;
+        fusionType = DeviceState::MAX;
     else if(fusionTypeStr == "min")
-        fusionType = Device::MIN;
+        fusionType = DeviceState::MIN;
     else if(fusionTypeStr == "maxg")
-        fusionType = Device::MAXG;
+        fusionType = DeviceState::MAXG;
     else if(fusionTypeStr == "ming")
-        fusionType = Device::MING;
+        fusionType = DeviceState::MING;
     else if(fusionTypeStr == "av")
-        fusionType = Device::AV;
+        fusionType = DeviceState::AV;
     else if(fusionTypeStr == "override")
-        fusionType = Device::OVERRIDE;
+        fusionType = DeviceState::OVERRIDE;
 }
 

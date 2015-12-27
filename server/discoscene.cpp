@@ -131,7 +131,7 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
            qDebug("duscoScene: ERROR: unknown scene type");
            return;
         }
-        addSubScene(QSharedPointer<DiscoSubScene>(new DiscoSubScene(sceneIdCounter,newScene,Device::MAX,true,1.0f)));
+        addSubScene(QSharedPointer<DiscoSubScene>(new DiscoSubScene(sceneIdCounter,newScene,DeviceState::MAX,true,1.0f)));
         sendMsg(getStatus(true,true,false),id,true);
     }
     if(msg.contains("deleteScene")){
@@ -174,7 +174,7 @@ QJsonObject DiscoScene::serialize()
 
 void DiscoScene::addEffect(QSharedPointer<Scene> scene)
 {
-    addSubScene(QSharedPointer<DiscoSubScene>(new DiscoSubScene(sceneIdCounter,scene,Device::MAX,false,1.0)));
+    addSubScene(QSharedPointer<DiscoSubScene>(new DiscoSubScene(sceneIdCounter,scene,DeviceState::MAX,false,1.0)));
 }
 
 void DiscoScene::addSubScene(QSharedPointer<DiscoSubScene> subScene){

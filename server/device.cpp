@@ -1,15 +1,16 @@
 #include "device.h"
 #include <QDebug>
-Device::Device(QMap<int,float> channelsP, QString devIdP, DeviceType typeP, QVector3D pos) : dmxChannels(channelsP),devId(devIdP),type(typeP),position(pos)
+#include "devicestate.h"
+Device::Device(QMap<int,float> channelsP, QString devIdP, DeviceType typeP, QVector3D pos) : state(devIdP, channelsP),devId(devIdP),type(typeP),position(pos)
 {
 
 }
 
 Device::Device(int firstChannel, int numChannels, QString devIdP, Device::DeviceType typeP, QVector3D pos):
-    dmxChannels(),devId(devIdP),type(typeP),position(pos)
+    state(devIdP),devId(devIdP),type(typeP),position(pos)
 {
     for(int  i = firstChannel; i <firstChannel+numChannels; i++){
-        dmxChannels.insert(i,0.0f);
+        state.dmxChannels.insert(i,0.0f);
     }
 }
 
@@ -18,64 +19,42 @@ Device::Device(const Device &d) : Device(&d)
 
 }
 
-Device::Device(const Device *d) : dmxChannels(d->dmxChannels),devId(d->devId),type(d->type),position(d->position)
+Device::Device(const Device *d) : state(d->state),devId(d->devId),type(d->type),position(d->position)
 {
 
 }
 
-Device Device::fusionWith(Device upper, Device::FusionType type, float opacity)
+Device Device::fusionWith(Device upper, DeviceState::FusionType type, float opacity)
 {
     if(this->getNumChannels() != upper.getNumChannels() || this->getChannels() != upper.getChannels())
         throw "not compatible";//we can only fusion equal devices
     Device ret(this);
-    switch(type){
-     case MAX:
-        foreach (int channel, getChannels()) {
-            ret.setChannel(channel,upper.getChannelValue(channel)>getChannelValue(channel) ? upper.getChannelValue(channel) : getChannelValue(channel));
-        }
-        break;
-     case MIN:
-        foreach (int channel, getChannels()) {
-            ret.setChannel(channel,upper.getChannelValue(channel)<getChannelValue(channel) ? upper.getChannelValue(channel) : getChannelValue(channel));
-        }
-        break;
-     case AV:
-        foreach (int channel, getChannels()) {
-            ret.setChannel(channel,upper.getChannelValue(channel)*opacity+getChannelValue(channel)*(1.0f-opacity));
-        }
-
-        break;
-
-    default :
-        qDebug() << "this Fusiontype is currently not implemented";
-        break;
-    }
+    ret.state = state.fusionWith(upper.state,type,opacity);
     return ret;
 }
 
 int Device::getNumChannels()
 {
-    return dmxChannels.count();
+    return state.dmxChannels.count();
 }
 
 QMap<int, float> Device::getChannelValues()
 {
-    return dmxChannels;
+    return state.dmxChannels;
 }
 
 QList<int> Device::getChannels()const{
-    return dmxChannels.keys();
+    return state.getChannels();
 }
 
 void Device::setChannel(int channel, float value)
 {
-    dmxChannels.remove(channel);
-    dmxChannels.insert(channel,value);
+    state.setChannel(channel,value);
 }
 
 float Device::getChannelValue(int channel)
 {
-    return dmxChannels.value(channel);
+    return state.getChannelValue(channel);
 }
 
 QList<Device> Device::loadDevicesFromXml(QString file)
@@ -161,7 +140,7 @@ Device::DeviceType Device::getType()
 
 int Device::getFirstChannel()
 {
-    return dmxChannels.keys().at(0);
+    return state.getFirstChannel();
 }
 QVector3D Device::getPosition() const
 {
@@ -171,6 +150,18 @@ QVector3D Device::getPosition() const
 void Device::setPosition(const QVector3D &value)
 {
     position = value;
+}
+
+DeviceState Device::getState()
+{
+    return DeviceState(getDeviceId(),getChannelValues());
+}
+
+void Device::setState(DeviceState stateP)
+{
+    if(stateP.deviceId != getDeviceId())
+        throw("wrong state");
+    state = stateP;
 }
 
 

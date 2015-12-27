@@ -7,22 +7,22 @@ FusionScene::FusionScene(QString name,QJsonObject serialized) : Scene(name,seria
 
 }
 
-void FusionScene::fusion(Scene *with, Device::FusionType fusionType,float opacity)
+void FusionScene::fusion(Scene *with, DeviceState::FusionType fusionType,float opacity)
 {
     fusion(with->getLights(),fusionType,opacity);
 }
 
-void FusionScene::fusion(QSharedPointer<Scene> with, Device::FusionType fusionType,float opacity)
+void FusionScene::fusion(QSharedPointer<Scene> with, DeviceState::FusionType fusionType,float opacity)
 {
     fusion(with.data()->getLights(),fusionType,opacity);
 }
 
-void FusionScene::fusion(QList<Device> with, Device::FusionType fusionType, float opacity)
+void FusionScene::fusion(QList<Device> with, DeviceState::FusionType fusionType, float opacity)
 {
     devices = passiveFusion(with,fusionType,opacity);
 }
 
-QList<Device> FusionScene::passiveFusion(QList<Device> with, Device::FusionType fusionType, float opacity)
+QList<Device> FusionScene::passiveFusion(QList<Device> with, DeviceState::FusionType fusionType, float opacity)
 {
     QList<Device> ret;
     foreach(Device device,with){

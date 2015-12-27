@@ -13,9 +13,9 @@ QList<Device> OverlayScene::getEffect(QList<Device> other)
     FusionScene fusion("fusion");
     fusion.import(other);
     if(min)
-        fusion.fusion(overlay,Device::MIN,1.0f);
+        fusion.fusion(overlay,DeviceState::MIN,1.0f);
     else
-        fusion.fusion(overlay,Device::MAX,1.0f);
+        fusion.fusion(overlay,DeviceState::MAX,1.0f);
     return fusion.getLights();
 }
 

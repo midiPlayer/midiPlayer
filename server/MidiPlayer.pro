@@ -44,7 +44,9 @@ SOURCES += main.cpp\
     colorwavescene.cpp \
     diascene.cpp \
     colorbutton.cpp \
-    dia.cpp
+    dia.cpp \
+    keyframe.cpp \
+    devicestate.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
@@ -76,7 +78,9 @@ HEADERS  += mainwindow.h\
     colorwavescene.h \
     diascene.h \
     colorbutton.h \
-    dia.h
+    dia.h \
+    keyframe.h \
+    devicestate.h
 
 FORMS    += mainwindow.ui
 

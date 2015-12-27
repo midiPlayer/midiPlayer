@@ -1,22 +1,23 @@
-#ifndef KEYFRAMESCENE_H && 0
+#ifndef KEYFRAMESCENE_H
 #define KEYFRAMESCENE_H
 #include "scene.h"
+#include <QTime>
+#include <QList>
+#include "device.h"
+#include "keyframe.h"
 class KeyFrameScene : public Scene
 {
 public:
-    KeyFrameScene(QMap<int, QMap<int, float> > frames, QString name,bool autoExitP, QString desc = 0);
-    KeyFrameScene(QString path, QString name,bool autoExitP, QString desc = 0);
+    KeyFrameScene(QList<Device> avDev,QString name, QJsonObject serialized = QJsonObject());
     QList<Device>getLights();
     QList<Device> getUsedLights();
-    int getFadeOutDuration();
-    bool exitRequested();
     void start();
+    void stop();
+    QJsonObject serialize();
 private:
-    QMap<int,QMap<int,float> > keyframes;
-    QMap<int, float> keyFrameFusion(QMap<int, float> sceneA, QMap<int, float> sceneB, float ballance,QList<int> usedLamps);
-    QList<int> usedLamps;
-    bool exitRequestedV;
-    bool autoExit;
+    QTime time;
+    QList<Device> myDevs;
+    QList<Keyframe> keyframes;
 };
 
 #endif // KEYFRAMESCENE_H

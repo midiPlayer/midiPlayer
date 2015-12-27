@@ -5,17 +5,18 @@
 #include <QFile>
 #include <QMap>
 #include <QVector3D>
+#include "devicestate.h"
+
 class Device
 {
 public:
-    enum FusionType { AV,MAX,MAXG,MIN,MING,OVERRIDE};
     enum DeviceType{White,RGB,RGBW,Beamer};
 
     Device(QMap<int,float> channelsP, QString devIdP,DeviceType typeP,QVector3D pos = QVector3D(0,0,0));
     Device(int firstChannel, int numChannels, QString devIdP,DeviceType typeP,QVector3D pos = QVector3D(0,0,0));
     Device(const Device &d);
     Device(const Device *d);
-    Device fusionWith(Device upper, FusionType type, float opacity);
+    Device fusionWith(Device upper, DeviceState::FusionType type, float opacity);
     int getNumChannels();
     QMap<int,float> getChannelValues();
     QList<int> getChannels() const;
@@ -36,9 +37,11 @@ public:
     int getFirstChannel();
     QVector3D getPosition() const;
     void setPosition(const QVector3D &value);
+    DeviceState getState();
+    void setState(DeviceState stateP);
 
 private:
-    QMap<int,float> dmxChannels;
+    DeviceState state;
     QString devId;
     DeviceType type;
     QVector3D position;

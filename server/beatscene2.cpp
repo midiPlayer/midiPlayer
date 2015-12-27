@@ -63,7 +63,7 @@ QList<Device> BeatScene2::getLights()
         float per = float(smoothTimer.elapsed()) / float(smoothDuration);
         if(per>1.0)
             per = 1;
-        return prev.passiveFusion(next.getLights(),Device::AV,per);
+        return prev.passiveFusion(next.getLights(),DeviceState::AV,per);
     }
 
 }
