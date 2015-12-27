@@ -2,11 +2,15 @@
 #include <QDebug>
 #include <QFile>
 #include <QJsonArray>
+#include "websocketserver.h"
 
 #define KEY_KEYFRAMESCENE_KEYFRAMES "key_keyframescene_keyframes"
 
-KeyFrameScene::KeyFrameScene(QList<Device> avDev, QString name, QJsonObject serialized) : Scene(name,serialized)
+KeyFrameScene::KeyFrameScene(QList<Device> avDev, QString name, WebSocketServer *ws, QJsonObject serialized) :
+    Scene(name,serialized), WebSocketServerProvider(ws),wss(ws)
 {
+    ws->registerProvider(this);
+
     foreach (Device dev, avDev) {
         if(dev.getType() == Device::RGBW){//at the moment only rgbw is supported.
             myDevs.append(dev);
@@ -15,7 +19,9 @@ KeyFrameScene::KeyFrameScene(QList<Device> avDev, QString name, QJsonObject seri
 
     if(serialized.length() != 0 && serialized.contains(KEY_KEYFRAMESCENE_KEYFRAMES)){
         foreach (QJsonValue value, serialized.value(KEY_KEYFRAMESCENE_KEYFRAMES).toArray()) {
-            keyframes.append(Keyframe(value.toObject()));
+            QSharedPointer<Keyframe> pointer = QSharedPointer<Keyframe>(new Keyframe(value.toObject(),wss));
+            connect(pointer.data(),SIGNAL(deleteRequested(Keyframe*)),this,SLOT(removeKeyframe(Keyframe*)));
+            keyframes.append(pointer);
         }
     }
 }
@@ -24,27 +30,27 @@ QList<Device> KeyFrameScene::getLights()
 {
     QList<Device> ret;
     foreach (Device dev,myDevs) {
-        Keyframe *min = 0;
-        Keyframe *max = 0;
+        QSharedPointer<Keyframe> min;
+        QSharedPointer<Keyframe> max;
         int elapsed = time.elapsed();
-        foreach (Keyframe frame, keyframes) {
-            if(dev.getDeviceId() == frame.state.deviceId){
-                if(frame.time < elapsed && (min == 0 || frame.time > min->time)){
-                    min = &frame;
+        foreach (QSharedPointer<Keyframe> frame, keyframes) {
+            if(dev.getDeviceId() == frame.data()->state.deviceId){
+                if(frame.data()->time < elapsed && (min.isNull() || frame.data()->time > min.data()->time)){
+                    min = frame;
                 }
-                if(frame.time > elapsed && (max == 0 || frame.time < max->time)){
-                    max = &frame;
+                if(frame.data()->time > elapsed && (max.isNull() || frame.data()->time < max.data()->time)){
+                    max = frame;
                 }
             }
         }
-        if(min != 0 && max != 0){
-            dev.setState(min->fusionWith(*max));
+        if(min.isNull() && max.isNull()){
+            dev.setState(min.data()->fusionWith(max));
         }
-        else if(min != 0){
-            dev.setState(min->state);
+        else if(min.isNull()){
+            dev.setState(min.data()->state);
         }
-        else if(max != 0){
-            dev.setState(max->state);
+        else if(max.isNull()){
+            dev.setState(max.data()->state);
         }
         ret.append(dev);
 
@@ -71,9 +77,81 @@ QJsonObject KeyFrameScene::serialize()
 {
     QJsonObject ret;
     QJsonArray keyframesJson;
-    foreach (Keyframe k, keyframes) {
-        keyframesJson.append(k.serialize());
+    foreach (QSharedPointer<Keyframe> k, keyframes) {
+        keyframesJson.append(k.data()->serialize());
     }
     ret.insert(KEY_KEYFRAMESCENE_KEYFRAMES,keyframesJson);
     return serializeScene(ret);
+}
+
+
+
+void KeyFrameScene::clientRegistered(QJsonObject msg, int id)
+{
+    QJsonObject ret;
+    ret.insert("devices",getLampsJson());
+    sendMsg(ret,id,true);
+}
+
+void KeyFrameScene::clientUnregistered(QJsonObject msg, int id)
+{
+
+}
+
+void KeyFrameScene::clientMessage(QJsonObject msg, int id)
+{
+
+    if(msg.contains("get_keyframes")){
+        QJsonObject ret;
+        QJsonArray keyframesJson;
+        QString devId = msg.value("get_keyframes").toString();
+        foreach (QSharedPointer<Keyframe> k, keyframes) {
+            if(k.data()->state.deviceId == devId){
+                keyframesJson.append(k.data()->providerId);
+            }
+        }
+        ret.insert("keyframes",keyframesJson);
+        sendMsg(ret,id,false);
+    }
+}
+
+QString KeyFrameScene::getRequestType()
+{
+    return "keyFrameScene";
+}
+
+QString KeyFrameScene::getSceneTypeString()
+{
+    return getSceneTypeStringStaticaly();
+}
+
+QString KeyFrameScene::getSceneTypeStringStaticaly()
+{
+    return "keyFrameScene";
+}
+
+void KeyFrameScene::removeKeyframe(Keyframe *which)
+{
+    for(int i = 0; i < keyframes.length();i++){
+        if(keyframes.at(i).data() == which){
+            keyframes.removeAt(i);
+            break;
+        }
+    }
+}
+
+QJsonArray KeyFrameScene::getLampsJson()
+{
+    QJsonArray ret;
+    foreach (Device dev, myDevs) {
+        ret.append(getLampJson(dev));
+    }
+    return ret;
+}
+
+QJsonObject KeyFrameScene::getLampJson(Device dev)
+{
+    QJsonObject ret;
+    ret.insert("devID",dev.getDeviceId());
+    return ret;
 }

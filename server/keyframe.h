@@ -3,17 +3,30 @@
 
 #include "devicestate.h"
 #include "serializable.h"
-class Keyframe  :Serializable
+#include "websocketserverprovider.h"
+#include <QObject>
+#include <QSharedPointer>
+
+class Keyframe  : public QObject, public Serializable, public WebSocketServerProvider
 {
+Q_OBJECT
 public:
-    Keyframe(double timeP, DeviceState stateP);
-    Keyframe(QJsonObject serialized);
-    int Compare (const Keyframe& other);
+    Keyframe(double timeP, DeviceState stateP, WebSocketServer *ws);
+    Keyframe(QJsonObject serialized, WebSocketServer *ws);
     DeviceState state;
     double time;
-    DeviceState fusionWith(Keyframe later);
+    DeviceState fusionWith(QSharedPointer <Keyframe> later);
     QJsonObject serialize();
+
+    void clientRegistered(QJsonObject msg, int id);
+    void clientUnregistered(QJsonObject msg, int id);
+    void clientMessage(QJsonObject msg, int id);
+    QString getRequestType();
+
+signals:
+    void deleteRequested(Keyframe *self);
 private:
+    WebSocketServer *wss;
 };
 
 #endif // KEYFRAME_H

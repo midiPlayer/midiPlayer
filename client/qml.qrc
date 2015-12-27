@@ -47,5 +47,7 @@
         <file>TriggerConfig.qml</file>
         <file>icons/deleteActive.png</file>
         <file>icons/delete.png</file>
+        <file>KeyframeScene.qml</file>
+        <file>KeyframeSceneDeviceWorker.js</file>
     </qresource>
 </RCC>

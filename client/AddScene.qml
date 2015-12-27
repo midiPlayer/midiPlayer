@@ -8,7 +8,7 @@ Item{
     property alias requestType: ws.requestType
 
     function chooseCorrectListModel(requestType){
-        if(requestType == "diaScene"){
+        if(requestType === "diaScene"){
             return sceneTypeModelDia
         }
         else{
@@ -25,6 +25,10 @@ Item{
         ListElement{
             text: qsTr("Disco Scene")
             type:"discoScene"
+        }
+        ListElement{
+            text: qsTr("Keyframe Scene")
+            type:"keyFrameScene"
         }
     }
 
@@ -66,14 +70,6 @@ Item{
                 id: sceneTypeComo
                 model:chooseCorrectListModel(requestType)
                 visible: comboVisible(requestType)
-                function comboVisible(requestType){
-                    if (chooseCorrectListModel(requestType) == sceneTypeModelDia){
-                        return false
-                    }
-                    else {
-                        return true
-                    }
-                }
             }
         }
         RowLayout{
@@ -96,14 +92,7 @@ Item{
                     msg.addScene.name = nameEdit.text;
                     msg.addScene.type = correctTypeChooser(requestType); //sceneTypeModel.get(sceneTypeComo.currentIndex).type;
                     function correctTypeChooser(requestType){
-                        if (chooseCorrectListModel(requestType) == sceneTypeModelDia){
-                            return "discoScene"
-                        }
-                        else{
-                            if(chooseCorrectListModel(requestType) == sceneTypeModelDisco){
-                                return sceneTypeModelDisco.get(sceneTypeComo.currentIndex).type
-                            }
-                        }
+                        return chooseCorrectListModel(requestType).get(sceneTypeComo.currentIndex).type;
                     }
 
                     console.log("requestType: "+requestType)

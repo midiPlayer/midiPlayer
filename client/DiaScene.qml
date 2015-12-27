@@ -149,7 +149,8 @@ Item{
                                     return "DiscoScene.qml"
                                 if(diaLayout.requestType == "colorScene")
                                     return "ColorScene.qml"
-                                return "";
+                                if(diaLayout.requestType == "keyFrameScene")
+                                    return "KeyframeScene.qml";
                             }
 
                             Image{
@@ -162,7 +163,7 @@ Item{
                             MouseArea{
                                 anchors.fill: parent
                                 onClicked:{
-                                    console.log("edit scene")
+                                    console.log("edit scene:" + editSceneBtn.getFileName())
                                     stackView.push(Qt.resolvedUrl(editSceneBtn.getFileName()),{"requestId":diaLayout.requestId});
                                 }
                             }
