@@ -7,7 +7,7 @@
 #define KEY_KEYFRAMESCENE_KEYFRAMES "key_keyframescene_keyframes"
 
 KeyFrameScene::KeyFrameScene(QList<Device> avDev, QString name, WebSocketServer *ws, QJsonObject serialized) :
-    Scene(name,serialized), WebSocketServerProvider(ws),wss(ws)
+    Scene(name,serialized), WebSocketServerProvider(ws),wss(ws),watch(ws)
 {
     ws->registerProvider(this);
 
@@ -32,7 +32,7 @@ QList<Device> KeyFrameScene::getLights()
     foreach (Device dev,myDevs) {
         QSharedPointer<Keyframe> min;
         QSharedPointer<Keyframe> max;
-        int elapsed = time.elapsed();
+        int elapsed = watch.getMSecs();
         foreach (QSharedPointer<Keyframe> frame, keyframes) {
             if(dev.getDeviceId() == frame.data()->state.deviceId){
                 if(frame.data()->time < elapsed && (min.isNull() || frame.data()->time > min.data()->time)){
@@ -43,13 +43,13 @@ QList<Device> KeyFrameScene::getLights()
                 }
             }
         }
-        if(min.isNull() && max.isNull()){
+        if(!min.isNull() && !max.isNull()){
             dev.setState(min.data()->fusionWith(max));
         }
-        else if(min.isNull()){
+        else if(!min.isNull()){
             dev.setState(min.data()->state);
         }
-        else if(max.isNull()){
+        else if(!max.isNull()){
             dev.setState(max.data()->state);
         }
         ret.append(dev);
@@ -66,11 +66,12 @@ QList<Device> KeyFrameScene::getUsedLights()
 
 void KeyFrameScene::start()
 {
-    time.restart();
+    watch.start();
 }
 
 void KeyFrameScene::stop()
 {
+    watch.stop();
 }
 
 QJsonObject KeyFrameScene::serialize()
@@ -90,6 +91,7 @@ void KeyFrameScene::clientRegistered(QJsonObject msg, int id)
 {
     QJsonObject ret;
     ret.insert("devices",getLampsJson());
+    ret.insert("cursorWatch",watch.providerId);
     sendMsg(ret,id,true);
 }
 

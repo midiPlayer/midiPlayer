@@ -46,7 +46,8 @@ SOURCES += main.cpp\
     colorbutton.cpp \
     dia.cpp \
     keyframe.cpp \
-    devicestate.cpp
+    devicestate.cpp \
+    stopwatch.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
@@ -80,7 +81,8 @@ HEADERS  += mainwindow.h\
     colorbutton.h \
     dia.h \
     keyframe.h \
-    devicestate.h
+    devicestate.h \
+    stopwatch.h
 
 FORMS    += mainwindow.ui
 

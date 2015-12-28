@@ -1,16 +1,16 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 1.2
+import WebSocketConnector 1.1
 
 Item{
     id:graphViewer
 
     property double zoom: 1;
     property double shift: 0;
-    property double cursor : 1;
     property alias canvas: canvas
 
-    property int requestId;
+    property alias requestId : ws.requestId
 
 
     WorkerScript {
@@ -110,8 +110,8 @@ Item{
           ctx.beginPath();
           ctx.lineWidth = 1;
           ctx.strokeStyle = "#ff0000"
-          ctx.moveTo(calcPosX(cursor),0);
-          ctx.lineTo(calcPosX(cursor),height);
+          ctx.moveTo(calcPosX(watch.getTime()/1000),0);
+          ctx.lineTo(calcPosX(watch.getTime()/1000),height);
           ctx.stroke();
 
       }
@@ -142,9 +142,10 @@ Item{
                   canvas.parametersChanged();
               }
               else if(wheel.modifiers & Qt.ShiftModifier){//move cursor
-                var deltaS = wheel.angleDelta.y / 5000 / parent.parent.zoom;
-                parent.parent.cursor = Math.max(0, parent.parent.cursor + deltaS);
-                  console.log(parent.parent.cursor);
+                var deltaS = wheel.angleDelta.y / 5 / parent.parent.zoom;
+                  watch.setTime(Math.max(0, watch.getTime() + deltaS),true);
+                  console.log(watch.getTime());
+
                 parent.requestPaint();
 
               }
@@ -195,6 +196,13 @@ Item{
                 wPressed = !wPressed;
               if(event.key === Qt.Key_Escape)
                 rPressed = gPressed = bPressed = wPressed = false;
+              if(event.key === Qt.Key_P){
+                  if(watch.running)
+                        watch.stop(true);
+                  else
+                      watch.resume(true);
+              }
+
               if(rPressed || gPressed || bPressed | wPressed){
                   keyfEditMessage.colors = (rPressed ? (qsTr("red") + " ") : "") + (gPressed ? (qsTr("green") + " ") : "") + (bPressed ? (qsTr("blue") + " ") : "") + (wPressed ? (qsTr("white")) : "");
                   keyfEditMessage.visible = true;
@@ -206,6 +214,22 @@ Item{
 
       }
 
+    }
+
+    Stopwatch{
+        id:watch
+        onDataChanged: {
+            canvas.requestPaint();
+        }
+    }
+
+    WebSocketConnector{
+        id: ws
+        onMessage: {
+            if(msg.hasOwnProperty("cursorWatch")){
+                watch.requestId = msg.cursorWatch;
+            }
+        }
     }
 }
 

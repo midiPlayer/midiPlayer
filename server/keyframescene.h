@@ -1,7 +1,7 @@
 #ifndef KEYFRAMESCENE_H
 #define KEYFRAMESCENE_H
 #include "scene.h"
-#include <QTime>
+#include "stopwatch.h"
 #include <QList>
 #include "device.h"
 #include "keyframe.h"
@@ -28,12 +28,13 @@ public:
 public slots:
     void removeKeyframe(Keyframe * which);
 private:
-    QTime time;
+    Stopwatch watch;
     QList<Device> myDevs;
     QList<QSharedPointer<Keyframe> > keyframes;
     QJsonArray getLampsJson();
     QJsonObject getLampJson(Device dev);
     WebSocketServer* wss;
+
 };
 
 #endif // KEYFRAMESCENE_H
