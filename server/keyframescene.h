@@ -10,6 +10,7 @@
 
 class KeyFrameScene : public Scene, public WebSocketServerProvider
 {
+Q_OBJECT
 public:
     KeyFrameScene(QList<Device> avDev,QString name, WebSocketServer *ws, QJsonObject serialized = QJsonObject());
     QList<Device>getLights();

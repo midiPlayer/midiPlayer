@@ -1,5 +1,6 @@
 #include "keyframe.h"
 #include "websocketserver.h"
+#include <QJsonArray>
 /**
  * @brief Keyframe::Keyframe
  * A keyframe ist a point that stores the state of a lamp at a time
@@ -15,7 +16,7 @@ Keyframe::Keyframe(double timeP, DeviceState stateP, WebSocketServer *ws) : stat
 }
 
 Keyframe::Keyframe(QJsonObject serialized, WebSocketServer *ws) : state(serialized.value(KEY_KEYFRAME_STATE).toObject()),
-    time(serialized.value(KEY_KEYFRAME_TIME).toInt(0)),WebSocketServerProvider(ws),wss(ws)
+    time(serialized.value(KEY_KEYFRAME_TIME).toDouble()),WebSocketServerProvider(ws),wss(ws)
 {
     ws->registerProvider(this);
 }
@@ -40,7 +41,10 @@ QJsonObject Keyframe::serialize()
 
 void Keyframe::clientRegistered(QJsonObject msg, int id)
 {
-
+    QJsonObject ret;
+    ret.insert("time",time);
+    ret.insert("state",state.getClientJson());
+    sendMsg(ret,id,true);
 }
 
 void Keyframe::clientUnregistered(QJsonObject msg, int id)
@@ -57,6 +61,16 @@ void Keyframe::clientMessage(QJsonObject msg, int id)
         sendMsgButNotTo(msg,id,true);
         wss->unregisterProvider(this);
         emit deleteRequested(this);
+    }
+
+    if(msg.contains("time")){
+        time = msg.value("time").toDouble();
+        sendMsgButNotTo(msg,id,true);
+    }
+
+    if(msg.contains("state")){
+        state.setClientJson(msg.value("state").toArray());
+        sendMsgButNotTo(msg,id,true);
     }
 }
 

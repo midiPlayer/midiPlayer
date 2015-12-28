@@ -82,6 +82,10 @@ Item{
                   canvas.parametersChanged.connect(repaint);
               }
 
+              Component.onDestruction: {
+                  canvas.parametersChanged.disconnect(repaint);
+              }
+
               viewer: graphViewer
           }
       }
@@ -180,7 +184,6 @@ Item{
 
           Keys.onPressed: {
               event.accepted = true;
-              console.log("keyEvent");
 
               if(event.key === Qt.Key_R)
                 rPressed = !rPressed;

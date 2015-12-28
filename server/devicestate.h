@@ -20,6 +20,8 @@ public:
     QList<int> getChannels() const;
     int getFirstChannel();
     QJsonObject serialize();
+    QJsonArray getClientJson();
+    void setClientJson(QJsonArray json);
 };
 
 #endif // DEVICESTATE_H

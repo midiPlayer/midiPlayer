@@ -90,3 +90,24 @@ QJsonObject DeviceState::serialize()
     ret.insert(KEY_DEVICESTATE_CHANNELS,channelsJosn);
     return ret;
 }
+
+QJsonArray DeviceState::getClientJson()
+{
+    QJsonArray channelsJosn;
+    foreach (int key, dmxChannels.keys()) {
+        channelsJosn.append(dmxChannels.value(key));
+    }
+    return channelsJosn;
+}
+
+void DeviceState::setClientJson(QJsonArray json)
+{
+    if(json.size() == dmxChannels.size()){
+        for(int i = 0; i < json.size() ; i++){
+            setChannel(i+getFirstChannel(),json.at(i).toDouble());
+        }
+    }
+    else{
+        qDebug() << "ERROR (Devicestate): wrong channel count;";
+    }
+}

@@ -111,7 +111,37 @@ void KeyFrameScene::clientMessage(QJsonObject msg, int id)
             }
         }
         ret.insert("keyframes",keyframesJson);
+        ret.insert("devId",devId);
         sendMsg(ret,id,true);
+    }
+    else if(msg.contains("add_keyframe")){
+        QJsonObject ret;
+        QJsonObject insertCommand = msg.value("add_keyframe").toObject();
+        QString devId = insertCommand.value("devId").toString();
+        double time = insertCommand.value("time").toDouble();
+        foreach (Device d, myDevs) {
+            if(d.getDeviceId() == devId){
+                DeviceState state = d.getState();
+                QSharedPointer<Keyframe> next;
+                foreach (QSharedPointer<Keyframe> frame, keyframes) {
+                    if(devId == frame.data()->state.deviceId){
+                        if(next.isNull() || qAbs(frame.data()->time - time) < qAbs(next.data()->time - time)){
+                            next = frame;
+                            state = frame.data()->state;
+                        }
+                    }
+                }
+
+                QSharedPointer<Keyframe> pointer = QSharedPointer<Keyframe>(new Keyframe(time,DeviceState(state),wss));
+                connect(pointer.data(),SIGNAL(deleteRequested(Keyframe*)),this,SLOT(removeKeyframe(Keyframe*)));
+                keyframes.append(pointer);
+                ret.insert("new_keyframe",pointer.data()->providerId);
+                ret.insert("devId",devId);
+                sendMsg(ret,true);
+                break;
+            }
+        }
+
     }
 }
 

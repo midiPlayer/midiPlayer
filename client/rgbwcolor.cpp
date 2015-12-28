@@ -1,17 +1,15 @@
 #include "rgbwcolor.h"
 #include <QColor>
+#include <QDebug>
 
-RGBWColor::RGBWColor()
+RGBWColor::RGBWColor() : r(0), g(0), b (0), w(0)
 {
 
 }
 
-RGBWColor::RGBWColor(RGBWColor *copy)
+RGBWColor::RGBWColor(RGBWColor *copy) : r(copy->getR()),g(copy->getG()),b(copy->getB()), w(copy->getW())
 {
- r = copy->getR();
- g = copy->getG();
- b = copy->getB();
- w = copy->getW();
+
 }
 
 QString RGBWColor::getRGBPrev()
@@ -62,21 +60,53 @@ RGBWColor *RGBWColor::getCopy()
 
 void RGBWColor::setR(double r)
 {
-    this->r = r;
+    setRPassiv(r);
+    emit colorActiveChanged();
+    emit colorChanged();
 }
 
 void RGBWColor::setG(double g)
 {
-    this->g = g;
+    setGPassiv(g);
+    emit colorActiveChanged();
+    emit colorChanged();
 }
 
 void RGBWColor::setB(double b)
 {
-    this->b = b;
+    setBPassiv(b);
+    emit colorActiveChanged();
+    emit colorChanged();
 }
 
 void RGBWColor::setW(double w)
 {
+    setWPassiv(w);
+    emit colorActiveChanged();
+    emit colorChanged();
+}
+
+void RGBWColor::setRPassiv(double r)
+{
+    this->r = r;
+    emit colorChanged();
+}
+
+void RGBWColor::setGPassiv(double g)
+{
+    this->g = g;
+    emit colorChanged();
+}
+
+void RGBWColor::setBPassiv(double b)
+{
+    this->b = b;
+    emit colorChanged();
+}
+
+void RGBWColor::setWPassiv(double w)
+{
     this->w = w;
+    emit colorChanged();
 }
 

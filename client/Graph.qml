@@ -28,41 +28,9 @@ Item{
         ws.send = JSON.stringify(msg);
     }
 
-    Keyframe{
-        id: keyF0
-        time:0;
-        value:RGBWColor{
-            r:0
-            g:0
-            b:0
-            w:0
-        }
-    }
-
-    Keyframe{
-        id: keyF1
-        time:2;
-        value:RGBWColor{
-            r:1
-            g:0
-            b:0
-            w:1
-        }
-    }
-    Keyframe{
-        id: keyF2
-        time:6;
-        value:RGBWColor{
-            r:1
-            g:1
-            b:0
-            w:0
-        }
-    }
-
     //width: parent.width
 
-    property var points: [keyF0,keyF1,keyF2];
+    property var points: [];
     property var zeroPoint : Keyframe{    }
     property Keyframe activePoint: null;
     property var viewer;
@@ -114,6 +82,9 @@ Item{
                     ctx.lineTo(calcPosX(points[i-1].time),calcPosY(points[i-1]));
                     drawedPoints.push(points[i-1]);
                 }
+                else{
+                    ctx.lineTo(0,calcPosY(points[i]));
+                }
 
 
 
@@ -146,16 +117,18 @@ Item{
               var gradient = ctx.createLinearGradient(start,0,end,0);
               for(var i = 0; i < drawedPoints.length;i++){
                   var point = drawedPoints[i];
-                  var pos = (calcPosX(point.time)-start)/(end-start);
+                  var pos = 0;
+                  if(end-start != 0)
+                    pos = (calcPosX(point.time)-start)/(end-start);
                   if(point.value.brightness > 0){
                       gradient.addColorStop(pos,point.value.preview);
                   }
                   else{//workarround für schwarze punkte
                       if(i > 0){
-                          gradient.addColorStop(pos-0.0001,drawedPoints[i-1].value.preview);
+                          gradient.addColorStop(Math.max(Math.min(pos-0.0001,1),0),drawedPoints[i-1].value.preview);
                       }
                       if(i < drawedPoints.length-1){
-                          gradient.addColorStop(pos+0.0001,drawedPoints[i+1].value.preview);
+                          gradient.addColorStop(Math.max(Math.min(pos+0.0001,1),0),drawedPoints[i+1].value.preview);
                       }
                   }
 
@@ -219,47 +192,50 @@ Item{
                     return i;
                 }
             }
-            return null;
+            return -1;
         }
 
 
         acceptedButtons : Qt.LeftButton | Qt.RightButton | Qt.MiddleButton;
         onPressed: {
           if(pressedButtons & Qt.LeftButton){
-            parent.parent.activePoint = parent.parent.points[getClickedPointIndex()];
-            parent.requestPaint();
+            var index = getClickedPointIndex()
+            if(index !== -1){
+                parent.parent.activePoint = parent.parent.points[index];
+                parent.requestPaint();
+            }
           }
         }
 
         onClicked: {
             if(mouse.button == Qt.MiddleButton){//delete poiunt
-              console.log("delete: " + getClickedPointIndex());
-                parent.parent.points.splice(getClickedPointIndex(),1);
-                parent.requestPaint();
+                    var index = getClickedPointIndex();
+                    if(index !== -1){
+                    var keyframe = parent.parent.points[index]
+                    parent.parent.points.splice(index,1);
+                    keyframe.requestDelete();
+                    keyframe.destroy();
+                    parent.requestPaint();
+                }
             }
-            else if(mouse.button == Qt.RightButton){
+            else if(mouse.button == Qt.RightButton){//add Point
                 var t = viewer.calcTime(mouseX);
 
-                var prev_id = 0;
-                var prev = parent.zeroPoint;
-                if(parent.parent.points.length != 0){
-                    for(var i = 0; i < parent.parent.points.length; i++){
-                        if(viewer.calcTime(i) < t)
-                           prev_id = [i];
-                    }
-                    prev = parent.parent.points[prev_id];
-                }
+                var msg = new Object();
+                msg.add_keyframe = new Object();
+                msg.add_keyframe.devId = graph.devideID;
+                msg.add_keyframe.time = t;
+                ws.send = JSON.stringify(msg);
 
-                KeyframCreator.createNewKeyframe(t,prev.value.copy,graph,graphCanvas);
+                //KeyframCreator.createNewKeyframe(t,prev.value.copy,graph,graphCanvas);
             }
         }
 
+        propagateComposedEvents: true
         onPositionChanged: {
             if(pressedButtons & Qt.LeftButton){
               if(parent.parent.activePoint != null){
-                  parent.parent.activePoint.time = viewer.calcTime(mouseX);
-                  parent.parent.sortPoints();
-                    parent.requestPaint();
+                  parent.parent.activePoint.setTime(Math.max(0,viewer.calcTime(mouseX)));
                 }
             }
         }
@@ -271,8 +247,13 @@ Item{
      WebSocketConnector{
          id: ws
          onMessage: {
-             if(msg.hasOwnProperty("keyframes")){
-
+             if(msg.devId === devideID && msg.hasOwnProperty("keyframes")){
+                for(var i = 0; i < msg.keyframes.length; i++){
+                    KeyframCreator.createNewKeyframe(msg.keyframes[i],graph,graphCanvas);
+                }
+             }
+             if(msg.devId === devideID && msg.hasOwnProperty("new_keyframe")){
+                    KeyframCreator.createNewKeyframe(msg.new_keyframe,graph,graphCanvas);
              }
          }
      }
