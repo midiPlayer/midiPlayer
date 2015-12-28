@@ -42,6 +42,13 @@ void WebSocketServerProvider::onMessage(QJsonObject msg, QWebSocket *client)
     clientMessage(msg,id);
 }
 
+/**
+ * @brief WebSocketServerProvider::sendMsg
+ * @param msg
+ * @param client_id
+ * @param onlyForProvierID false: send message to request type --> all instances of this class; true--> only for this instance
+ * @return
+ */
 bool WebSocketServerProvider::sendMsg(QJsonObject msg, int client_id,bool onlyForProvierID)
 {
     QWebSocket* ws = connectedSockets.key(client_id);

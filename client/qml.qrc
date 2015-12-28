@@ -53,5 +53,6 @@
         <file>GraphViewer.qml</file>
         <file>Keyframe.qml</file>
         <file>KeyframeCreator.js</file>
+        <file>GraphCreator.js</file>
     </qresource>
 </RCC>

@@ -111,7 +111,7 @@ void KeyFrameScene::clientMessage(QJsonObject msg, int id)
             }
         }
         ret.insert("keyframes",keyframesJson);
-        sendMsg(ret,id,false);
+        sendMsg(ret,id,true);
     }
 }
 

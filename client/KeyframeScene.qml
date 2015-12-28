@@ -36,6 +36,10 @@ Item {
                         CheckBox{
                             onCheckedChanged: {
                                 console.log(devID + "changed");
+                                if(checked)
+                                    graphViewer.addDevice(devID);
+                                else
+                                    graphViewer.rmDevice(devID);
                             }
                         }
                     }
@@ -54,9 +58,8 @@ Item {
         id: ws
         onMessage: {
             console.log(JSON.stringify(msg));
-            if(msg.devices !== null)
+            if(msg.hasOwnProperty("devices"))
                 deviceWorker.sendMessage({"model":deviceModell,"lamps":msg.devices});
-            //importer.sendMessage({"msg":msg,"listModel":listModel,"fusionTypeModel":fusionTypeModel});
         }
     }
 
@@ -66,7 +69,8 @@ Item {
         anchors.top:deviceView.bottom
 
         GraphViewer{
-            id:viewer
+            id:graphViewer
+            requestId: ws.requestId
         }
     }
 }

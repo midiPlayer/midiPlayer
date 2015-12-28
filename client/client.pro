@@ -33,8 +33,3 @@ HEADERS += \
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 
-OTHER_FILES += \
-    KeyframeCreator.js \
-    Keyframe.qml \
-    GraphViewer.qml \
-    Graph.qml

@@ -1,6 +1,8 @@
 import QtQuick 2.0
+import QtQuick.Layouts 1.1
+import QtQuick.Controls 1.2
 
-Rectangle{
+Item{
     id:graphViewer
 
     property double zoom: 1;
@@ -8,23 +10,25 @@ Rectangle{
     property double cursor : 1;
     property alias canvas: canvas
 
+    property int requestId;
 
-    Graph{
-        id: graph1;
-        anchors.top: parent.top;
-        viewer: graphViewer
-        height: 100;
-    }
-    Graph{
-        id: graph2;
-        anchors.top: graph1.bottom;
-        viewer: graphViewer
-        height: 100;
+
+    WorkerScript {
+            id: graphWorker
+            source: "GraphCreator.js"
+   }
+
+    function addDevice(devId){
+        graphWorker.sendMessage({"model":graphsModel,"devId":devId,"action":"add"});
     }
 
-    property var graphs: [graph1,graph2];
+    function rmDevice(devId){
+        graphWorker.sendMessage({"model":graphsModel,"devId":devId,"action":"del"});
+    }
 
-    color:"#000";
+    ListModel{
+        id:graphsModel
+    }
 
     anchors.fill: parent
 
@@ -59,6 +63,28 @@ Rectangle{
         anchors.fill: parent;
       id:canvas
 
+      signal parametersChanged();
+
+      ListView{
+          id:graphLayout
+          model:graphsModel
+          anchors.fill: parent
+          onHeightChanged: {
+              console.log("new height:" + height)
+          }
+
+          delegate: Graph{
+              id:delgateGraph
+              height: graphLayout.height/graphsModel.count;
+              requestId: graphViewer.requestId;
+              devideID: devId;
+              Component.onCompleted: {
+                  canvas.parametersChanged.connect(repaint);
+              }
+
+              viewer: graphViewer
+          }
+      }
 
       onPaint:{
          var ctx = canvas.getContext('2d');
@@ -73,13 +99,6 @@ Rectangle{
               ctx.moveTo(calcPosX(i),0);
               ctx.lineTo(calcPosX(i),height);
               ctx.stroke();
-          }
-
-
-          //draw Graphs
-          for(var i = 0; i < graphs.length; i++){
-              var graph = graphs[i];
-              graph.paint(ctx,parent.calcPosX);
           }
 
 
@@ -116,17 +135,20 @@ Rectangle{
                   parent.parent.zoom = Math.min(Math.max(0.1, parent.parent.zoom + delta),2);
                   console.log(parent.parent.zoom);
                   parent.requestPaint();
+                  canvas.parametersChanged();
               }
               else if(wheel.modifiers & Qt.ShiftModifier){//move cursor
                 var deltaS = wheel.angleDelta.y / 5000 / parent.parent.zoom;
                 parent.parent.cursor = Math.max(0, parent.parent.cursor + deltaS);
                   console.log(parent.parent.cursor);
                 parent.requestPaint();
+
               }
               else{//shift
                 var deltaS = wheel.angleDelta.y / 30 / parent.parent.zoom;
                 parent.parent.shift = Math.min(0, parent.parent.shift + deltaS);
                 parent.requestPaint();
+                  canvas.parametersChanged();
               }
           }
 
@@ -182,7 +204,5 @@ Rectangle{
       }
 
     }
-
-
 }
 
