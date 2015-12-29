@@ -22,13 +22,14 @@ Keyframe::Keyframe(QJsonObject serialized, WebSocketServer *ws) : state(serializ
 }
 
 
-DeviceState Keyframe::fusionWith(QSharedPointer<Keyframe> later)
+DeviceState Keyframe::fusionWith(QSharedPointer<Keyframe> later,double now)
 {
     if(state.deviceId != later.data()->state.deviceId){
         throw("cannot fusion!");
     }
 
-    return state.fusionWith(later.data()->state,DeviceState::AV,later.data()->time - time);
+    double per = (now-time) / (later.data()->time - time);
+    return state.fusionWith(later.data()->state,DeviceState::AV,per);
 }
 
 QJsonObject Keyframe::serialize()

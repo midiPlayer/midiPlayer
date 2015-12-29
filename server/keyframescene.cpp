@@ -32,7 +32,7 @@ QList<Device> KeyFrameScene::getLights()
     foreach (Device dev,myDevs) {
         QSharedPointer<Keyframe> min;
         QSharedPointer<Keyframe> max;
-        int elapsed = watch.getMSecs();
+        double elapsed = watch.getMSecs() / 1000;
         foreach (QSharedPointer<Keyframe> frame, keyframes) {
             if(dev.getDeviceId() == frame.data()->state.deviceId){
                 if(frame.data()->time < elapsed && (min.isNull() || frame.data()->time > min.data()->time)){
@@ -44,7 +44,7 @@ QList<Device> KeyFrameScene::getLights()
             }
         }
         if(!min.isNull() && !max.isNull()){
-            dev.setState(min.data()->fusionWith(max));
+            dev.setState(min.data()->fusionWith(max,elapsed));
         }
         else if(!min.isNull()){
             dev.setState(min.data()->state);

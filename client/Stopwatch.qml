@@ -42,6 +42,7 @@ Item {
             msg.set = getTime();
             ws.send = JSON.stringify(msg);
         }
+        dataChanged();
     }
 
     function resume(notify){

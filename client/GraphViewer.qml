@@ -202,6 +202,14 @@ Item{
                   else
                       watch.resume(true);
               }
+              if(event.key === Qt.Key_Home){//pos1
+                  if(event.modifiers & Qt.ShiftModifier){//reset cursor
+                      watch.setTime(0,true);
+                  }
+                  else{
+                      shift = 0;
+                  }
+              }
 
               if(rPressed || gPressed || bPressed | wPressed){
                   keyfEditMessage.colors = (rPressed ? (qsTr("red") + " ") : "") + (gPressed ? (qsTr("green") + " ") : "") + (bPressed ? (qsTr("blue") + " ") : "") + (wPressed ? (qsTr("white")) : "");
