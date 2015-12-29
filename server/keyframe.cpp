@@ -10,13 +10,13 @@
 #define KEY_KEYFRAME_STATE "keyframe_state"
 
 Keyframe::Keyframe(double timeP, DeviceState stateP, WebSocketServer *ws) : state(stateP), time(timeP),
-    WebSocketServerProvider(ws),wss(ws)
+    WebSocketServerProvider(ws),wss(ws),liveEditing(false),liveEditor(-1)
 {
     ws->registerProvider(this);
 }
 
 Keyframe::Keyframe(QJsonObject serialized, WebSocketServer *ws) : state(serialized.value(KEY_KEYFRAME_STATE).toObject()),
-    time(serialized.value(KEY_KEYFRAME_TIME).toDouble()),WebSocketServerProvider(ws),wss(ws)
+    time(serialized.value(KEY_KEYFRAME_TIME).toDouble()),WebSocketServerProvider(ws),wss(ws),liveEditing(false), liveEditor(-1)
 {
     ws->registerProvider(this);
 }
@@ -51,6 +51,9 @@ void Keyframe::clientRegistered(QJsonObject msg, int id)
 void Keyframe::clientUnregistered(QJsonObject msg, int id)
 {
 
+    if(liveEditor == id){
+        liveEditing = false;
+    }
 }
 
 void Keyframe::clientMessage(QJsonObject msg, int id)
@@ -73,9 +76,19 @@ void Keyframe::clientMessage(QJsonObject msg, int id)
         state.setClientJson(msg.value("state").toArray());
         sendMsgButNotTo(msg,id,true);
     }
+
+    if(msg.contains("liveEditing")){
+        liveEditing = msg.value("liveEditing").toBool(false);
+        liveEditor = id;
+    }
 }
 
 QString Keyframe::getRequestType()
 {
     return "keyframe";
+}
+
+bool Keyframe::isLiveEditing()
+{
+    return liveEditing;
 }

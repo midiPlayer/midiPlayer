@@ -35,6 +35,11 @@ Item{
         });
     }
 
+    function setLiveEditing(editing) {
+        var msg = new Object();
+        msg.liveEditing = editing;
+        ws.send = JSON.stringify(msg)
+    }
 
     WebSocketConnector{
         id: ws

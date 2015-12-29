@@ -35,6 +35,11 @@ QList<Device> KeyFrameScene::getLights()
         double elapsed = watch.getMSecs() / 1000;
         foreach (QSharedPointer<Keyframe> frame, keyframes) {
             if(dev.getDeviceId() == frame.data()->state.deviceId){
+                if(frame.data()->isLiveEditing()){//override
+                    min = frame;
+                    max = QSharedPointer<Keyframe>();
+                    break;
+                }
                 if(frame.data()->time < elapsed && (min.isNull() || frame.data()->time > min.data()->time)){
                     min = frame;
                 }
@@ -67,6 +72,9 @@ QList<Device> KeyFrameScene::getUsedLights()
 void KeyFrameScene::start()
 {
     watch.start();
+    foreach (QSharedPointer<Keyframe> k, keyframes) {
+        k.data()->liveEditing = false;
+    }
 }
 
 void KeyFrameScene::stop()

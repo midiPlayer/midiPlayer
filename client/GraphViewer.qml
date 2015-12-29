@@ -12,6 +12,7 @@ Item{
 
     property alias requestId : ws.requestId
 
+    property bool valueEditing:false
 
     WorkerScript {
             id: graphWorker
@@ -118,6 +119,7 @@ Item{
 
       property alias mouseA: mouseA
 
+
       MouseArea{
           id: mouseA
           anchors.fill: parent;
@@ -196,6 +198,17 @@ Item{
                 wPressed = !wPressed;
               if(event.key === Qt.Key_Escape)
                 rPressed = gPressed = bPressed = wPressed = false;
+
+              if(rPressed || gPressed || bPressed | wPressed){
+                  keyfEditMessage.colors = (rPressed ? (qsTr("red") + " ") : "") + (gPressed ? (qsTr("green") + " ") : "") + (bPressed ? (qsTr("blue") + " ") : "") + (wPressed ? (qsTr("white")) : "");
+                  keyfEditMessage.visible = true;
+                  graphViewer.valueEditing = true;
+              }
+              else{
+                  keyfEditMessage.visible = false;
+                  graphViewer.valueEditing = false;
+              }
+
               if(event.key === Qt.Key_P){
                   if(watch.running)
                         watch.stop(true);
@@ -209,14 +222,6 @@ Item{
                   else{
                       shift = 0;
                   }
-              }
-
-              if(rPressed || gPressed || bPressed | wPressed){
-                  keyfEditMessage.colors = (rPressed ? (qsTr("red") + " ") : "") + (gPressed ? (qsTr("green") + " ") : "") + (bPressed ? (qsTr("blue") + " ") : "") + (wPressed ? (qsTr("white")) : "");
-                  keyfEditMessage.visible = true;
-              }
-              else{
-                  keyfEditMessage.visible = false;
               }
           }
 

@@ -11,10 +11,30 @@ Item{
     //property string deviceRequestId;
     property string devideID;
     property alias requestId : ws.requestId
+    property var viewer;
+
+    property var points: [];
+    property var zeroPoint : Keyframe{    }
+    property Keyframe activePoint: null;
+
+    property bool isLiveEditing: false
+
+    Component.onCompleted: {
+        viewer.onValueEditingChanged.connect(function(){
+            isLiveEditing = viewer.valueEditing;
+            if(activePoint !== null){
+                activePoint.setLiveEditing(isLiveEditing)
+            }
+        });
+    }
 
     function repaint(){
         graphCanvas.requestPaint();
     }
+
+
+
+
 
     width: parent.width
     onHeightChanged: {
@@ -28,12 +48,7 @@ Item{
         ws.send = JSON.stringify(msg);
     }
 
-    //width: parent.width
 
-    property var points: [];
-    property var zeroPoint : Keyframe{    }
-    property Keyframe activePoint: null;
-    property var viewer;
 
     function calcPosY(point){
         return height - height * point.value.brightness
@@ -200,8 +215,13 @@ Item{
         onPressed: {
           if(pressedButtons & Qt.LeftButton){
             var index = getClickedPointIndex()
+            if(parent.parent.activePoint !== null)
+               parent.parent.activePoint.setLiveEditing(false);
+            parent.parent.activePoint = null;
             if(index !== -1){
                 parent.parent.activePoint = parent.parent.points[index];
+                if(isLiveEditing)
+                    parent.parent.activePoint.setLiveEditing(true);
                 parent.requestPaint();
             }
           }

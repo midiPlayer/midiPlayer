@@ -23,11 +23,13 @@ public:
     void clientUnregistered(QJsonObject msg, int id);
     void clientMessage(QJsonObject msg, int id);
     QString getRequestType();
-
+    bool isLiveEditing();
+    bool liveEditing;
 signals:
     void deleteRequested(Keyframe *self);
 private:
     WebSocketServer *wss;
+    int liveEditor;
 };
 
 #endif // KEYFRAME_H
