@@ -11,6 +11,8 @@
 #include "colorscene.h"
 #include "flashscene.h"
 
+#include <QJsonArray>
+
 #define SETTING_KEY_MAINSCENE_JSON "mainscenejson"
 #define SETTING_KEY_JACKP "jackp"
 
@@ -47,8 +49,21 @@ MainWindow::MainWindow(QWidget *parent) :
      * This was an explanation in best Jonas' English...
      */
 
+
+    /*
+     * So here is a first step:
+     * You can now serialize and deserialize devices to JSON so it is easy to export them into a config file
+     * This was an comment in Jakob's English...
+     */
+    QJsonDocument d;
+    d.setArray(Device::serializeDevices(availableDevices));
+    qDebug() << d.toJson();
+
+
+
     mainScene = QSharedPointer<DiaScene>(new DiaScene(availableDevices,&wss,&jackProcessor,&sceneBuilder, "main"));
     mainScene.data()->loadSerialized(getMainScenSettings());
+
     //discoscene = QSharedPointer<DiscoScene>(new DiscoScene(&wss,&sceneBuilder,"disco",getDiscoScenSettings()));
 
     outDevices.append(&myBeamerDeviceProvider);

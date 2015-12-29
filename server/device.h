@@ -7,22 +7,24 @@
 #include <QVector3D>
 #include "devicestate.h"
 
-class Device
+class Device : public Serializable
 {
 public:
-    enum DeviceType{White,RGB,RGBW,Beamer};
+    enum DeviceType{White,RGB,RGBW,Beamer,Unknown};
 
     Device(QMap<int,float> channelsP, QString devIdP,DeviceType typeP,QVector3D pos = QVector3D(0,0,0));
     Device(int firstChannel, int numChannels, QString devIdP,DeviceType typeP,QVector3D pos = QVector3D(0,0,0));
     Device(const Device &d);
     Device(const Device *d);
     Device fusionWith(Device upper, DeviceState::FusionType type, float opacity);
+    Device(QJsonObject serialized);
     int getNumChannels();
     QMap<int,float> getChannelValues();
     QList<int> getChannels() const;
     void setChannel(int channel,float value);
     float getChannelValue(int channel);
-    static QList<Device> loadDevicesFromXml(QString file);
+    static QList<Device> deserializeDevices(QJsonArray serialized);
+    static QJsonArray serializeDevices(QList<Device> devices);
     bool deviceEqual(Device other);
     bool deviceEqual(Device *other);
     bool valuesEqual(Device other);
@@ -40,6 +42,8 @@ public:
     DeviceState getState();
     void setState(DeviceState stateP);
 
+
+    QJsonObject serialize();
 private:
     DeviceState state;
     QString devId;

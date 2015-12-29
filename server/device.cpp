@@ -1,6 +1,13 @@
 #include "device.h"
 #include <QDebug>
 #include "devicestate.h"
+#include <QJsonArray>
+
+#define KEY_DEVICE_TYPE "device_type"
+#define KEY_DEV_ID "device_id"
+#define KEY_FIRST_CHANNEL_ID "device_first_channel"
+#define KEY_NUM_CHANNEL "device_num_channel"
+
 Device::Device(QMap<int,float> channelsP, QString devIdP, DeviceType typeP, QVector3D pos) : state(devIdP, channelsP),devId(devIdP),type(typeP),position(pos)
 {
 
@@ -22,6 +29,17 @@ Device::Device(const Device &d) : Device(&d)
 Device::Device(const Device *d) : state(d->state),devId(d->devId),type(d->type),position(d->position)
 {
 
+}
+
+Device::Device(QJsonObject serialized) : state(devId),devId(serialized.value(KEY_DEV_ID).toString()),
+    type(Device::Unknown)
+{
+    type = (DeviceType) serialized.value(KEY_DEVICE_TYPE).toInt();
+    int firstChannel = serialized.value(KEY_FIRST_CHANNEL_ID).toInt();
+    int numChannels = serialized.value(KEY_NUM_CHANNEL).toInt();
+    for(int  i = firstChannel; i <firstChannel+numChannels; i++){
+        state.dmxChannels.insert(i,0.0f);
+    }
 }
 
 Device Device::fusionWith(Device upper, DeviceState::FusionType type, float opacity)
@@ -57,17 +75,22 @@ float Device::getChannelValue(int channel)
     return state.getChannelValue(channel);
 }
 
-QList<Device> Device::loadDevicesFromXml(QString file)
+QList<Device> Device::deserializeDevices(QJsonArray serialized)
 {
-    //http://doc.qt.io/qt-5/qtxml-module.html
-    /*
-     * <device id='' name='' desc=''>
-     *  <channel id='1'>
-     *  <channel id='2'>
-     * </device>
-     * *>
-     * */
+    QList<Device> devs;
+    foreach (QJsonValue val, serialized) {
+        devs.append(Device(val.toObject()));
+    }
+    return devs;
+}
 
+QJsonArray Device::serializeDevices(QList<Device> devices)
+{
+    QJsonArray ret;
+    foreach (Device dev, devices) {
+        ret.append(dev.serialize());
+    }
+    return ret;
 }
 
 bool Device::deviceEqual(Device other)
@@ -162,6 +185,34 @@ void Device::setState(DeviceState stateP)
     if(stateP.deviceId != getDeviceId())
         throw("wrong state");
     state = stateP;
+}
+
+QJsonObject Device::serialize()
+{
+    QJsonObject ret;
+
+    /*
+    QString typeString = "unknown";
+    switch (type) {
+    case Device::Beamer:
+        typeString = "beamer";
+        break;
+    case Device::RGB:
+        typeString = "rgb";
+        break;
+    case Device::RGBW:
+        typeString = "rgbw";
+        break;
+    case Device::White:
+        typeString = "white";
+        break;
+    }*/
+    ret.insert(KEY_DEVICE_TYPE,(int)type);
+
+    ret.insert(KEY_DEV_ID,getDeviceId());
+    ret.insert(KEY_FIRST_CHANNEL_ID,getFirstChannel());
+    ret.insert(KEY_NUM_CHANNEL,getNumChannels());
+    return ret;
 }
 
 
