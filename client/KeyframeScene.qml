@@ -12,10 +12,15 @@ Item {
         id:deviceModell
     }
 
+    SplitView{
+    anchors.fill: parent
+    orientation: Qt.Vertical
     Item{
         id:deviceView
-        width: parent.width
         height: parent.height/2
+        Layout.minimumHeight:  150
+     //   width: parent.width
+     //   height: parent.height/2
         ScrollView{
             anchors.fill: parent
             ListView {
@@ -49,6 +54,20 @@ Item {
         }
     }
 
+
+    Item{//graph display
+        //width: parent.width;
+        //height: parent.height/2;
+        //anchors.top:deviceView.bottom
+
+        Layout.minimumHeight: parent.height / 4
+        GraphViewer{
+            id:graphViewer
+            requestId: ws.requestId
+        }
+    }
+    }
+
     WorkerScript {
             id: deviceWorker
             source: "KeyframeSceneDeviceWorker.js"
@@ -60,17 +79,6 @@ Item {
             console.log(JSON.stringify(msg));
             if(msg.hasOwnProperty("devices"))
                 deviceWorker.sendMessage({"model":deviceModell,"lamps":msg.devices});
-        }
-    }
-
-    Item{//graph display
-        width: parent.width;
-        height: parent.height/2;
-        anchors.top:deviceView.bottom
-
-        GraphViewer{
-            id:graphViewer
-            requestId: ws.requestId
         }
     }
 }
