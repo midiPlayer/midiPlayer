@@ -11,6 +11,7 @@ FlashScene::FlashScene(WebSocketServer* ws, QList<Device> avDevP, JackProcessor 
         flashEnabled(false),flashState(),time(),smoothness(0),flashDuration(40),beatSpeed(INT_MAX),timePer(0.0f),colorButton(ws)
 {
     ws->registerProvider(this);
+    trigger.triggerConfig.insert(Trigger::BEAT);
     connect(&trigger,SIGNAL(trigger()),this,SLOT(triggered()));
     connect(&colorButton,SIGNAL(colorChanged()),this,SLOT(reloadColor()));
     if(serialized.length() > 0){
