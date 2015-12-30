@@ -114,7 +114,10 @@ bool WebSocketConnector::isPassive()
     return passiveConnected;
 }
 
-
+bool WebSocketConnector::isConnected()
+{
+    return webInterface.isConnected();
+}
 
 void WebSocketConnector::connected()
 {

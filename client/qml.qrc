@@ -55,5 +55,6 @@
         <file>KeyframeCreator.js</file>
         <file>GraphCreator.js</file>
         <file>Stopwatch.qml</file>
+        <file>IOManager.qml</file>
     </qresource>
 </RCC>

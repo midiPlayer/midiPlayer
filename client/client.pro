@@ -6,7 +6,8 @@ SOURCES += \
     ../webSocketConnector/webinterface.cpp \
     ../webSocketConnector/websocketconnector.cpp \
     main.cpp \
-    rgbwcolor.cpp
+    rgbwcolor.cpp \
+    fileio.cpp
 
 RESOURCES += qml.qrc
 
@@ -29,7 +30,8 @@ DISTFILES += \
 HEADERS += \
 ../webSocketConnector/webinterface.h \
     ../webSocketConnector/websocketconnector.h \
-    rgbwcolor.h
+    rgbwcolor.h \
+    fileio.h
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 

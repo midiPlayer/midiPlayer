@@ -14,26 +14,27 @@ Item{
         anchors.margins: 20
 
             RowLayout{
-                width: parent.width
-                Text{
-                    text:qsTr("Foreground trigger:")
-                    color:"#fff";
-                }
-                TriggerSourceBtn{
-                    id:foregroundBtn
-                    Layout.margins: 2 //besser: Tabelle
+                GridLayout{
+                    width: parent.width
+                    columns: 2
+                    rowSpacing: 20
+                    Text{
+                        text:qsTr("Foreground trigger:")
+                        color:"#fff";
+                    }
+                    TriggerSourceBtn{
+                        id:foregroundBtn
+                    }
+                        Text{
+                            text:qsTr("Background trigger:")
+                            color:"#fff";
+                        }
+                        TriggerSourceBtn{
+                            id:backroundBtn
+                        }
                 }
             }
-            RowLayout{
-                width: parent.width
-                Text{
-                    text:qsTr("Background trigger:")
-                    color:"#fff";
-                }
-                TriggerSourceBtn{
-                    id:backroundBtn
-                }
-            }
+
             RowLayout{
                 width: parent.width
                 Text{
@@ -68,7 +69,6 @@ Item{
                     minColorNum: 3
                 }
             }
-
     }
 
 

@@ -191,7 +191,7 @@ Item{
           }
 
           Keys.onPressed: {
-              event.accepted = true;
+              event.accepted = false;
 
               if(event.key === Qt.Key_R)
                 rPressed = !rPressed;

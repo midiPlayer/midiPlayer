@@ -15,6 +15,7 @@ Q_OBJECT
     Q_PROPERTY(QString send READ empty  WRITE sendMessge)
     Q_PROPERTY(bool reopen READ getReopen  WRITE setReopen)
     Q_PROPERTY(QString registrationParams READ getRegistrationParamsAsJson  WRITE setRegistrationParams)
+    Q_PROPERTY(bool connected READ isConnected)
 
 public:
     WebSocketConnector(QObject* parent = 0);
@@ -36,6 +37,7 @@ public:
     void setReopen(bool reopen);
     bool getReopen();
     bool isPassive();
+    bool isConnected();
 
 public slots:
     void connected();

@@ -15,9 +15,22 @@ ApplicationWindow {
 
     color:"#002b38"
 
+    IOManager {
+        id: fileIO
+    }
 
 ColumnLayout{
     anchors.fill: parent;
+    Keys.onPressed: {
+        event.accepted = true;
+
+        if(event.key === Qt.Key_S && event.modifiers === Qt.ControlModifier){
+            console.log("STRG+S");
+            fileIO.save();
+
+        }
+    }
+
     Item{
         id:backBtn
         Layout.preferredWidth: 40
@@ -81,6 +94,5 @@ ColumnLayout{
         }
     }
     }
+
 }
-
-
