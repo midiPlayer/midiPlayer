@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     sceneBuilder(&wss,&availableDevices,&jackProcessor),
     myBeamerDeviceProvider(&wss,&availableDevices),
     beamerShutterSceneManager(&myBeamerDeviceProvider,&wss,&jackProcessor),  olaDeviceProvider(),
-    remoteBeat(&wss,&jackProcessor),mainScene()
+    remoteBeat(&wss,&jackProcessor),mainScene(),filieIoProv(&wss,&mainScene)
 {
     //availableDevices = Device::loadDevicesFromXml("~/devices.xml");
     //needed for settings
@@ -59,11 +59,6 @@ MainWindow::MainWindow(QWidget *parent) :
     d.setArray(Device::serializeDevices(availableDevices));
     qDebug() << d.toJson();
 
-
-
-    mainScene = QSharedPointer<DiaScene>(new DiaScene(availableDevices,&wss,&jackProcessor,&sceneBuilder, "main"));
-    mainScene.data()->loadSerialized(getMainScenSettings());
-
     //discoscene = QSharedPointer<DiscoScene>(new DiscoScene(&wss,&sceneBuilder,"disco",getDiscoScenSettings()));
 
     outDevices.append(&myBeamerDeviceProvider);
@@ -73,28 +68,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->saveBtn,SIGNAL(clicked(bool)),this,SLOT(save()));
 
+    connect(&wss,SIGNAL(clientClosed()),this,SLOT(save()));
+
     //mainScene.data()->addScene(discoscene,"disco1","Das ist die erste Discoscene!",1);
     //mainScene.data()->addScene(QSharedPointer<ColorScene>(new ColorScene(availableDevices,&wss,"black")),"black","eben einfach schwarz - schlicht und doch aufdringlich",1);
-    mainScene.data()->start();
-
-
-
-    usedLamps = mainScene.data()->getUsedLights();
-
-    QListIterator<Device> lampIter(usedLamps);
-    while(lampIter.hasNext()){
-        Device lamp = lampIter.next();
-        status.append(lamp);
-    }
-
-    //qDebug() << "" << usedLamps;
-
-    jackProcessor.initJack(this);
 
     connect(&timer,SIGNAL(timeout()),this,SLOT(trigger()));
     timer.setInterval(10);
-    timer.start();
 
+    loadScenes(getMainScenSettings());
+
+    jackProcessor.initJack(this);
 }
 
 
@@ -144,6 +128,23 @@ void MainWindow::getChanges()
     }
 
     getChangesRunning = false;
+
+}
+
+void MainWindow::loadScenes(QJsonObject data)
+{
+    timer.stop();
+    mainScene = QSharedPointer<DiaScene>(new DiaScene(availableDevices,&wss,&jackProcessor,&sceneBuilder, "main"));
+    mainScene.data()->loadSerialized(data);
+    mainScene.data()->start();
+    usedLamps = mainScene.data()->getUsedLights();
+
+    QListIterator<Device> lampIter(usedLamps);
+    while(lampIter.hasNext()){
+        Device lamp = lampIter.next();
+        status.append(lamp);
+    }
+    timer.start();
 
 }
 

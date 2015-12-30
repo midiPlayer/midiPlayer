@@ -47,7 +47,8 @@ SOURCES += main.cpp\
     dia.cpp \
     keyframe.cpp \
     devicestate.cpp \
-    stopwatch.cpp
+    stopwatch.cpp \
+    fileioprovider.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
@@ -82,7 +83,8 @@ HEADERS  += mainwindow.h\
     dia.h \
     keyframe.h \
     devicestate.h \
-    stopwatch.h
+    stopwatch.h \
+    fileioprovider.h
 
 FORMS    += mainwindow.ui
 
