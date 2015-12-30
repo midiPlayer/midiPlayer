@@ -72,7 +72,7 @@ void WebInterface::unregisterConnector(WebSocketConnector *connector)
     foreach (WebSocketConnector *c, connectors) {
         if(c->getRequestType() == connector->getRequestType() && connector->getReqestId() == -1)
             hasOther = true;
-        else if(c->getReqestId() == connector->getReqestId())
+        else if(c->getReqestId() == connector->getReqestId() && c->getReqestId() != -1)
             hasOther = true;
     }
     if(!hasOther){
