@@ -128,5 +128,6 @@ void Trigger::triggerInt()
 {
     if(++beatCount > numBeats){
         emit trigger();
+        beatCount = 0;
     }
 }
