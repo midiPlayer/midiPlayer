@@ -6,13 +6,14 @@
 class FileIOProvider : public WebSocketServerProvider
 {
 public:
-    FileIOProvider(WebSocketServer *ws,QSharedPointer<DiaScene> *mainSceneP);
+    FileIOProvider(WebSocketServer *ws,QSharedPointer<DiaScene> *mainSceneP,MainWindow *mainwindowP);
     void clientRegistered(QJsonObject msg, int id);
     void clientUnregistered(QJsonObject msg,int clientIdCounter);
     void clientMessage(QJsonObject msg, int id);
     QString getRequestType();
 private:
     QSharedPointer<DiaScene> *mainScene;
+    MainWindow *mainwindow;
 };
 
 #endif // FILEIOPROVIDER_H

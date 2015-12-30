@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     sceneBuilder(&wss,&availableDevices,&jackProcessor),
     myBeamerDeviceProvider(&wss,&availableDevices),
     beamerShutterSceneManager(&myBeamerDeviceProvider,&wss,&jackProcessor),  olaDeviceProvider(),
-    remoteBeat(&wss,&jackProcessor),mainScene(),filieIoProv(&wss,&mainScene)
+    remoteBeat(&wss,&jackProcessor),mainScene(),filieIoProv(&wss,&mainScene,this)
 {
     //availableDevices = Device::loadDevicesFromXml("~/devices.xml");
     //needed for settings
@@ -133,6 +133,9 @@ void MainWindow::getChanges()
 
 void MainWindow::loadScenes(QJsonObject data)
 {
+
+    wss.disconnectAllClients();
+
     timer.stop();
     mainScene = QSharedPointer<DiaScene>(new DiaScene(availableDevices,&wss,&jackProcessor,&sceneBuilder, "main"));
     mainScene.data()->loadSerialized(data);
