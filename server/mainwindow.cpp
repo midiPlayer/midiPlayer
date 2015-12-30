@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     availableDevices.append(Device(0,4,"rgbw1",Device::RGBW,QVector3D(-2,-3,0)));
     availableDevices.append(Device(4,4,"rgbw2",Device::RGBW,QVector3D(-1,1,0)));
-    //availableDevices.append(Device(8,4,"rgbw3",Device::RGBW,QVector3D(2,-2,0)));
+    availableDevices.append(Device(8,4,"rgbw3",Device::RGBW,QVector3D(2,-2,0)));
     availableDevices.append(Device(0,6,"beamer1",Device::Beamer,QVector3D(3,0,0)));
     /*
      * Still the devices are memorized hard-coded in the programm.

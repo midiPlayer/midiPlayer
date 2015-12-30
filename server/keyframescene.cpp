@@ -32,7 +32,7 @@ QList<Device> KeyFrameScene::getLights()
     foreach (Device dev,myDevs) {
         QSharedPointer<Keyframe> min;
         QSharedPointer<Keyframe> max;
-        double elapsed = watch.getMSecs() / 1000;
+        double elapsed = (double)watch.getMSecs() / 1000.0;
         foreach (QSharedPointer<Keyframe> frame, keyframes) {
             if(dev.getDeviceId() == frame.data()->state.deviceId){
                 if(frame.data()->isLiveEditing()){//override

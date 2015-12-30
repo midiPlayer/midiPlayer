@@ -70,6 +70,7 @@ Item{
           id:graphLayout
           model:graphsModel
           anchors.fill: parent
+          interactive:false
           onHeightChanged: {
               console.log("new height:" + height)
           }
