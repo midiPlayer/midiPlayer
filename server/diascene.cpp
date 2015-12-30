@@ -5,9 +5,11 @@
 DiaScene::DiaScene(QList<Device> avDev, WebSocketServer *ws,
                    JackProcessor *jackP, SceneBuilder *builderP, QString name, QJsonObject serialized):
                 Scene(name,serialized),WebSocketServerProvider(ws),availableDevices(avDev),
-                current(-1),fadingTo(-1),fadeTimer(),fusion("fusion"),wss(ws),builder(builderP)
+                current(-1),fadingTo(-1),fadeTimer(),fusion("fusion"),wss(ws),builder(builderP),
+                jack(jackP)
 {
     ws->registerProvider(this);
+    connect(jack,SIGNAL(musicNotification()),this,SLOT(music()));
 }
 
 QList<Device> DiaScene::getLights()
@@ -59,13 +61,7 @@ void DiaScene::clientMessage(QJsonObject msg, int id)
         sendMsgButNotTo(msg,id,false);
     }
     if(msg.contains("nextScene")){
-        if(scenes.length() != 0 && current < scenes.length() -1){
-            fadeTimer.restart();
-            if(fadingTo != -1)
-                scenes.at(fadingTo).data()->scene.data()->stop();
-            scenes.at(current+1).data()->scene.data()->start();
-            fadingTo = current + 1;
-        }
+        next();
         sendMsg(getState(false),false);
     }
     if(msg.contains("currentScene")){
@@ -112,6 +108,10 @@ void DiaScene::clientMessage(QJsonObject msg, int id)
         if(id < scenes.length())
             scenes.removeAt(id);
         sendMsg(getState(true),false);
+    }
+    if(msg.contains("musicNotification")){
+        setNextOnMusic(msg.value("musicNotification").toBool(false));
+        sendMsgButNotTo(msg,id,false);
     }
 }
 
@@ -186,6 +186,18 @@ void DiaScene::loadSerialized(QJsonObject serialized)
     }
 }
 
+void DiaScene::music()
+{
+    if(nextOnMusic){
+        next();
+        sendMsg(getState(false),false);
+        nextOnMusic = false;
+        QJsonObject msg;
+        msg.insert("musicNotification",nextOnMusic);
+        sendMsg(msg,false);
+    }
+}
+
 QJsonObject DiaScene::getState(bool addScenes)
 {
     QJsonObject msg;
@@ -203,4 +215,23 @@ QJsonObject DiaScene::getState(bool addScenes)
     }
     msg.insert("currentScene",fadingTo == -1 ? current : fadingTo);
     return msg;
+}
+
+void DiaScene::next()
+{
+    if(scenes.length() != 0 && current < scenes.length() -1){
+        fadeTimer.restart();
+        if(fadingTo != -1)
+            scenes.at(fadingTo).data()->scene.data()->stop();
+        scenes.at(current+1).data()->scene.data()->start();
+        fadingTo = current + 1;
+    }
+}
+
+void DiaScene::setNextOnMusic(bool enable)
+{
+    qDebug() << "mssic norif " << enable;
+    nextOnMusic = enable;
+    if(enable)
+        jack->requestMusicNotification();
 }

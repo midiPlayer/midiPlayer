@@ -10,6 +10,8 @@
 
 class DiaScene : public Scene, public WebSocketServerProvider
 {
+Q_OBJECT
+
 public:
     DiaScene(QList<Device> avDev, WebSocketServer *ws, JackProcessor *jackP, SceneBuilder *builder,
              QString name, QJsonObject serialized = QJsonObject());
@@ -29,7 +31,7 @@ public:
     void addScene(QSharedPointer<Dia>dia);
     void loadSerialized(QJsonObject serialized);
 public slots:
-    void triggered();
+    void music();
 private:
     QList<Device> availableDevices;
 
@@ -44,6 +46,12 @@ private:
     FusionScene fusion;
     WebSocketServer *wss;
     SceneBuilder *builder;
+
+    JackProcessor *jack;
+
+    void next();
+
+    void setNextOnMusic(bool enable);
 
 };
 
