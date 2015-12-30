@@ -1,0 +1,42 @@
+<metapackage xmlns:os="http://opensuse.org/Standards/One_Click_Install" xmlns="http://opensuse.org/Standards/One_Click_Install">
+  	<group> <!-- A software bundle, typically only one, or one for each distribution in each file. -->
+  		<name>My Package Bundle</name> <!-- Name of the whole software bundle  Displayed in the UI -->
+  		<summary>This is a software bundle containing MyPackage</summary> <!-- Summary of the whole software bundle  Displayed in the UI -->
+  		<description>This is the summary of the MyPackage Package 
+  			
+  			I have made it unnecessarily long.
+  			
+  			Blah Blah Blah
+  			
+  			-- ChangeLog --
+  			
+  			Some changes here.
+  		</description> <!-- Description of the whole software bundle  Displayed in the UI -->
+  		<remainSubscribed>false</remainSubscribed>  <!-- Specifies whether the user should remain subscribed to these repositories post installation, the user can override this. -->
+  		<repositories> <!-- A list of repositories required for this installation -->
+  			<repository> 
+  				<name>Multimedia</name>  <!-- Name of this repository  -->
+  				<summary>Needed for ola</summary> <!-- Summary of this repository-->
+  				<description>This repository contains my packages.</description><!-- Description of this repository, displayed in the UI-->
+  				<url>http://download.opensuse.org/repositories/multimedia:/libs/openSUSE_Leap_42.1/</url>
+  			</repository>
+  		</repositories>
+  		<software> <!-- A list of software items to install  during this installation -->
+  			<item>
+  				<name>libola1</name> <!-- Name of the software, this both identifies it within the repository, and is displayed to the user -->
+  				<summary>Open Lighting Architekture</summary>
+  				<description></description>
+  			</item>
+  			<item>
+  				<name>libola-devel</name> <!-- Name of the software, this both identifies it within the repository, and is displayed to the user -->
+  				<summary>This is a my package.</summary> <!-- Summary of the software --> 
+  				<description>This my package, I think you should install it.</description> <!-- Description of the software, displayed in the UI. --> 
+  			</item>
+  			libaubio-devel
+  			libaubio4
+  			qjackctl
+  			libjack-devel
+  			
+  		</software>
+  	</group>
+ </metapackage>
