@@ -25,7 +25,7 @@ import WebSocketConnector 1.1
 
         id: box
         height:30
-        width: 250
+        width: 350
         radius: 8
         color:'black'
         RowLayout{
@@ -35,7 +35,7 @@ import WebSocketConnector 1.1
                 id: beatBtn
                 isFirst: true
                 text:qsTr("Beat")
-                width: parent.width / 4;
+                width: parent.width / 5;
                 cornerRadius: box.radius;
                 onStateOn: {
                     if(radio){
@@ -49,7 +49,7 @@ import WebSocketConnector 1.1
             TriggerSourceBtnItem{
                 id: onsetBtn
                 text:qsTr("Onset")
-                width: parent.width / 4;
+                width: parent.width / 5;
                 onStateOn: {
                     if(radio){
                         beatBtn.isOn = false;
@@ -62,7 +62,7 @@ import WebSocketConnector 1.1
             TriggerSourceBtnItem{
                 id: timerBtn
                 text:qsTr("Timer")
-                width: parent.width / 4;
+                width: parent.width / 5;
                 cornerRadius: box.radius
                 onStateOn: {
                     if(radio){
@@ -76,8 +76,8 @@ import WebSocketConnector 1.1
             TriggerSourceBtnItem{
                 id: manualBtn
                 text: qsTr("Manual")
-                width: parent.width / 4;
-                isLast: true
+                width: parent.width / 5;
+                isLast: false
                 cornerRadius: box.radius
                 onStateOn: {
                     var msg = Object();
@@ -86,6 +86,25 @@ import WebSocketConnector 1.1
                 }
                 snapIn: false
                 onStateOff: sendState();
+            }
+            TriggerSourceBtnItem{
+                property int numBeats: 0
+                id: numBeatsBtn
+                text: numBeats+1
+                width: parent.width / 5;
+                isLast: true
+                cornerRadius: box.radius
+                onStateOff: {
+                    numBeats += 1;
+                    if(numBeats >= 10)
+                        numBeats = 0;
+                    var msg = Object();
+                    msg.numBeats = numBeats;
+                    stateWsc.send = JSON.stringify(msg);
+                }
+
+
+                snapIn: false
             }
         }
 
@@ -118,6 +137,8 @@ WebSocketConnector{
     onMessage: {
         if(msg.setTrigger !== undefined)
             setState(msg.setTrigger.onset,msg.setTrigger.beat,msg.setTrigger.timer);
+        if(msg.hasOwnProperty("numBeats"))
+            numBeatsBtn.numBeats = msg.numBeats;
     }
 }
 

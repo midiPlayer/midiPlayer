@@ -21,6 +21,7 @@ Item{
                 }
                 TriggerSourceBtn{
                     id:foregroundBtn
+                    Layout.margins: 2 //besser: Tabelle
                 }
             }
             RowLayout{
