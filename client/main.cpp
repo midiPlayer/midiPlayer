@@ -4,14 +4,16 @@
 #include <QQmlComponent>
 #include "../webSocketConnector/websocketconnector.h"
 #include "rgbwcolor.h"
-#include "fileio.h"
+#include "fileoutput.h"
+#include "fileinput.h"
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
     qmlRegisterType<WebSocketConnector>("WebSocketConnector", 1,1, "WebSocketConnector");
     qmlRegisterType<RGBWColor>("RGBWColor", 1,1, "RGBWColor");
-    qmlRegisterType<FileIO>("FileIO", 1,0, "FileIO");
+    qmlRegisterType<FileOutput>("FileOutput", 1,0, "FileOutput");
+    qmlRegisterType<FileInput>("FileInput", 1,0, "FileInput");
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

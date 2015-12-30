@@ -1,7 +1,8 @@
 import QtQuick 2.0
 import WebSocketConnector 1.1
 import QtQuick.Dialogs 1.2
-import FileIO 1.0
+import FileOutput 1.0
+import FileInput 1.0
 
 Item {
     WebSocketConnector {
@@ -11,34 +12,62 @@ Item {
             console.log("hallo123")
         }
         onMessage: {
-            fileio.content = JSON.stringify(msg.export);
-            //console.log(JSON.stringify(msg))
+            fileOut.content = JSON.stringify(msg.export);
         }
 
     }
 
-    FileIO{
-        id: fileio
+    FileOutput{
+        id: fileOut
+    }
+
+    FileInput{
+        id: fileIn
+        onContentRead: {
+            console.log(JSON.stringify(JSON.parse(content)));
+            var msg = Object();
+            msg.open = JSON.parse(content);
+            ws.send = JSON.stringify(msg);
+
+        }
     }
 
     FileDialog{
-        id: fileDialog
+        id: fileDialogOutput
+        title: qsTr("Please select a filename")
+        folder: shortcuts.documents
+        onAccepted:{
+            String.prototype.endsWith = function(suffix) {
+                return this.indexOf(suffix, this.length - suffix.length) !== -1;
+            };
+            var path = fileDialogOutput.fileUrl.toString().replace("file://","");
+            if (!path.endsWith(".lcf"))
+                path += ".lcf";
+            fileOut.path = path;
+            }
+        selectMultiple: false
+        selectExisting: false
+        selectFolder: false
+        nameFilters: ["LightConfig files (*.lcf)", "All files (*)"]
+    }
+
+    FileDialog{
+        id: fileDialogInput
         title: qsTr("Please choose a file")
         folder: shortcuts.documents
         onAccepted:{
             String.prototype.endsWith = function(suffix) {
                 return this.indexOf(suffix, this.length - suffix.length) !== -1;
             };
-            var path = fileDialog.fileUrl.toString().replace("file://","");
+            var path = fileDialogInput.fileUrl.toString().replace("file://","");
             if (!path.endsWith(".lcf"))
                 path += ".lcf";
-            fileio.path = path;
+            fileIn.path = path;
             }
         selectMultiple: false
-        selectExisting: false
+        selectExisting: true
         selectFolder: false
         nameFilters: ["LightConfig files (*.lcf)", "All files (*)"]
-
     }
 
     function save(){
@@ -48,9 +77,17 @@ Item {
             msg.save = true;
             ws.send = JSON.stringify(msg);
 
-            fileio.path = "";
-            fileio.content = "";
-            fileDialog.open();
+            fileOut.path = "";
+            fileOut.content = "";
+            fileDialogOutput.open();
+        }
+    }
+
+    function open(){
+        if (ws.connected){
+
+            fileIn.path = "";
+            fileDialogInput.open();
         }
     }
 }

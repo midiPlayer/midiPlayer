@@ -1,36 +1,36 @@
-#include "fileio.h"
+#include "fileoutput.h"
 
 #include <QFile>
 #include <QTextStream>
 
-FileIO::FileIO():path(),content()
+FileOutput::FileOutput():path(),content()
 {
 
 }
 
-void FileIO::setPath(QString pathP)
+void FileOutput::setPath(QString pathP)
 {
     path = pathP;
     run();
 }
 
-void FileIO::setContent(QString contentP)
+void FileOutput::setContent(QString contentP)
 {
     content = contentP;
     run();
 }
 
-QString FileIO::getPath()
+QString FileOutput::getPath()
 {
     return path;
 }
 
-QString FileIO::getContent()
+QString FileOutput::getContent()
 {
     return content;
 }
 
-void FileIO::run()
+void FileOutput::run()
 {
     if(path.length() != 0 && content.length() != 0){
         QFile f(path);

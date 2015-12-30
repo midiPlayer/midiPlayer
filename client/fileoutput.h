@@ -1,16 +1,16 @@
-#ifndef FILEIO_H
-#define FILEIO_H
+#ifndef FileOutput_H
+#define FileOutput_H
 #include <QObject>
 
 
-class FileIO: public QObject
+class FileOutput: public QObject
 {
 Q_OBJECT
 
 public:
     Q_PROPERTY(QString path READ getPath WRITE setPath)
     Q_PROPERTY(QString content READ getContent WRITE setContent)
-    FileIO();
+    FileOutput();
     void setPath(QString pathP);
     void setContent(QString contentP);
     QString getPath();
@@ -24,4 +24,4 @@ private:
 
 };
 
-#endif // FILEIO_H
+#endif // FileOutput_H

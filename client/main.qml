@@ -16,7 +16,7 @@ ApplicationWindow {
     color:"#002b38"
 
     IOManager {
-        id: fileIO
+        id: ioManager
     }
 
 ColumnLayout{
@@ -26,9 +26,12 @@ ColumnLayout{
 
         if(event.key === Qt.Key_S && event.modifiers === Qt.ControlModifier){
             console.log("STRG+S");
-            fileIO.save();
-
+            ioManager.save();
         }
+        if(event.key === Qt.Key_O && event.modifiers === Qt.ControlModifier){
+            ioManager.open();
+        }
+
     }
 
     Item{
