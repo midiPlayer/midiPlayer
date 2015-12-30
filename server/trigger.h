@@ -31,6 +31,9 @@ private:
     JackProcessor* jack;
     QJsonObject getState();
     void setState(QJsonObject fgt);
+    int numBeats;
+    int beatCount;
+    void triggerInt();
 };
 
 #endif // TRIGGER_H

@@ -2,13 +2,15 @@
 #include "websocketserver.h"
 
 #define KEY_SOURCE "source"
+#define KEY_NUM_BEATS "numBeats"
 Trigger::Trigger(WebSocketServer* ws, JackProcessor* jackP, QJsonObject serialized) : QObject(0),
-    WebSocketServerProvider(ws),jack(jackP)
+    WebSocketServerProvider(ws),jack(jackP),beatCount(0),numBeats(0)
 {
     ws->registerProvider(this);
     if(serialized.length() != 0){
         loadSerialized(serialized);
     }
+
 }
 
 void Trigger::start()
@@ -38,7 +40,11 @@ void Trigger::clientMessage(QJsonObject msg, int clientId)
     if(msg.contains("setTrigger")){
         QJsonObject fgt = msg.value("setTrigger").toObject();
         setState(fgt);
-        sendMsgButNotTo(getState(),clientId);
+        sendMsgButNotTo(getState(),clientId,true);
+    }
+    if(msg.contains(KEY_NUM_BEATS)){
+        numBeats = msg.value(KEY_NUM_BEATS).toInt(0);
+        sendMsgButNotTo(msg,clientId,true);
     }
     if(msg.contains("manual")){
         emit trigger();
@@ -54,20 +60,21 @@ QJsonObject Trigger::serialize()
 {
     QJsonObject ret;
     ret.insert(KEY_SOURCE,getTriggerSourceJson());
+    ret.insert(KEY_NUM_BEATS,numBeats);
     return ret;
 }
 
 void Trigger::beat()
 {
     if(triggerConfig.contains(BEAT))
-        emit trigger();
+        triggerInt();
 }
 
 void Trigger::onset()
 {
 
     if(triggerConfig.contains(ONSET))
-        emit trigger();
+        triggerInt();
 }
 
 QJsonObject Trigger::getTriggerSourceJson()
@@ -82,12 +89,16 @@ QJsonObject Trigger::getTriggerSourceJson()
 void Trigger::loadSerialized(QJsonObject serialized)
 {
     setState(serialized.value(KEY_SOURCE).toObject());
+    if(serialized.contains(KEY_NUM_BEATS)){
+        numBeats = serialized.value(KEY_NUM_BEATS).toInt(0);
+    }
 }
 
 QJsonObject Trigger::getState()
 {
     QJsonObject state;
     state.insert("setTrigger",getTriggerSourceJson());
+    state.insert(KEY_NUM_BEATS,numBeats);
     return state;
 }
 
@@ -110,5 +121,12 @@ void Trigger::setState(QJsonObject fgt)
             triggerConfig.insert(TIMER);
         else
             triggerConfig.remove(TIMER);
+    }
+}
+
+void Trigger::triggerInt()
+{
+    if(++beatCount > numBeats){
+        emit trigger();
     }
 }
