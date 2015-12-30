@@ -238,45 +238,69 @@ Item{
                         Item{
                             Layout.fillWidth: true;
                             Layout.preferredHeight: 25;
-                            Item{
-                                height: parent.height
-                                width: height
-                                anchors.right: parent.right
-                                anchors.rightMargin: 20
-                                Image{
-                                    source: "icons/delete.png"
-                                    anchors.fill: parent
-                                    fillMode: Image.PreserveAspectFit
+                            RowLayout{
+                                anchors.fill: parent
+                                Text{
+                                    text: qsTr("Next with music:")
+                                    color:"#369cb6"
+                                    font.pointSize: 12
                                 }
-                                Image{
-                                    id: deleteAcitve
-                                    source: "icons/deleteActive.png"
-                                    anchors.fill: parent
-                                    fillMode: Image.PreserveAspectFit
-                                    opacity: 0
-                                    PropertyAnimation{
-                                        id:deleteMeNowAnim
-                                        target: deleteAcitve
-                                        property: "opacity"
-                                        running: false
-                                        from: 1
-                                        to:0
-                                        duration: 4000
+                                CheckBox{
+                                    id: nextWithMusic
+                                    Layout.margins: 10
+                                    onCheckedChanged: {
+                                        var msg = {"musicNotification":checked};
+                                        wsc.send = JSON.stringify(msg);
                                     }
+
+                                }
+                                Item{
+                                    Layout.fillWidth: true
                                 }
 
-                                MouseArea{
-                                    anchors.fill: parent
-                                    onClicked: {
-                                        if(deleteMeNowAnim.running){//delete
-                                            var msg = {"deleteScene":diaLayout.id};
-                                            wsc.send = JSON.stringify(msg);
+
+                                Item{
+                                    height: parent.height
+                                    width: height
+                                    anchors.right: parent.right
+                                    anchors.rightMargin: 20
+                                    Image{
+                                        source: "icons/delete.png"
+                                        anchors.fill: parent
+                                        fillMode: Image.PreserveAspectFit
+                                    }
+                                    Image{
+                                        id: deleteAcitve
+                                        source: "icons/deleteActive.png"
+                                        anchors.fill: parent
+                                        fillMode: Image.PreserveAspectFit
+                                        opacity: 0
+                                        PropertyAnimation{
+                                            id:deleteMeNowAnim
+                                            target: deleteAcitve
+                                            property: "opacity"
+                                            running: false
+                                            from: 1
+                                            to:0
+                                            duration: 4000
                                         }
-                                        else
-                                            deleteMeNowAnim.start();
+                                    }
+
+                                    MouseArea{
+                                        anchors.fill: parent
+                                        onClicked: {
+                                            if(deleteMeNowAnim.running){//delete
+                                                var msg = {"deleteScene":diaLayout.id};
+                                                wsc.send = JSON.stringify(msg);
+                                            }
+                                            else
+                                                deleteMeNowAnim.start();
+                                        }
                                     }
                                 }
                             }
+
+
                         }
                     }
                     WebSocketConnector{
@@ -379,6 +403,9 @@ Item{
             if(msg.scenes !== undefined){
                 diaLayout.visible=false;
                 importer.sendMessage({"msg":msg,"listModel":diaListModel,"diaScene":diaScene});
+            }
+            if(msg.hasOwnProperty("musicNotification")){
+                nextWithMusic.checked = msg.musicNotification;
             }
         }
     }
