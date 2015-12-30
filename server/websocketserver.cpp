@@ -40,6 +40,13 @@ void WebSocketServer::sendData(QJsonObject data, QWebSocket* reciever, WebSocket
     reciever->sendTextMessage(msgJson);
 }
 
+void WebSocketServer::disconnectAllClients()
+{
+    foreach (QWebSocket *socket, m_clients) {
+        socket->close();
+    }
+}
+
 void WebSocketServer::onNewConnection()
 {
     QWebSocket *pSocket = m_pWebSocketServer->nextPendingConnection();

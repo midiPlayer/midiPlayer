@@ -20,6 +20,8 @@ public:
     void registerProvider(WebSocketServerProvider *me);
     void unregisterProvider(WebSocketServerProvider *me);
     void sendData(QJsonObject data, QWebSocket *reciever, WebSocketServerProvider *provider,bool onlyToProviderId = 0);
+
+    void disconnectAllClients();
 public slots:
     void onNewConnection();
     void onTextMessage(QString message);
