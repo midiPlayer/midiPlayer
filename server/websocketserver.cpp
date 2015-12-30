@@ -146,6 +146,7 @@ void WebSocketServer::onConnectionClosed()
     foreach (WebSocketServerProvider *p, provider) {
         p->unregisterClient(pClient);
     }
+    emit clientClosed();
 }
 
 

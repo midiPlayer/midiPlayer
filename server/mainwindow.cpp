@@ -73,6 +73,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->saveBtn,SIGNAL(clicked(bool)),this,SLOT(save()));
 
+    connect(&wss,SIGNAL(clientClosed()),this,SLOT(save()));
+
     //mainScene.data()->addScene(discoscene,"disco1","Das ist die erste Discoscene!",1);
     //mainScene.data()->addScene(QSharedPointer<ColorScene>(new ColorScene(availableDevices,&wss,"black")),"black","eben einfach schwarz - schlicht und doch aufdringlich",1);
     mainScene.data()->start();

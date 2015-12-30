@@ -11,9 +11,10 @@
 #include <QWebSocket>
 #include <QWebSocketServer>
 
-class WebSocketServer : QObject
+class WebSocketServer : public QObject
 {
 Q_OBJECT
+
 public:
     WebSocketServer(QObject *parent);
     void registerProvider(WebSocketServerProvider *me);
@@ -23,6 +24,9 @@ public slots:
     void onNewConnection();
     void onTextMessage(QString message);
     void onConnectionClosed();
+
+signals:
+    void clientClosed();
 
 private:
     QList<WebSocketServerProvider*> provider;
