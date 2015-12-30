@@ -21,6 +21,7 @@
 #include "scenebuilder.h"
 #include <QSettings>
 #include "diascene.h"
+#include "fileioprovider.h"
 namespace Ui {
 class MainWindow;
 }
@@ -32,8 +33,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void getChanges();
-    QList<Device> availableDevices;
-
+    QList<Device> availableDevices;    
+    void loadScenes(QJsonObject data);
 public slots:
     void trigger();
     void save();
@@ -63,7 +64,7 @@ private:
     QJsonObject getMainScenSettings();
 
     QSharedPointer<DiaScene> mainScene;
-
+    FileIOProvider filieIoProv;
 };
 
 #endif // MAINWINDOW_H
