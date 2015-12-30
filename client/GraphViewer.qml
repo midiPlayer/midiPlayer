@@ -54,10 +54,10 @@ Item{
     }
 
     function calcPosX(time){
-        return time*zoom*100+shift;
+        return time*zoom*100+shift*zoom;
     }
     function calcTime(posY){
-        return (posY - shift)/100 / zoom;
+        return (posY - (shift*zoom))/100 / zoom;
     }
 
     Canvas {
@@ -179,6 +179,10 @@ Item{
           }
 
           onClicked: {
+              if(mouse.button == Qt.LeftButton && mouse.modifiers & Qt.ShiftModifier){
+                  watch.setTime(calcTime(mouseX)*1000,true);
+              }
+
               mouse.accepted = false;
           }
 

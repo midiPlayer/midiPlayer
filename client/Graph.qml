@@ -249,6 +249,7 @@ Item{
 
                 //KeyframCreator.createNewKeyframe(t,prev.value.copy,graph,graphCanvas);
             }
+            mouse.accepted = false;
         }
 
         propagateComposedEvents: true
