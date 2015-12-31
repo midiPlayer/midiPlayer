@@ -32,7 +32,6 @@ HEADERS += \
     ../webSocketConnector/websocketconnector.h \
     rgbwcolor.h \
     fileoutput.h \
-    ../webSocketConnector/fileinput.h \
     ../webSocketConnector/webinterface.h \
     fileinput.h
 

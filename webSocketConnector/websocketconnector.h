@@ -47,9 +47,9 @@ signals:
     void connectionFailed();
     void connectionSucceded();
 private:
+    QString urlV;
     QString requestType;
     int requestId;
-    QString urlV;
     QJsonObject requestParams;
     bool passiveConnected;
 };
