@@ -111,3 +111,17 @@ void DeviceState::setClientJson(QJsonArray json)
         qDebug() << "ERROR (Devicestate): wrong channel count;";
     }
 }
+
+void DeviceState::tryImport(DeviceState other)
+{
+    int numChannels = dmxChannels.size();
+    int firstChannel = getFirstChannel();
+    dmxChannels.clear();
+    int count = 0;
+    foreach (float v, other.dmxChannels.values()) {
+        if(count >= numChannels)
+            break;
+        dmxChannels.insert(firstChannel+count,v);
+        count ++;
+    }
+}

@@ -22,6 +22,8 @@ public:
     QJsonObject serialize();
     QJsonArray getClientJson();
     void setClientJson(QJsonArray json);
+
+    void tryImport(DeviceState other);
 };
 
 #endif // DEVICESTATE_H
