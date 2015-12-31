@@ -25,6 +25,8 @@ public:
     QString getRequestType();
     bool isLiveEditing();
     bool liveEditing;
+    void beforeDelete();
+
 signals:
     void deleteRequested(Keyframe *self);
 private:

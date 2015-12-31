@@ -181,6 +181,11 @@ Item{
             if(viewer.canvas.mouseA.rPressed || viewer.canvas.mouseA.gPressed || viewer.canvas.mouseA.bPressed | viewer.canvas.mouseA.wPressed){
                if(parent.parent.activePoint != null){
                   var deltaP = wheel.angleDelta.y / 5000;
+                   if(wheel.modifiers & Qt.MetaModifier){
+                       deltaP = deltaP / 10;
+                   }
+                   console.log("wheel");
+
                    if(viewer.canvas.mouseA.rPressed){
                        parent.parent.activePoint.value.r = Math.max(Math.min(parent.parent.activePoint.value.r + deltaP,1),0)
                    }

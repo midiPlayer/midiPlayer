@@ -26,6 +26,13 @@ Item {
             ListView {
                 width: 180; height: 200
 
+                id:lv
+
+
+                property string copyedDev;
+                property string buttonState : "copy";
+
+
                 model: deviceModell
                 delegate: Item{
                     width: parent.width
@@ -38,6 +45,65 @@ Item {
                             Layout.fillWidth: true
                             color:"#369cb6"
                         }
+
+                        Button{
+                            text: qsTr("clear")
+                            onClicked: {
+                                var msg = new Object();
+                                msg.clear = devID;
+                                ws.send = JSON.stringify(msg);
+                            }
+                        }
+
+                        Button{
+                            id:copyBtn
+                            state:lv.buttonState
+
+                            states: [
+                                State{
+                                    name: "copy"
+                                    PropertyChanges{
+                                        target: copyBtn;
+                                        text: qsTr("copy");
+                                        onClicked:{
+                                            lv.buttonState = "paste";
+                                            copyBtn.state = "copyed"
+                                            lv.copyedDev = devID;
+                                        }
+                                        state:lv.buttonState
+                                    }
+                                },
+                                State{
+                                    name: "paste"
+                                    PropertyChanges{
+                                        target: copyBtn;
+                                        text: qsTr("paste");
+                                        onClicked:{
+                                            console.log("copy " + lv.copyedDev + " to " + devID);
+                                            var msg = new Object();
+                                            msg.copy = new Object();
+                                            msg.copy.from = lv.copyedDev;
+                                            msg.copy.to = devID;
+                                            ws.send = JSON.stringify(msg);
+                                        }
+                                        state:lv.buttonState;
+                                    }
+                                },
+                                State{
+                                    name:"copyed"
+                                    PropertyChanges{
+                                        target: copyBtn;
+                                        text: qsTr("end copy");
+                                        onClicked:{
+                                            state = "copy";
+                                            lv.buttonState = "copy";
+                                        }
+                                    }
+                                }
+
+                            ]
+                        }
+
                         CheckBox{
                             onCheckedChanged: {
                                 console.log(devID + "changed");

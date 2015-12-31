@@ -35,6 +35,7 @@ private:
     QJsonArray getLampsJson();
     QJsonObject getLampJson(Device dev);
     WebSocketServer* wss;
+    void clear(QString devId);
 
 };
 

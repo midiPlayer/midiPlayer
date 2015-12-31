@@ -153,6 +153,35 @@ void KeyFrameScene::clientMessage(QJsonObject msg, int id)
         }
 
     }
+    else if(msg.contains("clear")){
+        QString devId = msg.value("clear").toString();
+        clear(devId);
+    }
+    else if(msg.contains("copy")){
+        QJsonObject copy = msg.value("copy").toObject();
+        QString from = copy.value("from").toString();
+        QString to = copy.value("to").toString();
+        clear(to);
+
+        foreach(Device dev, myDevs){
+            if(dev.getDeviceId() == to){
+                foreach (QSharedPointer<Keyframe> frame, keyframes) {
+                    if(frame.data()->state.deviceId == from){
+                        DeviceState state = dev.getState();
+                        state.tryImport(frame.data()->state);
+                        QSharedPointer<Keyframe> pointer = QSharedPointer<Keyframe>(new Keyframe(frame.data()->time,DeviceState(state),wss));
+                        connect(pointer.data(),SIGNAL(deleteRequested(Keyframe*)),this,SLOT(removeKeyframe(Keyframe*)));
+                        keyframes.append(pointer);
+                        QJsonObject ret;
+                        ret.insert("new_keyframe",pointer.data()->providerId);
+                        ret.insert("devId",to);
+                        sendMsg(ret,true);
+                    }
+                }
+            break;
+            }
+        }
+    }
 }
 
 QString KeyFrameScene::getRequestType()
@@ -194,4 +223,16 @@ QJsonObject KeyFrameScene::getLampJson(Device dev)
     QJsonObject ret;
     ret.insert("devID",dev.getDeviceId());
     return ret;
+}
+
+void KeyFrameScene::clear(QString devId)
+{
+    for(int i = 0; i < keyframes.length();){
+        if(keyframes.at(i).data()->state.deviceId == devId){
+            keyframes.at(i).data()->beforeDelete();
+            keyframes.removeAt(i);
+            i=0;
+        }
+        i++;
+    }
 }

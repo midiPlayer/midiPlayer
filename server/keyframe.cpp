@@ -92,3 +92,10 @@ bool Keyframe::isLiveEditing()
 {
     return liveEditing;
 }
+
+void Keyframe::beforeDelete()
+{
+    QJsonObject del;
+    del.insert("deleteKeyframe",true);
+    sendMsg(del,true);
+}
