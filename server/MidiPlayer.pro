@@ -4,9 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets websockets
+greaterThan(QT_MAJOR_VERSION, 4): QT += websockets
 
 TARGET = MidiPlayer
 TEMPLATE = app

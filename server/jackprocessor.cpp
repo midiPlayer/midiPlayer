@@ -50,14 +50,14 @@ int JackProcessor::initJack(MainWindow* m) {
 
     mainW = m;
   if ((jackHandle = jack_client_open("MidiPlayer", JackNullOption, NULL)) == 0) {
-    QMessageBox::critical(0, "MidiPlayer", "JACK server not running ?");
+    qDebug() << "JACK server not running ?";
     exit(1);
   }
   //jackMidi = jack_port_register(jackHandle, "Scene Recorder_MIDI_In", JACK_DEFAULT_MIDI_TYPE, JackPortIsInput, 0);
   jackMidiOut = jack_port_register(jackHandle, "Playback", JACK_DEFAULT_MIDI_TYPE, JackPortIsOutput, 0);
   jack_set_process_callback(jackHandle, jack_static_callback, (void *)this);
   if (jack_activate(jackHandle)) {
-    QMessageBox::critical(0, "Scene Recorder", "Can't activate JACK.");
+      qDebug() << "Can't activate JACK.";
     exit(1);
   }  
 

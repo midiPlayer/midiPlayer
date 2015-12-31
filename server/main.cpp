@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include <QApplication>
+#include <QCoreApplication>
 /*
 
  Dazu können verschiedene "Regler" als MIDI-Ausgang verwendet werden. Dadurch kann das Programm sowohl zur
@@ -19,9 +19,8 @@ Hier wird eigentlich nur das mainwindow instanziiert.
  */
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QCoreApplication a(argc, argv);
     MainWindow w;
-    w.show();
 
     return a.exec();
 }

@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <QObject>
 #include <QList>
 #include <QMap>
 #include "scene.h"
@@ -22,15 +22,12 @@
 #include <QSettings>
 #include "diascene.h"
 #include "fileioprovider.h"
-namespace Ui {
-class MainWindow;
-}
-class MainWindow : public QMainWindow
+class MainWindow : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow();
     ~MainWindow();
     void getChanges();
     QList<Device> availableDevices;    
@@ -40,7 +37,6 @@ public slots:
     void save();
 
 private:
-    Ui::MainWindow *ui;
     QList<Device> usedLamps;
     QList<Device> status;
 

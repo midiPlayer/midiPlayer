@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include "keyframescene.h"
 #include <QDebug>
 #include <QSetIterator>
@@ -12,6 +11,7 @@
 #include "flashscene.h"
 
 #include <QJsonArray>
+#include <QCoreApplication>
 
 #define SETTING_KEY_MAINSCENE_JSON "mainscenejson"
 #define SETTING_KEY_JACKP "jackp"
@@ -21,11 +21,10 @@
 */
 
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),settings(), usedLamps(),status(),offsetRequested(true),
+MainWindow::MainWindow() :
+    settings(), usedLamps(),status(),offsetRequested(true),
     availableDevices(), wss(this),jackProcessor(&wss,this),outDevices(),
-    timer(this),getChangesRunning(false), ui(new Ui::MainWindow),
-    sceneBuilder(&wss,&availableDevices,&jackProcessor),
+    timer(this),getChangesRunning(false), sceneBuilder(&wss,&availableDevices,&jackProcessor),
     myBeamerDeviceProvider(&wss,&availableDevices),
     beamerShutterSceneManager(&myBeamerDeviceProvider,&wss,&jackProcessor),  olaDeviceProvider(),
     remoteBeat(&wss,&jackProcessor),mainScene(),filieIoProv(&wss,&mainScene,this)
@@ -59,19 +58,10 @@ MainWindow::MainWindow(QWidget *parent) :
     d.setArray(Device::serializeDevices(availableDevices));
     qDebug() << d.toJson();
 
-    //discoscene = QSharedPointer<DiscoScene>(new DiscoScene(&wss,&sceneBuilder,"disco",getDiscoScenSettings()));
-
     outDevices.append(&myBeamerDeviceProvider);
     outDevices.append(&olaDeviceProvider);
-    //connect(p,SIGNAL(midiRequest()),this,SLOT(getChanges()));
-    ui->setupUi(this);
-
-    connect(ui->saveBtn,SIGNAL(clicked(bool)),this,SLOT(save()));
 
     connect(&wss,SIGNAL(clientClosed()),this,SLOT(save()));
-
-    //mainScene.data()->addScene(discoscene,"disco1","Das ist die erste Discoscene!",1);
-    //mainScene.data()->addScene(QSharedPointer<ColorScene>(new ColorScene(availableDevices,&wss,"black")),"black","eben einfach schwarz - schlicht und doch aufdringlich",1);
 
     connect(&timer,SIGNAL(timeout()),this,SLOT(trigger()));
     timer.setInterval(10);
@@ -99,15 +89,6 @@ void MainWindow::getChanges()
             newState.append(lamp);
     }
 
-  /*  //overlay:
-    if(currentOverlay != -1){
-        OverlayScene* overlay = overlays.at(currentOverlay);
-        if(overlay->stopRequested()){
-            stopCurrentOverlay();
-        }
-        else
-            newState = overlay->getEffect(newState);
-    }*/
 
     //test for changes
     QListIterator<Device> mapIter(newState);
@@ -186,5 +167,4 @@ void MainWindow::save()
 MainWindow::~MainWindow()
 {
     save();
-    delete ui;
 }
