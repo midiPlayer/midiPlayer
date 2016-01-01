@@ -86,7 +86,7 @@ HEADERS  += mainwindow.h\
     stopwatch.h \
     fileioprovider.h
 
-FORMS    += mainwindow.ui
+FORMS    +=
 
 DISTFILES += \
     other/Icons/MidiPlayer.png
