@@ -84,18 +84,22 @@ void Stopwatch::clientMessage(QJsonObject msg, int id)
 {
     if(msg.contains("start")){
         start(false);
+        emit started();
         sendMsgButNotTo(msg,id,true);
     }
     if(msg.contains("stop")){
         stop(false);
+        emit stoped();
         sendMsgButNotTo(msg,id,true);
     }
     if(msg.contains("resume")){
         resume(false);
+        emit resumed();
         sendMsgButNotTo(msg,id,true);
     }
     if(msg.contains("set")){
         setTo(msg.value("set").toInt(),false);
+        emit timeSet();
         sendMsgButNotTo(msg,id,true);
     }
 }

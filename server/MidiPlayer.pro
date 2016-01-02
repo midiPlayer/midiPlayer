@@ -48,7 +48,8 @@ SOURCES += main.cpp\
     keyframe.cpp \
     devicestate.cpp \
     stopwatch.cpp \
-    fileioprovider.cpp
+    fileioprovider.cpp \
+    musicplayer.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
@@ -84,7 +85,8 @@ HEADERS  += mainwindow.h\
     keyframe.h \
     devicestate.h \
     stopwatch.h \
-    fileioprovider.h
+    fileioprovider.h \
+    musicplayer.h
 
 FORMS    +=
 

@@ -28,6 +28,11 @@ private:
     long getTimestamp();
 public slots:
     void sendTimeSync();
+signals:
+    void started();
+    void stoped();
+    void resumed();
+    void timeSet();
 };
 
 #endif // STOPWATCH_H
