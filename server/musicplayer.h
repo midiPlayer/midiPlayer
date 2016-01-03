@@ -6,6 +6,8 @@
 #include <QObject>
 #include <QProcess>
 #include "websocketserverprovider.h"
+#include <QMediaPlayer>
+
 class MusicPlayer : public QObject, public Serializable, public WebSocketServerProvider
 {
 Q_OBJECT
@@ -19,12 +21,13 @@ public:
     void clientMessage(QJsonObject msg, int id);
     QString getRequestType();
 public slots:
-    void play(int secs);
+    void play(quint64 msec = 0);
+    void setPosition(qint64 pos);
     void stop();
 private:
     QString selectedFile;
     bool playing;
-    QProcess player;
+    QMediaPlayer qtPlayer;
 
 };
 

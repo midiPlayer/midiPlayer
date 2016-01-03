@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core
+QT       += core multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += websockets
 

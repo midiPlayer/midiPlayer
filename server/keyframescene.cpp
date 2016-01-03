@@ -83,7 +83,7 @@ void KeyFrameScene::start()
     foreach (QSharedPointer<Keyframe> k, keyframes) {
         k.data()->liveEditing = false;
     }
-    musicPlayer.play(0);
+    musicPlayer.play();
 }
 
 void KeyFrameScene::stop()
@@ -223,13 +223,12 @@ void KeyFrameScene::removeKeyframe(Keyframe *which)
 
 void KeyFrameScene::handleResume()
 {
-    musicPlayer.play(watch.getMSecs()/1000);
+    musicPlayer.play(watch.getMSecs());
 }
 
 void KeyFrameScene::handleTimeChanged()
 {
-    musicPlayer.stop();
-    handleResume();
+    musicPlayer.setPosition(watch.getMSecs());
 }
 
 QJsonArray KeyFrameScene::getLampsJson()

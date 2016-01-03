@@ -11,12 +11,17 @@
 
 
 MusicPlayer::MusicPlayer(WebSocketServer *ws, QJsonObject serialized) : selectedFile(""), playing(false),
-    player(this), WebSocketServerProvider(ws)
+    WebSocketServerProvider(ws), qtPlayer()
 {
     ws->registerProvider(this);
     if(serialized.length() != 0){
         selectedFile = serialized.value(KEY_FILE).toString();
     }
+
+    qtPlayer.setVolume(50);
+    if(selectedFile != "")
+        qtPlayer.setMedia(QUrl::fromLocalFile(selectedFile));
+
 }
 
 QJsonObject MusicPlayer::serialize()
@@ -26,26 +31,23 @@ QJsonObject MusicPlayer::serialize()
     return ret;
 }
 
-void MusicPlayer::play(int secs)
+void MusicPlayer::play(quint64 msec)
 {
     if(selectedFile == "")//we can't play empty files
         return;
 
-    if(playing)
-        stop();
-    QStringList args;
-    args << selectedFile;
+    setPosition(msec);
+    qtPlayer.play();
+}
 
-    player.start("/usr/bin/vlc",args);
-    playing = true;
+void MusicPlayer::setPosition(qint64 pos)
+{
+    qtPlayer.setPosition(pos);
 }
 
 void MusicPlayer::stop()
 {
-    playing = false;
-    if(player.state() != QProcess::NotRunning){
-        player.terminate();
-    }
+    qtPlayer.stop();
 }
 
 void MusicPlayer::clientRegistered(QJsonObject msg, int id)
@@ -76,6 +78,8 @@ void MusicPlayer::clientMessage(QJsonObject msg, int id)
 {
     if(msg.contains("setPath")){
         selectedFile = msg.value("setPath").toString("");
+        if(selectedFile != "")
+            qtPlayer.setMedia(QUrl::fromLocalFile(selectedFile));
         stop();
         sendMsgButNotTo(msg,id,true);
     }
