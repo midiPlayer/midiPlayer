@@ -1,0 +1,7 @@
+start jack-Server: "/usr/bin/jackd -dalsa -dhw:0 -r48000 -p1024 -n2"
+
+show properties of display ports (e. g. input, output ...): "jack_lsp -p"
+
+show connections: "jack_lsp -c"
+
+patch two connections: "jack_connect [-s <if more than one servers running, id of server to connect to] <port-id-1> <port-id-2>" (port-ids see output of "jack_lsp -c")

@@ -1,6 +1,12 @@
+- Mikrophon-Unterstützung und evtl. Durchsageton implementieren (für "Regieanweisungen" von hinten :-))
+- Namen für Projekt (Lucia, Karl&Otto, Luxus)
+- Icon für LightClient
+- Autostart-Skript für Server-PC -> Jack ohne X starten
+- Device-Editor und Save-Function für Deviceconfig
+- Unterstützung für einfache Strahler implementieren
+- Scenen tauschen (bisher: nur Subscenes per Drag'n'Drop tauschbar)
+- Fehlermeldung wenn zwei Server gleichzeitig aktiv, bzw. Start verhindern
+- Keyframe-Scene: Zeiten einstellen, Zeitindex für Cursorposition anzeigen
+- Server: vor beenden Speichern (bisher: nur speichern, wenn Client beendet)
+- MediaPlayer in Client integrieren (Qt-Player in Verbindung mit Jack)
 
-- Farben schön wählen
-- andere Szenen programmieren
-- Hilfe-Buttons
-- JSon-Import
-- JSon-Parser

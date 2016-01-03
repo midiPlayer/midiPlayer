@@ -36,6 +36,16 @@
   			libaubio4
   			qjackctl
   			libjack-devel
+  			vlc
+  			vlc-codexs
+  			vlc-noX
+  			packman-repo
+  			jacknet
+  			jacktrip
+  			artnet
+  			a2jmidid
+  			a2jalsad
+  			//unbedingt nochmal überprüfen, ob Liste immer noch aktuell bzw. Dependencies wirklich nötig
   			
   		</software>
   	</group>
