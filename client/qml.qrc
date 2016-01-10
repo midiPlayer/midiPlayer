@@ -56,5 +56,7 @@
         <file>GraphCreator.js</file>
         <file>Stopwatch.qml</file>
         <file>IOManager.qml</file>
+        <file>MusicPlayer.qml</file>
+        <file>MusicPlayerWorker.js</file>
     </qresource>
 </RCC>

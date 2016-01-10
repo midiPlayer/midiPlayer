@@ -1,0 +1,6 @@
+zum installieren:
+- das initdScript.sh umbenenen und in /etc/init.d/ kopieren
+- insserv /etcInit.d/NEUERNAME.sh aufrufen
+
+mit servie midiPlayer start/stop kann nun der midiplayer kontrolliert werden.
+Vorraussetung für den start ist eine laufende jack instanc

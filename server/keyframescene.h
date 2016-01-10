@@ -7,6 +7,7 @@
 #include "keyframe.h"
 #include "websocketserverprovider.h"
 #include <QSharedPointer>
+#include "musicplayer.h"
 
 class KeyFrameScene : public Scene, public WebSocketServerProvider
 {
@@ -26,8 +27,11 @@ public:
     QString getRequestType();
     QString getSceneTypeString();
     static QString getSceneTypeStringStaticaly();
+
 public slots:
     void removeKeyframe(Keyframe * which);
+    void handleResume();
+    void handleTimeChanged();
 private:
     Stopwatch watch;
     QList<Device> myDevs;
@@ -36,6 +40,7 @@ private:
     QJsonObject getLampJson(Device dev);
     WebSocketServer* wss;
     void clear(QString devId);
+    MusicPlayer musicPlayer;
 
 };
 

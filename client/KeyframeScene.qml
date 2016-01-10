@@ -21,7 +21,29 @@ Item {
         Layout.minimumHeight:  150
      //   width: parent.width
      //   height: parent.height/2
-        ScrollView{
+
+        ColumnLayout{
+            anchors.fill: parent;
+            Item{
+                height: musicPlayer.height
+                Layout.fillWidth: true;
+                Layout.rightMargin: 15
+                RowLayout{
+                    anchors.fill: parent
+                    Item{
+                        Layout.fillWidth: true
+                    }
+
+                    MusicPlayer{
+                        id:musicPlayer
+                    }
+                }
+            }
+            Item{
+                Layout.fillWidth: true;
+                Layout.fillHeight: true;
+                ScrollView{
+
             anchors.fill: parent
             ListView {
                 width: 180; height: 200
@@ -44,6 +66,7 @@ Item {
                             text: devID
                             Layout.fillWidth: true
                             color:"#369cb6"
+                            Layout.margins: 10
                         }
 
                         Button{
@@ -118,7 +141,9 @@ Item {
             }
 
         }
-    }
+            }
+         }
+     }
 
 
     Item{//graph display
@@ -145,6 +170,9 @@ Item {
             console.log(JSON.stringify(msg));
             if(msg.hasOwnProperty("devices"))
                 deviceWorker.sendMessage({"model":deviceModell,"lamps":msg.devices});
+            if(msg.hasOwnProperty("musicPlayer")){
+                musicPlayer.requestId = msg.musicPlayer;
+            }
         }
     }
 }

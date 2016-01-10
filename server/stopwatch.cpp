@@ -38,7 +38,7 @@ void Stopwatch::stop(bool notify)
 
 void Stopwatch::resume(bool notify)
 {
-    setTo(snaped);
+    setTo(snaped,notify);
     running = true;
 
     if(notify){
@@ -56,7 +56,7 @@ int Stopwatch::getMSecs()
     return snaped;
 }
 
-void Stopwatch::setTo(int ms, bool notify)
+void Stopwatch::setTo(long ms, bool notify)
 {
     snaped = ms;
     time = getTimestamp() - ms;
@@ -84,18 +84,22 @@ void Stopwatch::clientMessage(QJsonObject msg, int id)
 {
     if(msg.contains("start")){
         start(false);
+        emit started();
         sendMsgButNotTo(msg,id,true);
     }
     if(msg.contains("stop")){
         stop(false);
+        emit stoped();
         sendMsgButNotTo(msg,id,true);
     }
     if(msg.contains("resume")){
         resume(false);
+        emit resumed();
         sendMsgButNotTo(msg,id,true);
     }
     if(msg.contains("set")){
-        setTo(msg.value("set").toInt(),false);
+        setTo((long)msg.value("set").toDouble(),false);
+        emit timeSet();
         sendMsgButNotTo(msg,id,true);
     }
 }

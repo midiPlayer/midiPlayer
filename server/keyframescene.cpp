@@ -4,12 +4,20 @@
 #include <QJsonArray>
 #include "websocketserver.h"
 
+#define KEY_MUSIC_PLAYER "music_player"
+
 #define KEY_KEYFRAMESCENE_KEYFRAMES "key_keyframescene_keyframes"
 
 KeyFrameScene::KeyFrameScene(QList<Device> avDev, QString name, WebSocketServer *ws, QJsonObject serialized) :
-    Scene(name,serialized), WebSocketServerProvider(ws),wss(ws),watch(ws)
+    Scene(name,serialized), WebSocketServerProvider(ws),wss(ws),watch(ws),
+    musicPlayer(ws,serialized.value(KEY_MUSIC_PLAYER).toObject())
 {
     ws->registerProvider(this);
+
+    connect(&watch,SIGNAL(resumed()),this,SLOT(handleResume()));
+    connect(&watch,SIGNAL(started()),this,SLOT(handleResume()));
+    connect(&watch,SIGNAL(stoped()),&musicPlayer,SLOT(stop()));
+    connect(&watch,SIGNAL(timeSet()),this,SLOT(handleTimeChanged()));
 
     foreach (Device dev, avDev) {
         if(dev.getType() == Device::RGBW){//at the moment only rgbw is supported.
@@ -75,11 +83,13 @@ void KeyFrameScene::start()
     foreach (QSharedPointer<Keyframe> k, keyframes) {
         k.data()->liveEditing = false;
     }
+    musicPlayer.play();
 }
 
 void KeyFrameScene::stop()
 {
     watch.stop();
+    musicPlayer.stop();
 }
 
 QJsonObject KeyFrameScene::serialize()
@@ -90,6 +100,7 @@ QJsonObject KeyFrameScene::serialize()
         keyframesJson.append(k.data()->serialize());
     }
     ret.insert(KEY_KEYFRAMESCENE_KEYFRAMES,keyframesJson);
+    ret.insert(KEY_MUSIC_PLAYER,musicPlayer.serialize());
     return serializeScene(ret);
 }
 
@@ -100,6 +111,7 @@ void KeyFrameScene::clientRegistered(QJsonObject msg, int id)
     QJsonObject ret;
     ret.insert("devices",getLampsJson());
     ret.insert("cursorWatch",watch.providerId);
+    ret.insert("musicPlayer",musicPlayer.providerId);
     sendMsg(ret,id,true);
 }
 
@@ -207,6 +219,16 @@ void KeyFrameScene::removeKeyframe(Keyframe *which)
             break;
         }
     }
+}
+
+void KeyFrameScene::handleResume()
+{
+    musicPlayer.play(watch.getMSecs());
+}
+
+void KeyFrameScene::handleTimeChanged()
+{
+    musicPlayer.setPosition(watch.getMSecs());
 }
 
 QJsonArray KeyFrameScene::getLampsJson()

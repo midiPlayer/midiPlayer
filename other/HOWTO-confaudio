@@ -1,0 +1,9 @@
+https://wiki.archlinux.org/index.php/JACK_Audio_Connection_Kit#gstreamer
+gconftool-2 --type string --set /system/gstreamer/0.10/audio/default/audiosink "jackaudiosink buffer-time=2000000"
+gconftool-2 --type string --set /system/gstreamer/0.10/audio/default/musicaudiosink "jackaudiosink buffer-time=2000000"
+gconftool-2 --type string --set /system/gstreamer/0.10/audio/default/chataudiosink "jackaudiosink buffer-time=2000000"
+
+if youn have pulse --> dissable:
+/etc/pulse/client.conf:
+;autospawn = yes
+autospawn = no

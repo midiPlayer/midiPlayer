@@ -14,7 +14,7 @@ public:
     void stop(bool notify = true);
     void resume(bool notify = true);
     int getMSecs();
-    void setTo(int ms,bool notify = true);
+    void setTo(long ms, bool notify = true);
 
     void clientRegistered(QJsonObject msg, int id);
     void clientUnregistered(QJsonObject msg, int id);
@@ -28,6 +28,11 @@ private:
     long getTimestamp();
 public slots:
     void sendTimeSync();
+signals:
+    void started();
+    void stoped();
+    void resumed();
+    void timeSet();
 };
 
 #endif // STOPWATCH_H
