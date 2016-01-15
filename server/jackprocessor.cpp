@@ -1,4 +1,3 @@
-#include <QtGui/QMessageBox>
 #include <jack/jack.h>
 #include <jack/midiport.h>
 #include <stdio.h>
