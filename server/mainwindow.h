@@ -30,7 +30,8 @@ public:
     explicit MainWindow();
     ~MainWindow();
     void getChanges();
-    QList<Device> availableDevices;    
+    QList<QSharedPointer<Device> > newAvailableDevices;
+    QList<Device> availableDevices;
     void loadScenes(QJsonObject data);
 public slots:
     void trigger();

@@ -38,9 +38,11 @@ void FlashScene::reloadColor()
 
     foreach (Device dev, availableDevices) {
         int firstC = dev.getFirstChannel();
-        dev.setChannel(firstC+0,color.redF());
-        dev.setChannel(firstC+1,color.greenF());
-        dev.setChannel(firstC+2,color.blueF());
+        if(dev.getType() == Device::RGB || dev.getType() == Device::RGBW ){
+            dev.setChannel(firstC+0,color.redF());
+            dev.setChannel(firstC+1,color.greenF());
+            dev.setChannel(firstC+2,color.blueF());
+        }
         flashState.append(dev);
     }
 }

@@ -103,7 +103,7 @@ QJsonArray DeviceState::getClientJson()
 void DeviceState::setClientJson(QJsonArray json)
 {
     if(json.size() == dmxChannels.size()){
-        for(int i = 0; i < json.size() ; i++){
+        for(int i = 0; i < dmxChannels.size() ; i++){
             setChannel(i+getFirstChannel(),json.at(i).toDouble());
         }
     }

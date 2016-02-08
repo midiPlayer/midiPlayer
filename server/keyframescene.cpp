@@ -3,12 +3,13 @@
 #include <QFile>
 #include <QJsonArray>
 #include "websocketserver.h"
+#include "whitedevice.h"
 
 #define KEY_MUSIC_PLAYER "music_player"
 
 #define KEY_KEYFRAMESCENE_KEYFRAMES "key_keyframescene_keyframes"
 
-KeyFrameScene::KeyFrameScene(QList<Device> avDev, QString name, WebSocketServer *ws, QJsonObject serialized) :
+KeyFrameScene::KeyFrameScene(QList<QSharedPointer<Device> > avDev, QString name, WebSocketServer *ws, QJsonObject serialized) :
     Scene(name,serialized), WebSocketServerProvider(ws),wss(ws),watch(ws),
     musicPlayer(ws,serialized.value(KEY_MUSIC_PLAYER).toObject())
 {
@@ -19,10 +20,8 @@ KeyFrameScene::KeyFrameScene(QList<Device> avDev, QString name, WebSocketServer 
     connect(&watch,SIGNAL(stoped()),&musicPlayer,SLOT(stop()));
     connect(&watch,SIGNAL(timeSet()),this,SLOT(handleTimeChanged()));
 
-    foreach (Device dev, avDev) {
-        if(dev.getType() == Device::RGBW){//at the moment only rgbw is supported.
-            myDevs.append(dev);
-        }
+    foreach (QSharedPointer <Device> dev, avDev) {
+        myDevs.append(dev);//use all devs
     }
 
     if(serialized.length() != 0 && serialized.contains(KEY_KEYFRAMESCENE_KEYFRAMES)){
@@ -37,7 +36,8 @@ KeyFrameScene::KeyFrameScene(QList<Device> avDev, QString name, WebSocketServer 
 QList<Device> KeyFrameScene::getLights()
 {
     QList<Device> ret;
-    foreach (Device dev,myDevs) {
+    foreach (QSharedPointer<Device> devPrt,myDevs) {
+        Device dev(devPrt.data());
         QSharedPointer<Keyframe> min;
         QSharedPointer<Keyframe> max;
         double elapsed = (double)watch.getMSecs() / 1000.0;
@@ -74,7 +74,11 @@ QList<Device> KeyFrameScene::getLights()
 
 QList<Device> KeyFrameScene::getUsedLights()
 {
-    return myDevs;
+    QList<Device> ret;
+    foreach (QSharedPointer<Device> dev, myDevs) {
+        ret.append(Device(dev.data()));
+    }
+    return ret;
 }
 
 void KeyFrameScene::start()
@@ -124,26 +128,33 @@ void KeyFrameScene::clientMessage(QJsonObject msg, int id)
 {
 
     if(msg.contains("get_keyframes")){
-        QJsonObject ret;
-        QJsonArray keyframesJson;
+
         QString devId = msg.value("get_keyframes").toString();
-        foreach (QSharedPointer<Keyframe> k, keyframes) {
-            if(k.data()->state.deviceId == devId){
-                keyframesJson.append(k.data()->providerId);
-            }
+        foreach (QSharedPointer<Device> d, myDevs) {
+            if(d.data()->getDeviceId() != devId)
+                continue;
+
+             QJsonObject ret = getLampJson(d);
+             QJsonArray keyframesJson;
+
+             foreach (QSharedPointer<Keyframe> k, keyframes) {
+                 if(k.data()->state.deviceId == devId){
+                     keyframesJson.append(k.data()->providerId);
+                 }
+             }
+             ret.insert("keyframes",keyframesJson);
+             sendMsg(ret,id,true);
+             break;
         }
-        ret.insert("keyframes",keyframesJson);
-        ret.insert("devId",devId);
-        sendMsg(ret,id,true);
     }
     else if(msg.contains("add_keyframe")){
         QJsonObject ret;
         QJsonObject insertCommand = msg.value("add_keyframe").toObject();
         QString devId = insertCommand.value("devId").toString();
         double time = insertCommand.value("time").toDouble();
-        foreach (Device d, myDevs) {
-            if(d.getDeviceId() == devId){
-                DeviceState state = d.getState();
+        foreach (QSharedPointer<Device> d, myDevs) {
+            if(d.data()->getDeviceId() == devId){
+                DeviceState state = d.data()->getState();
                 QSharedPointer<Keyframe> next;
                 foreach (QSharedPointer<Keyframe> frame, keyframes) {
                     if(devId == frame.data()->state.deviceId){
@@ -175,11 +186,11 @@ void KeyFrameScene::clientMessage(QJsonObject msg, int id)
         QString to = copy.value("to").toString();
         clear(to);
 
-        foreach(Device dev, myDevs){
-            if(dev.getDeviceId() == to){
+        foreach(QSharedPointer<Device> dev, myDevs){
+            if(dev.data()->getDeviceId() == to){
                 foreach (QSharedPointer<Keyframe> frame, keyframes) {
                     if(frame.data()->state.deviceId == from){
-                        DeviceState state = dev.getState();
+                        DeviceState state = dev.data()->getState();
                         state.tryImport(frame.data()->state);
                         QSharedPointer<Keyframe> pointer = QSharedPointer<Keyframe>(new Keyframe(frame.data()->time,DeviceState(state),wss));
                         connect(pointer.data(),SIGNAL(deleteRequested(Keyframe*)),this,SLOT(removeKeyframe(Keyframe*)));
@@ -234,16 +245,37 @@ void KeyFrameScene::handleTimeChanged()
 QJsonArray KeyFrameScene::getLampsJson()
 {
     QJsonArray ret;
-    foreach (Device dev, myDevs) {
+    foreach (QSharedPointer<Device> dev, myDevs) {
         ret.append(getLampJson(dev));
     }
     return ret;
 }
 
-QJsonObject KeyFrameScene::getLampJson(Device dev)
+QJsonObject KeyFrameScene::getLampJson(QSharedPointer<Device> dev)
 {
     QJsonObject ret;
-    ret.insert("devID",dev.getDeviceId());
+    ret.insert("devID",dev.data()->getDeviceId());
+    QJsonObject devChannels;
+    if(dev.data()->getType() == Device::RGBW || dev.data()->getType() == Device::RGB){
+        devChannels.insert("r",true);
+        devChannels.insert("g",true);
+        devChannels.insert("b",true);
+    }
+    if(dev.data()->getType() == Device::RGBW || dev.data()->getType() == Device::White){
+        devChannels.insert("w",true);
+    }
+    ret.insert("channels",devChannels);
+
+    if(dev.data()->getType() == Device::White){//Here we will add the "color" of white devices so it will be displayed correctly
+        WhiteDevice *whiteDev = dynamic_cast<WhiteDevice*>(dev.data());
+        if(whiteDev != NULL){
+            ret.insert("whiteDeviceColor", whiteDev->getColorOfDevice().name());
+        }
+        else{
+            //well this shite device is not of it's class - strange...
+            ret.insert("whiteDeviceColor","#ffffff");
+        }
+    }
     return ret;
 }
 

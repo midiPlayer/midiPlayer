@@ -9,7 +9,7 @@ class Scene;
 class SceneBuilder
 {
 public:
-    SceneBuilder(WebSocketServer *wssP,QList<Device> *avDev,JackProcessor *jackP);
+    SceneBuilder(WebSocketServer *wssP,QList<Device> *avDev,  QList<QSharedPointer<Device> > *newAvailableDevicesP, JackProcessor *jackP);
     QSharedPointer<Scene> build(QString sceneType, QString name = "", QJsonObject serialized = QJsonObject());
     QSharedPointer<Scene> build(QJsonObject serialized);
     QJsonObject serializeScene(QSharedPointer<Scene> scene);
@@ -18,6 +18,7 @@ public:
 private:
     WebSocketServer* wss;
     QList<Device> *availableDevices;
+    QList<QSharedPointer<Device> > *newAvailableDevices;
     JackProcessor *jack;
 };
 

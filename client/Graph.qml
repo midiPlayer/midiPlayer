@@ -19,6 +19,9 @@ Item{
 
     property bool isLiveEditing: false
 
+    property var channels;
+    property string whiteDeviceColor;
+
     Component.onCompleted: {
         viewer.onValueEditingChanged.connect(function(){
             isLiveEditing = viewer.valueEditing;
@@ -186,16 +189,16 @@ Item{
                    }
                    console.log("wheel");
 
-                   if(viewer.canvas.mouseA.rPressed){
+                   if(viewer.canvas.mouseA.rPressed && channels.hasOwnProperty("r")){
                        parent.parent.activePoint.value.r = Math.max(Math.min(parent.parent.activePoint.value.r + deltaP,1),0)
                    }
-                   if(viewer.canvas.mouseA.gPressed){
+                   if(viewer.canvas.mouseA.gPressed && channels.hasOwnProperty("g")){
                        parent.parent.activePoint.value.g = Math.max(Math.min(parent.parent.activePoint.value.g + deltaP,1),0)
                    }
-                   if(viewer.canvas.mouseA.bPressed){
+                   if(viewer.canvas.mouseA.bPressed && channels.hasOwnProperty("b")){
                        parent.parent.activePoint.value.b = Math.max(Math.min(parent.parent.activePoint.value.b + deltaP,1),0)
                    }
-                   if(viewer.canvas.mouseA.wPressed){
+                   if(viewer.canvas.mouseA.wPressed && channels.hasOwnProperty("w")){
                        parent.parent.activePoint.value.w = Math.max(Math.min(parent.parent.activePoint.value.w + deltaP,1),0)
                    }
                    parent.requestPaint();
@@ -273,13 +276,18 @@ Item{
      WebSocketConnector{
          id: ws
          onMessage: {
-             if(msg.devId === devideID && msg.hasOwnProperty("keyframes")){
+             if(msg.devID === devideID && msg.hasOwnProperty("keyframes")){
+                if(msg.hasOwnProperty("whiteDeviceColor"))
+                    whiteDeviceColor = msg.whiteDeviceColor;
+                else
+                    whiteDeviceColor = "#fff";
+                 channels = msg.channels;
                 for(var i = 0; i < msg.keyframes.length; i++){
-                    KeyframCreator.createNewKeyframe(msg.keyframes[i],graph,graphCanvas);
+                    KeyframCreator.createNewKeyframe(msg.keyframes[i],graph,graphCanvas,whiteDeviceColor,channels);
                 }
              }
              if(msg.devId === devideID && msg.hasOwnProperty("new_keyframe")){
-                    KeyframCreator.createNewKeyframe(msg.new_keyframe,graph,graphCanvas);
+                    KeyframCreator.createNewKeyframe(msg.new_keyframe,graph,graphCanvas,whiteDeviceColor,channels);
              }
          }
      }

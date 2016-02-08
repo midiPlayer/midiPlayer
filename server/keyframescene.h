@@ -14,7 +14,7 @@ class KeyFrameScene : public Scene, public WebSocketServerProvider
 Q_OBJECT
 
 public:
-    KeyFrameScene(QList<Device> avDev,QString name, WebSocketServer *ws, QJsonObject serialized = QJsonObject());
+    KeyFrameScene(QList<QSharedPointer<Device> > avDev,QString name, WebSocketServer *ws, QJsonObject serialized = QJsonObject());
     QList<Device>getLights();
     QList<Device> getUsedLights();
     void start();
@@ -34,10 +34,10 @@ public slots:
     void handleTimeChanged();
 private:
     Stopwatch watch;
-    QList<Device> myDevs;
+    QList<QSharedPointer<Device> > myDevs;
     QList<QSharedPointer<Keyframe> > keyframes;
     QJsonArray getLampsJson();
-    QJsonObject getLampJson(Device dev);
+    QJsonObject getLampJson(QSharedPointer<Device> dev);
     WebSocketServer* wss;
     void clear(QString devId);
     MusicPlayer musicPlayer;

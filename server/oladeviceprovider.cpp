@@ -24,7 +24,7 @@ void OlaDeviceProvider::publish(QList<Device> outDevices, QList<Device> changes)
     ola::DmxBuffer buffer;
     buffer.Blackout();
     foreach (Device d,outDevices) {
-        if(!(d.getType() == Device::RGB || d.getType() == Device::RGBW))
+        if(!(d.getType() == Device::RGB || d.getType() == Device::RGBW || d.getType() == Device::White))
             continue;
           foreach(int c,d.getChannels()){
             buffer.SetChannel(c,d.getChannelValue(c)*255);

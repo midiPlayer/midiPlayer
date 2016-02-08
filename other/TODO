@@ -8,5 +8,4 @@
 - Fehlermeldung wenn zwei Server gleichzeitig aktiv, bzw. Start verhindern
 - Keyframe-Scene: Zeiten einstellen, Zeitindex für Cursorposition anzeigen
 - Server: vor beenden Speichern (bisher: nur speichern, wenn Client beendet)
-- MediaPlayer in Client integrieren (Qt-Player in Verbindung mit Jack)
-
+- Farbmodell auf RGBW erweitern (für Aufführung wichtig?)

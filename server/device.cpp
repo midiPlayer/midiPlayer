@@ -182,7 +182,7 @@ DeviceState Device::getState()
 
 void Device::setState(DeviceState stateP)
 {
-    if(stateP.deviceId != getDeviceId())
+    if(stateP.deviceId != getDeviceId() || state.getChannels().length() != stateP.getChannels().length())
         throw("wrong state");
     state = stateP;
 }

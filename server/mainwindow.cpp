@@ -9,6 +9,7 @@
 #include "fusionscene.h"
 #include "colorscene.h"
 #include "flashscene.h"
+#include "whitedevice.h"
 
 #include <QJsonArray>
 #include <QCoreApplication>
@@ -23,8 +24,8 @@
 
 MainWindow::MainWindow() :
     settings(), usedLamps(),status(),offsetRequested(true),
-    availableDevices(), wss(this),jackProcessor(&wss,this),outDevices(),
-    timer(this),getChangesRunning(false), sceneBuilder(&wss,&availableDevices,&jackProcessor),
+    availableDevices(), newAvailableDevices(), wss(this),jackProcessor(&wss,this),outDevices(),
+    timer(this),getChangesRunning(false), sceneBuilder(&wss,&availableDevices,&newAvailableDevices,&jackProcessor),
     myBeamerDeviceProvider(&wss,&availableDevices),
     beamerShutterSceneManager(&myBeamerDeviceProvider,&wss,&jackProcessor),  olaDeviceProvider(),
     remoteBeat(&wss,&jackProcessor),mainScene(),filieIoProv(&wss,&mainScene,this)
@@ -35,10 +36,16 @@ MainWindow::MainWindow() :
     QCoreApplication::setOrganizationDomain("fdg-ab.de");
     QCoreApplication::setApplicationName("light master");
 
-    availableDevices.append(Device(0,4,"rgbw1",Device::RGBW,QVector3D(-2,-3,0)));
-    availableDevices.append(Device(4,4,"rgbw2",Device::RGBW,QVector3D(-1,1,0)));
-    availableDevices.append(Device(8,4,"rgbw3",Device::RGBW,QVector3D(2,-2,0)));
-    availableDevices.append(Device(0,6,"beamer1",Device::Beamer,QVector3D(3,0,0)));
+    newAvailableDevices.append(QSharedPointer<Device>(new Device(0,4,"rgbw1",Device::RGBW,QVector3D(-2,-3,0))));
+    newAvailableDevices.append(QSharedPointer<Device>(new Device(4,4,"rgbw2",Device::RGBW,QVector3D(-1,1,0))));
+    newAvailableDevices.append(QSharedPointer<Device>(new Device(8,4,"rgbw3",Device::RGBW,QVector3D(2,-2,0))));
+    //newAvailableDevices.append(QSharedPointer<Device>(new Device(14,2,"white1",Device::White,QVector3D(2,-2,0))));
+    newAvailableDevices.append(QSharedPointer<Device>(new WhiteDevice(15,1,"White 1",QColor(255,0,0),QVector3D(3,0,0))));
+
+    foreach (QSharedPointer<Device> dev, newAvailableDevices){
+        availableDevices.append(Device(dev.data()));
+    }
+
     /*
      * Still the devices are memorized hard-coded in the programm.
      * If you change the number of devices at this point, every scene-qml-file has to be edited,
@@ -131,7 +138,6 @@ void MainWindow::loadScenes(QJsonObject data)
     timer.start();
 
 }
-
 
 
 void MainWindow::trigger()

@@ -49,7 +49,8 @@ SOURCES += main.cpp\
     devicestate.cpp \
     stopwatch.cpp \
     fileioprovider.cpp \
-    musicplayer.cpp
+    musicplayer.cpp \
+    whitedevice.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
@@ -86,7 +87,8 @@ HEADERS  += mainwindow.h\
     devicestate.h \
     stopwatch.h \
     fileioprovider.h \
-    musicplayer.h
+    musicplayer.h \
+    whitedevice.h
 
 FORMS    +=
 

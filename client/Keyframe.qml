@@ -30,7 +30,15 @@ Item{
     Component.onCompleted: {
         value.onColorActiveChanged.connect(function(){
             var msg = new Object();
-            msg.state = [value.r, value.g, value.b, value.w];
+            msg.state = [];
+            if(value.hasR)
+                msg.state.push(value.r);
+            if(value.hasG)
+                msg.state.push(value.g);
+            if(value.hasB)
+                msg.state.push(value.b);
+            if(value.hasW)
+                msg.state.push(value.w);
             ws.send = JSON.stringify(msg);
         });
     }
@@ -48,11 +56,12 @@ Item{
             if(msg.hasOwnProperty("time")){
                 time = msg.time;
             }
-            if(msg.hasOwnProperty("state") && msg.state.length === 4){
-                value.passivR = msg.state[0];
-                value.passivG = msg.state[1];
-                value.passivB = msg.state[2];
-                value.passivW = msg.state[3];
+            if(msg.hasOwnProperty("state")){
+                var i = 0;
+                if(value.hasR && msg.state.length > i) value.passivR = msg.state[i++];
+                if(value.hasG && msg.state.length > i) value.passivG = msg.state[i++];
+                if(value.hasB && msg.state.length > i) value.passivB = msg.state[i++];
+                if(value.hasW && msg.state.length > i) value.passivW = msg.state[i++];
             }
             if(msg.hasOwnProperty("deleteKeyframe")){
                 keyframe.deleteRequested();
