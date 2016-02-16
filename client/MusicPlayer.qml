@@ -66,7 +66,7 @@ Item {
           songWorker.sendMessage({"model":musicModel,"msg":msg});
           if(msg.hasOwnProperty("setPath")){
             path =  msg.setPath;
-              updatePath^(path);
+              updatePath(path);
             console.log(JSON.stringify(msg))
            }
         }

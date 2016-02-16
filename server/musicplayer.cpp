@@ -89,3 +89,4 @@ QString MusicPlayer::getRequestType()
 {
     return "musicPlayer";
 }
+

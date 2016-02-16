@@ -50,7 +50,9 @@ SOURCES += main.cpp\
     stopwatch.cpp \
     fileioprovider.cpp \
     musicplayer.cpp \
-    whitedevice.cpp
+    whitedevice.cpp \
+    monitorio.cpp \
+    diascenemonitorcontrol.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
@@ -88,7 +90,9 @@ HEADERS  += mainwindow.h\
     stopwatch.h \
     fileioprovider.h \
     musicplayer.h \
-    whitedevice.h
+    whitedevice.h \
+    monitorio.h \
+    diascenemonitorcontrol.h
 
 FORMS    +=
 

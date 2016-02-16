@@ -5,8 +5,11 @@
 #define KEY_NAME "name"
 #define KEY_DESC "desc"
 #define KEY_FADE_IN_DUR "fadeInDur"
+#define KEY_MONITOR "monitor"
 
-Dia::Dia(QJsonObject serialized, SceneBuilder *builder, WebSocketServer *wss) : WebSocketServerProvider(wss)
+Dia::Dia(QJsonObject serialized, SceneBuilder *builder, WebSocketServer *wss,
+         JackProcessor *jackP,MonitorIO *monitorP) : WebSocketServerProvider(wss),
+        monitorControl(wss,jackP,monitorP,&fadeInDuration,serialized.value(KEY_MONITOR).toObject())
 {
     scene = builder->build(serialized.value(KEY_SCENE).toObject());
     name = serialized.value(KEY_NAME).toString("");
@@ -15,8 +18,9 @@ Dia::Dia(QJsonObject serialized, SceneBuilder *builder, WebSocketServer *wss) : 
     wss->registerProvider(this);
 }
 
-Dia::Dia(QSharedPointer<Scene> sceneP, QString nameP, QString descP, float fadeInDurationP, WebSocketServer *wss): WebSocketServerProvider(wss),
-    scene(sceneP),name(nameP),desc(descP),fadeInDuration(fadeInDurationP)
+Dia::Dia(QSharedPointer<Scene> sceneP, QString nameP, QString descP, float fadeInDurationP,
+         WebSocketServer *wss,JackProcessor *jackP,MonitorIO *monitorP): WebSocketServerProvider(wss),
+    scene(sceneP),name(nameP),desc(descP),fadeInDuration(fadeInDurationP),monitorControl(wss,jackP,monitorP,&fadeInDuration)
 {
     wss->registerProvider(this);
 }
@@ -28,6 +32,7 @@ QJsonObject Dia::serialize(SceneBuilder *builder)
     serialized.insert(KEY_NAME,name);
     serialized.insert(KEY_DESC,desc);
     serialized.insert(KEY_FADE_IN_DUR,fadeInDuration);
+    serialized.insert(KEY_MONITOR,monitorControl.serialize());
     return serialized;
 }
 
@@ -36,6 +41,7 @@ void Dia::clientRegistered(QJsonObject msg, int id)
     QJsonObject reply;
     reply.insert("name",name);
     reply.insert("desc",desc);
+    reply.insert("monitorReqId",monitorControl.providerId);
     reply.insert("fadeInDur",fadeInDuration);
     WebSocketServerProvider* wsp = dynamic_cast<WebSocketServerProvider*>(scene.data());
     if(wsp != 0){
@@ -69,6 +75,17 @@ void Dia::clientMessage(QJsonObject msg, int id)
 QString Dia::getRequestType()
 {
     return "dia";
+}
+
+void Dia::start()
+{
+    scene.data()->start();
+    monitorControl.start();
+}
+
+void Dia::stop()
+{
+    scene.data()->stop();
 }
 
 

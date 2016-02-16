@@ -10,6 +10,7 @@
 class FlashScene : public Scene, public WebSocketServerProvider
 {
     Q_OBJECT
+
 public:
     FlashScene(WebSocketServer* ws, QList<Device> avDevP, JackProcessor *jackP,QString name,QJsonObject serialized);
     QList<Device>getLights();

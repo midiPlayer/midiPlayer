@@ -3,10 +3,10 @@
 #include <QJsonArray>
 #define KEY_DIAS "dias"
 DiaScene::DiaScene(QList<Device> avDev, WebSocketServer *ws,
-                   JackProcessor *jackP, SceneBuilder *builderP, QString name, QJsonObject serialized):
+                   JackProcessor *jackP, SceneBuilder *builderP, MonitorIO* monitorIoP, QString name, QJsonObject serialized):
                 Scene(name,serialized),WebSocketServerProvider(ws),availableDevices(avDev),
                 current(-1),fadingTo(-1),fadeTimer(),fusion("fusion"),wss(ws),builder(builderP),
-                jack(jackP)
+                jack(jackP), monitorIo(monitorIoP)
 {
     ws->registerProvider(this);
     connect(jack,SIGNAL(musicNotification()),this,SLOT(music()));
@@ -23,6 +23,8 @@ QList<Device> DiaScene::getLights()
         float percentage = fadeTimer.elapsed()/(fadingToDia.data()->fadeInDuration*1000);
         if(percentage> 1){
             percentage = 1;
+            if(current != -1)
+                scenes.at(current).data()->stop();
             current = fadingTo;
             fadingTo = -1;
         }
@@ -51,12 +53,12 @@ void DiaScene::clientMessage(QJsonObject msg, int id)
 {
     if(msg.contains("resetScene")){
         if(current != -1){
-            scenes.at(current).data()->scene.data()->stop();
-            scenes.at(current).data()->scene.data()->start();
+            scenes.at(current).data()->stop();
+            scenes.at(current).data()->start();
         }
         if(fadingTo != -1){
-            scenes.at(fadingTo).data()->scene.data()->stop();
-            scenes.at(fadingTo).data()->scene.data()->start();
+            scenes.at(fadingTo).data()->stop();
+            scenes.at(fadingTo).data()->start();
         }
         sendMsgButNotTo(msg,id,false);
     }
@@ -69,8 +71,8 @@ void DiaScene::clientMessage(QJsonObject msg, int id)
         if(newId != -1 && newId < scenes.length()){
             fadeTimer.restart();
             if(fadingTo != -1)
-                scenes.at(fadingTo).data()->scene.data()->stop();
-            scenes.at(newId).data()->scene.data()->start();
+                scenes.at(fadingTo).data()->stop();
+            scenes.at(newId).data()->start();
             fadingTo = newId;
         }
         sendMsgButNotTo(getState(false),id,false);
@@ -79,8 +81,8 @@ void DiaScene::clientMessage(QJsonObject msg, int id)
         if(scenes.length() != 0 && current > 0){
             fadeTimer.restart();
             if(fadingTo != -1)
-                scenes.at(fadingTo).data()->scene.data()->stop();
-            scenes.at(current-1).data()->scene.data()->start();
+                scenes.at(fadingTo).data()->stop();
+            scenes.at(current-1).data()->start();
             fadingTo = current - 1;
         }
         sendMsg(getState(false),false);
@@ -98,11 +100,11 @@ void DiaScene::clientMessage(QJsonObject msg, int id)
     if(msg.contains("deleteScene")){
         int id = msg.value("deleteScene").toInt(-1);
         if(current = id){
-            scenes.at(current).data()->scene.data()->stop();
+            scenes.at(current).data()->stop();
             current = fadingTo == -1 ? -1 : fadingTo;
         }
         if(fadingTo = id){
-            scenes.at(fadingTo).data()->scene.data()->stop();
+            scenes.at(fadingTo).data()->stop();
             fadingTo = -1;
         }
         if(id < scenes.length())
@@ -124,20 +126,20 @@ QString DiaScene::getRequestType()
 void DiaScene::stop()
 {
     if(current != -1)
-        scenes.at(current).data()->scene.data()->stop();
+        scenes.at(current).data()->stop();
     if(fadingTo != -1)
-        scenes.at(fadingTo).data()->scene.data()->stop();
+        scenes.at(fadingTo).data()->stop();
 }
 
 void DiaScene::start()
 {
     if(current != -1)
-        scenes.at(current).data()->scene.data()->start();
+        scenes.at(current).data()->start();
     if(fadingTo != -1)
-        scenes.at(fadingTo).data()->scene.data()->start();
+        scenes.at(fadingTo).data()->start();
     if(current == -1 && fadingTo == -1 && scenes.length() > 0){
         current = 0;
-        scenes.at(current).data()->scene.data()->start();
+        scenes.at(current).data()->start();
     }
 }
 
@@ -165,7 +167,7 @@ QString DiaScene::getSceneTypeStringStaticaly()
 
 void DiaScene::addScene(QSharedPointer<Scene> scene,QString name,QString desc,float fadeInDuration)
 {
-    addScene(QSharedPointer<Dia>(new Dia(scene,name,desc,fadeInDuration,wss)));
+    addScene(QSharedPointer<Dia>(new Dia(scene,name,desc,fadeInDuration,wss,jack,monitorIo)));
 }
 
 void DiaScene::addScene(QSharedPointer<Dia> dia)
@@ -180,7 +182,7 @@ void DiaScene::loadSerialized(QJsonObject serialized)
     foreach (QJsonValue diaVal, serialized.value(KEY_DIAS).toArray()) {
         QJsonObject diaJson = diaVal.toObject();
         QSharedPointer<Dia> scene = QSharedPointer<Dia>(
-                    new Dia(diaJson,builder,wss));
+                    new Dia(diaJson,builder,wss,jack,monitorIo));
         if(!(scene.isNull() || scene.data()->scene.isNull()))
             addScene(scene);
     }
@@ -222,8 +224,8 @@ void DiaScene::next()
     if(scenes.length() != 0 && current < scenes.length() -1){
         fadeTimer.restart();
         if(fadingTo != -1)
-            scenes.at(fadingTo).data()->scene.data()->stop();
-        scenes.at(current+1).data()->scene.data()->start();
+            scenes.at(fadingTo).data()->stop();
+        scenes.at(current+1).data()->start();
         fadingTo = current + 1;
     }
 }

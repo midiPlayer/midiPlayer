@@ -58,5 +58,8 @@
         <file>IOManager.qml</file>
         <file>MusicPlayer.qml</file>
         <file>MusicPlayerWorker.js</file>
+        <file>MonitorControl.qml</file>
+        <file>ExponentialSlider.qml</file>
+        <file>icons/moitor.png</file>
     </qresource>
 </RCC>

@@ -16,7 +16,8 @@
 #include "device.h"
 #include "websocketserver.h"
 
-//#define DISSABLE_ANALYSE
+#define DISSABLE_JACK
+#define DISSABLE_ANALYSE
 
 #define KEY_MIN_LEVEL "minLevel"
 
@@ -42,6 +43,9 @@ JackProcessor::~JackProcessor() {
 
 int JackProcessor::initJack(MainWindow* m) {
 
+#ifdef DISSABLE_JACK
+    return -1;
+#endif
     //aubio
     smpl = new_fvec(hop_size);
     ibuf = new jack_sample_t[1025];

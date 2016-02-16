@@ -9,6 +9,7 @@
 class Trigger : public QObject, public WebSocketServerProvider, public Serializable
 {
 Q_OBJECT
+
 public:
     Trigger(WebSocketServer *ws, JackProcessor *jackP, QJsonObject serialized = QJsonObject());
     enum TriggerType{BEAT,TIMER,ONSET};

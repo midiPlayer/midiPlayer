@@ -22,6 +22,7 @@
 #include <QSettings>
 #include "diascene.h"
 #include "fileioprovider.h"
+#include "monitorio.h"
 class MainWindow : public QObject
 {
     Q_OBJECT
@@ -62,6 +63,8 @@ private:
 
     QSharedPointer<DiaScene> mainScene;
     FileIOProvider filieIoProv;
+
+    MonitorIO monitorIO;
 };
 
 #endif // MAINWINDOW_H

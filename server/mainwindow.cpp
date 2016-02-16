@@ -28,7 +28,8 @@ MainWindow::MainWindow() :
     timer(this),getChangesRunning(false), sceneBuilder(&wss,&availableDevices,&newAvailableDevices,&jackProcessor),
     myBeamerDeviceProvider(&wss,&availableDevices),
     beamerShutterSceneManager(&myBeamerDeviceProvider,&wss,&jackProcessor),  olaDeviceProvider(),
-    remoteBeat(&wss,&jackProcessor),mainScene(),filieIoProv(&wss,&mainScene,this)
+    remoteBeat(&wss,&jackProcessor),mainScene(),filieIoProv(&wss,&mainScene,this),
+    monitorIO(&wss)
 {
     //availableDevices = Device::loadDevicesFromXml("~/devices.xml");
     //needed for settings
@@ -125,7 +126,7 @@ void MainWindow::loadScenes(QJsonObject data)
     wss.disconnectAllClients();
 
     timer.stop();
-    mainScene = QSharedPointer<DiaScene>(new DiaScene(availableDevices,&wss,&jackProcessor,&sceneBuilder, "main"));
+    mainScene = QSharedPointer<DiaScene>(new DiaScene(availableDevices,&wss,&jackProcessor,&sceneBuilder,&monitorIO, "main"));
     mainScene.data()->loadSerialized(data);
     mainScene.data()->start();
     usedLamps = mainScene.data()->getUsedLights();

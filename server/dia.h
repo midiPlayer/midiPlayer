@@ -6,12 +6,13 @@
 #include "scene.h"
 #include "scenebuilder.h"
 #include "websocketserverprovider.h"
+#include "diascenemonitorcontrol.h"
 
 class Dia : public WebSocketServerProvider
 {
 public:
-    Dia(QJsonObject serialized, SceneBuilder *builder, WebSocketServer *wss);
-    Dia(QSharedPointer<Scene> sceneP, QString nameP, QString descP, float fadeInDurationP, WebSocketServer *wss);
+    Dia(QJsonObject serialized, SceneBuilder *builder, WebSocketServer *wss, JackProcessor *jackP,MonitorIO *monitorP);
+    Dia(QSharedPointer<Scene> sceneP, QString nameP, QString descP, float fadeInDurationP, WebSocketServer *wss, JackProcessor *jackP, MonitorIO *monitorP);
     QSharedPointer<Scene> scene;
     QString name;
     QString desc;
@@ -22,6 +23,11 @@ public:
     void clientUnregistered(QJsonObject msg, int id);
     void clientMessage(QJsonObject msg, int id);
     QString getRequestType();
+
+    void start();
+    void stop();
+
+    DiaSceneMonitorControl monitorControl;
 };
 
 #endif // DIA_H

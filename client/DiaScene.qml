@@ -6,6 +6,7 @@ Item{
     id:diaScene
     Component{
         id:diaListDelegate
+
         Rectangle {
             color:"#000000ee"
             width:parent.parent.width;
@@ -116,6 +117,7 @@ Item{
                         property int requestId: -1
                         property int id;
                         property int index;
+                        property int monitorReqId : -1;
                         Item{
                             Layout.fillWidth: true;
                             Layout.preferredHeight: nameLabel.height + 5
@@ -139,6 +141,26 @@ Item{
                                 diaWSC.send = JSON.stringify(msg);
                             }
                         }
+
+                        Item {
+                            id: monitorButton
+                            Layout.fillHeight: true;
+                            Layout.preferredWidth: height;
+
+                            Image{
+                                source: "icons/moitor.png"
+                                anchors.fill: parent
+                                smooth: true
+                                fillMode: Image.PreserveAspectFit
+                            }
+                          MouseArea{
+                                anchors.fill: parent
+                                onClicked:{
+                                    stackView.push(Qt.resolvedUrl("MonitorControl.qml"),{"requestId":diaLayout.monitorReqId} );
+                                }
+                            }
+                        }
+
                         Item {
                             id: editSceneBtn
                             Layout.fillHeight: true;
@@ -201,35 +223,25 @@ Item{
                                 text: qsTr("Fade-in duration")
                             }
 
-                            Slider{
+                            ExponentialSlider{
                                 id:fadeDurSlider
-                                minimumValue: 0
-                                maximumValue: Math.log(10 + 1)
                                 Layout.fillWidth: true;
-                                function setDur(dur){
-                                    value = Math.log(dur + 1);
-                                }
-                                property double duration;
+                                maxValue: 10;
 
-                                onValueChanged: {
-                                    duration =(Math.exp(value)-1);
+                                onReadValueActiveChanged: {
+                                    var msg = {"fadeInDur":readValue};
+                                    diaWSC.send = JSON.stringify(msg);
                                 }
-
-                                onDurationChanged: {
-                                    if(pressed){
-                                        var msg = {"fadeInDur":duration};
-                                        diaWSC.send = JSON.stringify(msg);
-                                    }
-                                }
-
                             }
+
+
 
                             Text{
                                 id: durString
                                 Layout.preferredWidth: 100
                                 font.pointSize: 12
                                 color:"#369cb6"
-                                text: qsTr("%L1 s").arg(fadeDurSlider.duration);
+                                text: qsTr("%L1 s").arg(fadeDurSlider.readValue);
                             }
 
 
@@ -303,6 +315,7 @@ Item{
 
                         }
                     }
+
                     WebSocketConnector{
                         id: diaWSC
                         onMessage:{
@@ -313,11 +326,13 @@ Item{
                             if(msg.name !== undefined)
                                 nameEdit.text = msg.name;
                             if(msg.fadeInDur !== undefined)
-                                fadeDurSlider.setDur(msg.fadeInDur)
+                                fadeDurSlider.setValue = msg.fadeInDur;
                             if(msg.requestId !== undefined)
                                 diaLayout.requestId = msg.requestId;
                             if(msg.requestType !== undefined)
                                 diaLayout.requestType = msg.requestType;
+                            if(msg.hasOwnProperty("monitorReqId"))
+                                diaLayout.monitorReqId = msg.monitorReqId;
                         }
                     }
                 }

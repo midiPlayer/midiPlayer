@@ -7,6 +7,7 @@
 #include <QTime>
 #include "jackprocessor.h"
 #include "dia.h"
+#include "monitorio.h"
 
 class DiaScene : public Scene, public WebSocketServerProvider
 {
@@ -14,7 +15,7 @@ Q_OBJECT
 
 public:
     DiaScene(QList<Device> avDev, WebSocketServer *ws, JackProcessor *jackP, SceneBuilder *builder,
-             QString name, QJsonObject serialized = QJsonObject());
+             MonitorIO* monitorIoP, QString name, QJsonObject serialized = QJsonObject());
     QList<Device> getLights();
     QList<Device> getUsedLights();
     void clientRegistered(QJsonObject msg, int id);
@@ -52,6 +53,8 @@ private:
     void next();
 
     void setNextOnMusic(bool enable);
+
+    MonitorIO *monitorIo;
 
 };
 
