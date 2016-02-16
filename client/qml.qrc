@@ -61,5 +61,6 @@
         <file>MonitorControl.qml</file>
         <file>ExponentialSlider.qml</file>
         <file>icons/moitor.png</file>
+        <file>DiaListDelegate.qml</file>
     </qresource>
 </RCC>

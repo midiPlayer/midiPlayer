@@ -4,59 +4,17 @@ import WebSocketConnector 1.1
 import QtQuick.Controls 1.2
 Item{
     id:diaScene
-    Component{
-        id:diaListDelegate
 
-        Rectangle {
-            color:"#000000ee"
-            width:parent.parent.width;
-            height:text.height + 20
-            MouseArea{
-                anchors.fill: parent;
-                property var pressedTstmp : -1;
-                onPressed: {
-                    pressedTstmp = new Date().getTime();
-                }
-
-                onReleased: {
-                    if(pressedTstmp == -1)
-                        return;
-                    var dur = new Date().getTime() - pressedTstmp;
-                    if(dur > 500){ //long click
-                        diaList.currentIndex = index;
-                        var msg = {"currentScene":id};
-                        wsc.send = JSON.stringify(msg);
-                        diaList.currentIndex = index;
-                    }
-                    else{//short click
-                        diaWSC.requestId = requestId;
-                        diaLayout.visible=true;
-                        diaLayout.id = id;
-                        diaLayout.index = index;
-                    }
-                }
-            }
-
-            RowLayout{
-                anchors.fill: parent;
-
-                Text{
-                    anchors.centerIn: parent
-                    id:text
-                    text:name;
-                    color:"#369cb6"
-                    font.pointSize: 15;
-                }
-            }
-        }
-    }
-
-    RowLayout{
+    SplitView{
         anchors.fill: parent;
-        spacing: 30
+        handleDelegate: Rectangle{
+            color:"#000000";
+            width:1;
+        }
+
         Item{
             Layout.fillHeight: true;
-            Layout.preferredWidth: parent.width*0.3;
+            Layout.minimumWidth: parent.width*0.3;
         ColumnLayout{
             anchors.fill: parent
         Item{
@@ -71,7 +29,7 @@ Item{
                 onCountChanged: setCurentIndex();
 
 
-                delegate:diaListDelegate
+                delegate: DiaListDelegate{}
                 highlight: Rectangle { color: "#33369cb6";  }
             }
         }
@@ -102,6 +60,7 @@ Item{
         }
         }
         Item{
+            Layout.leftMargin: 10;
             Layout.fillWidth: true;
             Layout.fillHeight: true;
             ColumnLayout{
