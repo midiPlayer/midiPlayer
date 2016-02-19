@@ -29,8 +29,34 @@ Item{
                 onCountChanged: setCurentIndex();
 
 
-                delegate: DiaListDelegate{}
-                highlight: Rectangle { color: "#33369cb6";  }
+                delegate: DiaListDelegate{
+                    scene: diaScene;
+                    listView: diaList;
+                    onOrderChanged:{
+                        console.log("order changed");
+                        var msg = {"orderChanged":[]};
+                        for(var i = 0;i < diaListModel.count; i++){
+                            msg.orderChanged.push(diaListModel.get(i).id);
+                        }
+                        wsc.send = JSON.stringify(msg);
+                    }
+                }
+                highlight: Rectangle {
+                    id:highlightDelegate
+                    color: "#33369cb6";
+                    opacity: 1
+                    states: [
+                        State {
+                            when: diaList.currentItem.dragging;
+                            PropertyChanges {
+                                target: highlightDelegate
+                                opacity:0
+                            }
+                    }]
+                    transitions: Transition {
+                            PropertyAnimation { properties: "opacity"; easing.type: Easing.InOutQuad }
+                    }
+                }
             }
         }
         Item{
@@ -368,6 +394,7 @@ Item{
         id: wsc
         requestType: "diaScene"
         onMessage: {
+            console.log(JSON.stringify(msg));
             if(msg.resetScene !== undefined)
                 resetBtn.triggered();
             if(msg.currentScene !== undefined){
@@ -378,6 +405,10 @@ Item{
                 diaLayout.visible=false;
                 importer.sendMessage({"msg":msg,"listModel":diaListModel,"diaScene":diaScene});
             }
+            if(msg.hasOwnProperty("orderChanged")){
+                importer.sendMessage({"msg":msg,"listModel":diaListModel,"diaScene":diaScene});
+            }
+
             if(msg.hasOwnProperty("musicNotification")){
                 nextWithMusic.checked = msg.musicNotification;
             }

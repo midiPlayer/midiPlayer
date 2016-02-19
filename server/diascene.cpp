@@ -6,7 +6,7 @@ DiaScene::DiaScene(QList<Device> avDev, WebSocketServer *ws,
                    JackProcessor *jackP, SceneBuilder *builderP, MonitorIO* monitorIoP, QString name, QJsonObject serialized):
                 Scene(name,serialized),WebSocketServerProvider(ws),availableDevices(avDev),
                 current(-1),fadingTo(-1),fadeTimer(),fusion("fusion"),wss(ws),builder(builderP),
-                jack(jackP), monitorIo(monitorIoP)
+                jack(jackP), monitorIo(monitorIoP), sceneIdCountr(0)
 {
     ws->registerProvider(this);
     connect(jack,SIGNAL(musicNotification()),this,SLOT(music()));
@@ -17,14 +17,14 @@ QList<Device> DiaScene::getLights()
     fusion.reset();
 
     if(current != -1)
-        fusion.import(scenes.at(current).data()->scene.data());
+        fusion.import(scenes.value(current).data()->scene.data());
     if(fadingTo != -1){
-        QSharedPointer<Dia> fadingToDia  =scenes.at(fadingTo);
+        QSharedPointer<Dia> fadingToDia  =scenes.value(fadingTo);
         float percentage = fadeTimer.elapsed()/(fadingToDia.data()->fadeInDuration*1000);
         if(percentage> 1){
             percentage = 1;
             if(current != -1)
-                scenes.at(current).data()->stop();
+                scenes.value(current).data()->stop();
             current = fadingTo;
             fadingTo = -1;
         }
@@ -53,12 +53,12 @@ void DiaScene::clientMessage(QJsonObject msg, int id)
 {
     if(msg.contains("resetScene")){
         if(current != -1){
-            scenes.at(current).data()->stop();
-            scenes.at(current).data()->start();
+            scenes.value(order.at(current)).data()->stop();
+            scenes.value(order.at(current)).data()->start();
         }
         if(fadingTo != -1){
-            scenes.at(fadingTo).data()->stop();
-            scenes.at(fadingTo).data()->start();
+            scenes.value(order.at(fadingTo)).data()->stop();
+            scenes.value(order.at(fadingTo)).data()->start();
         }
         sendMsgButNotTo(msg,id,false);
     }
@@ -68,21 +68,22 @@ void DiaScene::clientMessage(QJsonObject msg, int id)
     }
     if(msg.contains("currentScene")){
         int newId = msg.value("currentScene").toInt(-1);
-        if(newId != -1 && newId < scenes.length()){
+        if(newId != -1 && newId < scenes.count()){
+            newId = order.indexOf(newId);
             fadeTimer.restart();
             if(fadingTo != -1)
-                scenes.at(fadingTo).data()->stop();
-            scenes.at(newId).data()->start();
+                scenes.value(order.at(fadingTo)).data()->stop();
+            scenes.value(order.at(newId)).data()->start();
             fadingTo = newId;
         }
         sendMsgButNotTo(getState(false),id,false);
     }
     if(msg.contains("prevScene")){
-        if(scenes.length() != 0 && current > 0){
+        if(scenes.count() != 0 && current > 0){
             fadeTimer.restart();
             if(fadingTo != -1)
-                scenes.at(fadingTo).data()->stop();
-            scenes.at(current-1).data()->start();
+                scenes.value(order.at(fadingTo)).data()->stop();
+            scenes.value(order.at(current-1)).data()->start();
             fadingTo = current - 1;
         }
         sendMsg(getState(false),false);
@@ -100,20 +101,56 @@ void DiaScene::clientMessage(QJsonObject msg, int id)
     if(msg.contains("deleteScene")){
         int id = msg.value("deleteScene").toInt(-1);
         if(current = id){
-            scenes.at(current).data()->stop();
+            scenes.value(order.at(current)).data()->stop();
             current = fadingTo == -1 ? -1 : fadingTo;
         }
         if(fadingTo = id){
-            scenes.at(fadingTo).data()->stop();
+            scenes.value(order.at(fadingTo)).data()->stop();
             fadingTo = -1;
         }
-        if(id < scenes.length())
-            scenes.removeAt(id);
+        if(id < scenes.count()){
+            scenes.remove(id);
+            order.removeAll(id);
+        }
         sendMsg(getState(true),false);
     }
     if(msg.contains("musicNotification")){
         setNextOnMusic(msg.value("musicNotification").toBool(false));
         sendMsgButNotTo(msg,id,false);
+    }
+
+    if(msg.contains("orderChanged")){
+        QJsonArray readOrder = msg.value("orderChanged").toArray();
+        if(readOrder.size() != order.size()){
+            qDebug() << "ERROR: incomplete order!";
+            return;
+        }
+        QList<int> newOrder;
+        int newCurrent = current;
+        int newFadingTo = fadingTo;
+        int ctr = 0;
+        foreach (QJsonValue val, readOrder) {
+            int i = val.toInt(-1);
+            qDebug() << "old current:" << current << "  --> index:" << order.value(current);
+            if(i == -1 || i >= order.size()){
+                qDebug() << "ERROR: invalid item!";
+                return;
+            }
+            if(current != -1 && order.value(current) == i)
+                newCurrent = ctr;
+            if(fadingTo != -1 && order.value(fadingTo) == i)
+                newFadingTo = ctr;
+            newOrder.append(i);
+            ctr++;
+        }
+
+        order = newOrder;
+        current = newCurrent;
+        fadingTo = newFadingTo;
+        sendMsgButNotTo(msg,id,false);
+
+        qDebug() << "new Current:" << current;
+        qDebug() << "current id:" << order.value(current);
     }
 }
 
@@ -126,20 +163,20 @@ QString DiaScene::getRequestType()
 void DiaScene::stop()
 {
     if(current != -1)
-        scenes.at(current).data()->stop();
+        scenes.value(order.at(current)).data()->stop();
     if(fadingTo != -1)
-        scenes.at(fadingTo).data()->stop();
+        scenes.value(order.at(fadingTo)).data()->stop();
 }
 
 void DiaScene::start()
 {
     if(current != -1)
-        scenes.at(current).data()->start();
+        scenes.value(order.at(current)).data()->start();
     if(fadingTo != -1)
-        scenes.at(fadingTo).data()->start();
-    if(current == -1 && fadingTo == -1 && scenes.length() > 0){
+        scenes.value(order.at(fadingTo)).data()->start();
+    if(current == -1 && fadingTo == -1 && scenes.count() > 0){
         current = 0;
-        scenes.at(current).data()->start();
+        scenes.value(order.at(current)).data()->start();
     }
 }
 
@@ -172,7 +209,10 @@ void DiaScene::addScene(QSharedPointer<Scene> scene,QString name,QString desc,fl
 
 void DiaScene::addScene(QSharedPointer<Dia> dia)
 {
-    scenes.append(dia);
+
+    scenes.insert(sceneIdCountr,dia);
+    order.append(sceneIdCountr);
+    sceneIdCountr++;
     sendMsg(getState(true),false);
 }
 
@@ -205,27 +245,28 @@ QJsonObject DiaScene::getState(bool addScenes)
     QJsonObject msg;
     if(addScenes){
         QJsonArray dias;
-        for (int i = 0; i < scenes.length();i++) {
-            QSharedPointer<Dia> dia = scenes.at(i);
+        for (int i = 0; i < order.length();i++) {
+            QSharedPointer<Dia> dia = scenes.value(order.at(i));
             QJsonObject diaObj;
-            diaObj.insert("id",i);
+            diaObj.insert("id",order.at(i));
             diaObj.insert("requestId",dia.data()->providerId);
             diaObj.insert("name",dia.data()->name);
             dias.append(diaObj);
         }
         msg.insert("scenes",dias);
     }
-    msg.insert("currentScene",fadingTo == -1 ? current : fadingTo);
+    if(current != -1)
+        msg.insert("currentScene",order.at((fadingTo == -1 ? current : fadingTo)));
     return msg;
 }
 
 void DiaScene::next()
 {
-    if(scenes.length() != 0 && current < scenes.length() -1){
+    if(order.length() != 0 && current < order.length() -1){
         fadeTimer.restart();
         if(fadingTo != -1)
-            scenes.at(fadingTo).data()->stop();
-        scenes.at(current+1).data()->start();
+            scenes.value(order.at(fadingTo)).data()->stop();
+        scenes.value(order.at(current+1)).data()->start();
         fadingTo = current + 1;
     }
 }

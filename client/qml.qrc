@@ -62,5 +62,6 @@
         <file>ExponentialSlider.qml</file>
         <file>icons/moitor.png</file>
         <file>DiaListDelegate.qml</file>
+        <file>DragRect.qml</file>
     </qresource>
 </RCC>

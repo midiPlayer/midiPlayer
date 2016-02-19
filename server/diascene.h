@@ -38,7 +38,8 @@ private:
 
     QJsonObject getState(bool addScenes);
 
-    QList<QSharedPointer<Dia> > scenes;
+    QMap<int, QSharedPointer<Dia> > scenes;
+    QList<int> order;
     int current;
     int fadingTo;
 
@@ -55,6 +56,8 @@ private:
     void setNextOnMusic(bool enable);
 
     MonitorIO *monitorIo;
+
+    int sceneIdCountr;
 
 };
 

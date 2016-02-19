@@ -12,19 +12,19 @@ WorkerScript.onMessage = function(params) {
         params.listModel.sync();
     }
 
-    /*if(msg.orderChanged !== undefined){
+    if(msg.hasOwnProperty("orderChanged")){
         for(var i = 0; i<msg.orderChanged.length;i++){
             var id = msg.orderChanged[i];
-            if(params.listModel.get(i).modelData.sceneId !== id){
+            if(params.listModel.get(i).id !== id){
                 for(var y = i;y < params.listModel.count; y++){
-                    if(params.listModel.get(y).modelData.sceneId === id){
+                    if(params.listModel.get(y).id === id){
                         params.listModel.move(y,i,1);
                     }
                 }
             }
         }
         params.listModel.sync();
-    }*/
+    }
     if(msg.deleteScene !== undefined){
            params.listModel.remove(msg.deleteScene);
         params.listModel.sync();
