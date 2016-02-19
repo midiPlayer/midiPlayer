@@ -85,7 +85,14 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
         if(effects.contains(sceneId)){
             bool muteState = muteChange.value("state").toBool(false);
             DiscoSubScene *sub = effects.value(sceneId).data();
+            if(isRunning && !(solo && soloScene.data() == sub)){
+                if(muteState)
+                    sub->scene.data()->stop();
+                else if(!muteState && sub->mute)
+                    sub->scene.data()->start();
+            }
             sub->mute = muteState;
+
         }
         sendMsgButNotTo(msg,id,true);
     }
@@ -94,12 +101,17 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
         if(soloChange.value("state").toBool()){
             int sceneId = soloChange.value("sceneId").toInt(-1);
             if(effects.contains(sceneId)){
-                soloScene = effects.value(sceneId);
+                if(effects.value(sceneId).data()->mute && (soloScene != effects.value(sceneId) || !solo) && isRunning)
+                    effects.value(sceneId).data()->scene.data()->start();
                 solo = true;
+                soloScene = effects.value(sceneId);
             }
         }
-        else
+        else{
+            if(soloScene.data()->mute && isRunning)
+                soloScene.data()->scene.data()->stop();
             solo = false;
+        }
         sendMsgButNotTo(msg,id,true);
     }
     if(msg.contains("fusionTypeChanged")){
@@ -159,8 +171,11 @@ void DiscoScene::stop()
 
 void DiscoScene::start()
 {
+    solo = false;
     isRunning = true;
     foreach (QSharedPointer<DiscoSubScene> dss, effects.values()) {
+        if(dss.data()->mute)
+            continue;
         dss.data()->scene.data()->start();
     }
 }

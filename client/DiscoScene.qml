@@ -294,6 +294,9 @@ Item {
                                 filename = "FlashScene.qml";
                             if(modelData.requestType === "colorScene")
                                 filename = "ColorScene.qml";
+                            if(modelData.requestType === "musicScene")
+                                filename = "MusicScene.qml";
+
                             if(modelData.requestType === "colorWaveScene")
                                 filename = "ColorWaveScene.qml";
                             if(modelData.requestType === "colorWheel")
@@ -334,7 +337,6 @@ Item {
                 property int dragStart: 0
                 property int jumpedItems: 0
                 onYChanged: {
-                    console.log(y);
                     if(!dragRect.Drag.active)
                         return;
                     var nextHeight = 100000;

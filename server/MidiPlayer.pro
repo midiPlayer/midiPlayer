@@ -52,7 +52,8 @@ SOURCES += main.cpp\
     musicplayer.cpp \
     whitedevice.cpp \
     monitorio.cpp \
-    diascenemonitorcontrol.cpp
+    diascenemonitorcontrol.cpp \
+    musicscene.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
@@ -92,7 +93,8 @@ HEADERS  += mainwindow.h\
     musicplayer.h \
     whitedevice.h \
     monitorio.h \
-    diascenemonitorcontrol.h
+    diascenemonitorcontrol.h \
+    musicscene.h
 
 FORMS    +=
 

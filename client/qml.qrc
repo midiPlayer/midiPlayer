@@ -63,5 +63,6 @@
         <file>icons/moitor.png</file>
         <file>DiaListDelegate.qml</file>
         <file>DragRect.qml</file>
+        <file>MusicScene.qml</file>
     </qresource>
 </RCC>

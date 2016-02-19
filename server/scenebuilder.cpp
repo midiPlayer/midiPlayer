@@ -7,6 +7,7 @@
 #include "colorwavescene.h"
 #include "beatscene2.h"
 #include "keyframescene.h"
+#include "musicscene.h"
 SceneBuilder::SceneBuilder(WebSocketServer *wssP, QList<Device> *avDev, QList<QSharedPointer<Device> > *newAvailableDevicesP, JackProcessor *jackP):wss(wssP),availableDevices(avDev),
     jack(jackP),newAvailableDevices(newAvailableDevicesP)
 {
@@ -38,6 +39,9 @@ QSharedPointer<Scene> SceneBuilder::build(QString sceneType, QString name,QJsonO
     }
     else if(sceneType == KeyFrameScene::getSceneTypeStringStaticaly()){
         return QSharedPointer<Scene>(new KeyFrameScene(*newAvailableDevices,name,wss,serialized));
+    }
+    else if(sceneType == MusicScene::getSceneTypeStringStaticaly()){
+        return QSharedPointer<Scene>(new MusicScene(name,wss,serialized));
     }
     return QSharedPointer<Scene>();
 }
