@@ -71,6 +71,8 @@ QMap<QString, QSharedPointer<DeviceState> > KeyFrameScene::getDeviceState()
         }
     }
 
+    ret.insert(musicPlayer.getDeviceId(),musicPlayer.createEmptyState());
+
     return ret;
 }
 

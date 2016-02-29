@@ -7,7 +7,7 @@
 #include "keyframe.h"
 #include "websocketserverprovider.h"
 #include <QSharedPointer>
-#include "musicplayer.h"
+#include "musicdevice.h"
 #include "filtervirtualdevicemanager.h"
 
 class KeyFrameScene : public Scene, public WebSocketServerProvider
@@ -41,7 +41,7 @@ private:
     QJsonObject getLampJson(QSharedPointer<Device> dev);
     WebSocketServer* wss;
     void clear(QString devId);
-    MusicPlayer musicPlayer;
+    MusicDevice musicPlayer;
     FilterVirtualDeviceManager filterVDevManager;
 
 };

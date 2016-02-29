@@ -45,7 +45,6 @@ SOURCES += main.cpp\
     keyframe.cpp \
     stopwatch.cpp \
     fileioprovider.cpp \
-    musicplayer.cpp \
     whitedevice.cpp \
     monitorio.cpp \
     diascenemonitorcontrol.cpp \
@@ -93,7 +92,6 @@ HEADERS  += mainwindow.h\
     keyframe.h \
     stopwatch.h \
     fileioprovider.h \
-    musicplayer.h \
     whitedevice.h \
     monitorio.h \
     diascenemonitorcontrol.h \
