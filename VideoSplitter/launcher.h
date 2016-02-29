@@ -11,7 +11,7 @@ class Launcher : public QObject
 Q_OBJECT
 
 public:
-    Launcher(int numImages, int numThreads);
+    Launcher(int numImages, int numThreads, QString workerCommand);
 
     QList<QSharedPointer<myProcess> > process;
     void startProcess(int i, int iPerThread);
@@ -22,6 +22,7 @@ public slots:
 private:
     int runningProcs;
     QTimer timer;
+    QString workCmd;
 };
 
 #endif // LAUNCHER_H

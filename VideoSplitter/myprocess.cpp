@@ -1,8 +1,8 @@
 #include "myprocess.h"
 #include <QDebug>
 
-myProcess::myProcess(int firstImageP, int numImagesP) : QObject(),firstImage(firstImageP),
-    numImages(numImagesP),worker(this),progress(0.0)
+myProcess::myProcess(int firstImageP, int numImagesP, QString processCmd) : QObject(),firstImage(firstImageP),
+    numImages(numImagesP),worker(this),progress(0.0), procCmd(processCmd)
 {
     connect(&worker,SIGNAL(finished(int)),this,SLOT(workerFinished(int)));
     connect(&worker,SIGNAL(readyRead()),this,SLOT(readWorker()));
@@ -12,10 +12,9 @@ myProcess::myProcess(int firstImageP, int numImagesP) : QObject(),firstImage(fir
 void myProcess::start()
 {
     qDebug() << "process started: first Image:"<<firstImage;
-    QString program = "ls";
     QStringList arguments;
     arguments << "" + firstImage << "" + numImages;
-    worker.start(program, arguments);
+    worker.start(procCmd, arguments);
 }
 
 float myProcess::getProgress()
