@@ -6,27 +6,28 @@
 #include <QList>
 #include <QJsonObject>
 #include <QSharedPointer>
+#include "channeldevicestate.h"
+
 class FusionScene : public Scene
 {
 public:
     FusionScene(QString name,QJsonObject serialized = QJsonObject());
-    void fusion(QSharedPointer<Scene> with, DeviceState::FusionType fusionType, float opacity);
-    void fusion(Scene *with, DeviceState::FusionType fusionType, float opacity);
-    void fusion(QList<Device> with, DeviceState::FusionType fusionType, float opacity);
-    QList<Device> passiveFusion(QList<Device> with, DeviceState::FusionType fusionType, float opacity);
+    void fusion(QSharedPointer<Scene> with, ChannelDeviceState::FusionType fusionType, float opacity);
+    void fusion(Scene *with, ChannelDeviceState::FusionType fusionType, float opacity);
+    void fusion(QMap<QString, QSharedPointer<DeviceState> > with, ChannelDeviceState::FusionType fusionType, float opacity);
+    QMap<QString, QSharedPointer<DeviceState> > passiveFusion(QMap<QString, QSharedPointer<DeviceState> > with, ChannelDeviceState::FusionType fusionType, float opacity);
     void reset();
     void import(Scene* import);
-    void import(QList<Device> ds);
-    void import(QSharedPointer<Scene> import);
+    void import(QSharedPointer<Scene> importScene);
+    void import(QMap<QString, QSharedPointer<DeviceState> > imp);
 
-    QList<Device> getLights();
-    QList<Device> getUsedLights();
+    QMap<QString,QSharedPointer<DeviceState> > getDeviceState();
 
     QJsonObject serialize();
     QString getSceneTypeString();
 
 private:
-    QList<Device> devices;
+    QMap<QString, QSharedPointer<DeviceState> > deviceStates;
 };
 
 #endif // FUSIONSCENE_H

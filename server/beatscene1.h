@@ -10,14 +10,18 @@
 #include "trigger.h"
 #include "fusionscene.h"
 #include "colorbutton.h"
+#include "filtervirtualdevicemanager.h"
 
 class BeatScene1 : public Scene, public WebSocketServerProvider
 {
     Q_OBJECT
+
 public:
-    BeatScene1(QList<Device>avDev, JackProcessor* p, WebSocketServer* ws,QString name,QJsonObject serialized = QJsonObject());
+    BeatScene1(VirtualDeviceManager *manager, JackProcessor* p, WebSocketServer* ws,QString name,QJsonObject serialized = QJsonObject());
     QList<Device>getLights();
     QList<Device> getUsedLights();
+    QMap<QString,QSharedPointer<DeviceState> > getDeviceState();
+
     void stop();
     void start();
     void clientRegistered(QJsonObject msg,int clientIdCounter);
@@ -28,14 +32,10 @@ public:
     QString getSceneTypeString();
     static QString getSceneTypeStringStaticaly();
 public slots:
-    void changeForeground();
     void changeBackground();
 private:
-    QList<Device> availableDevices;
     QColor c;
     QColor highlighted;
-    QList<Device> usedDevices;
-    Trigger foregroundTrigger;
     Trigger backgroundTrigger;
     int smoothDuration;
     QTime smoothTimer;
@@ -43,6 +43,7 @@ private:
     FusionScene next;
     void generateNextScene();
     ColorButton colorButton;
+    FilterVirtualDeviceManager filterDeviceManager;
 
 };
 

@@ -1,7 +1,7 @@
 #ifndef KEYFRAME_H
 #define KEYFRAME_H
 
-#include "devicestate.h"
+#include "channeldevicestate.h"
 #include "serializable.h"
 #include "websocketserverprovider.h"
 #include <QObject>
@@ -12,11 +12,11 @@ class Keyframe  : public QObject, public Serializable, public WebSocketServerPro
 Q_OBJECT
 
 public:
-    Keyframe(double timeP, DeviceState stateP, WebSocketServer *ws);
-    Keyframe(QJsonObject serialized, WebSocketServer *ws);
-    DeviceState state;
+    Keyframe(double timeP, ChannelDeviceState stateP, WebSocketServer *ws);
+    Keyframe(QJsonObject serialized, WebSocketServer *ws, VirtualDeviceManager *manager);
+    ChannelDeviceState state;
     double time;
-    DeviceState fusionWith(QSharedPointer <Keyframe> later, double now);
+    ChannelDeviceState fusionWith(QSharedPointer <Keyframe> later, double now);
     QJsonObject serialize();
 
     void clientRegistered(QJsonObject msg, int id);

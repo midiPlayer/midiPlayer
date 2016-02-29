@@ -2,9 +2,9 @@
 #include "websocketserver.h"
 #include <QJsonArray>
 #define KEY_DIAS "dias"
-DiaScene::DiaScene(QList<Device> avDev, WebSocketServer *ws,
+DiaScene::DiaScene(WebSocketServer *ws,
                    JackProcessor *jackP, SceneBuilder *builderP, MonitorIO* monitorIoP, QString name, QJsonObject serialized):
-                Scene(name,serialized),WebSocketServerProvider(ws),availableDevices(avDev),
+                Scene(name,serialized),WebSocketServerProvider(ws),
                 current(-1),fadingTo(-1),fadeTimer(),fusion("fusion"),wss(ws),builder(builderP),
                 jack(jackP), monitorIo(monitorIoP), sceneIdCountr(0)
 {
@@ -12,7 +12,8 @@ DiaScene::DiaScene(QList<Device> avDev, WebSocketServer *ws,
     connect(jack,SIGNAL(musicNotification()),this,SLOT(music()));
 }
 
-QList<Device> DiaScene::getLights()
+
+QMap<QString, QSharedPointer<DeviceState> > DiaScene::getDeviceState()
 {
     fusion.reset();
 
@@ -28,15 +29,9 @@ QList<Device> DiaScene::getLights()
             current = fadingTo;
             fadingTo = -1;
         }
-        fusion.fusion(fadingToDia.data()->scene,DeviceState::AV,percentage);
+        fusion.fusion(fadingToDia.data()->scene,ChannelDeviceState::AV,percentage);
     }
-
-    return fusion.getLights();
-}
-
-QList<Device> DiaScene::getUsedLights()
-{
-    return availableDevices;
+    return fusion.getDeviceState();
 }
 
 void DiaScene::clientRegistered(QJsonObject msg, int id)

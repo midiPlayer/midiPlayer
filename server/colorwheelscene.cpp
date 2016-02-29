@@ -3,67 +3,30 @@
 #include <QColor>
 #include <algorithm>
 #include "math.h"
+#include "channeldevice.h"
 
 #define KEY_TRIGGER "trigger"
 #define KEY_DURATION "duration"
 #define KEY_BASIC_SPEED "basicSpeed"
 #define KEY_BUMP_SPEED "bumpSpeed"
 
-ColorWheelScene::ColorWheelScene(QList<Device> avDev, WebSocketServer *ws, JackProcessor *jackP, QString name, QJsonObject serialized) :
-    Scene(name,serialized),WebSocketServerProvider(ws), stopwatch(),triggerStopwatch(),positionedDevices(),basicSpeed(0.05),anchor(0.0f),
-    trigger(ws,jackP),duration(0.6),bumpSpeed(0.5),usedDevices()
+ColorWheelScene::ColorWheelScene(VirtualDeviceManager *manager, WebSocketServer *ws, JackProcessor *jackP, QString name, QJsonObject serialized) :
+    Scene(name,serialized),WebSocketServerProvider(ws),filterDevManager(manager), stopwatch(),triggerStopwatch(),positionedDevices(),basicSpeed(0.05),anchor(0.0f),
+    trigger(ws,jackP),duration(0.6),bumpSpeed(0.5)
 {
     ws->registerProvider(this);
     trigger.triggerConfig.insert(Trigger::BEAT);
     connect(&trigger,SIGNAL(trigger()),(ColorWheelScene*)this,SLOT(triggered()));
     stopwatch.start();
     triggerStopwatch.start();
-    foreach (Device dev, avDev) {
-        if(dev.getType() == Device::RGB || dev.getType() == Device::RGBW)
-        usedDevices.append(dev);
-    }
 
-    QVector3D middle = QVector3D(0,0,0);
-    int  div = 0;
-    foreach (Device d, usedDevices) {
-        middle += d.getPosition();
-        div++;
-    }
-    if(div != 0){
-        middle /= div;
-        qDebug() << "middle:" << middle;
-        QVector3D reference(0,0,0);
-        QVector3D normal(0,0,0);
-        middle.setZ(0);//2D
-        foreach (Device d, usedDevices) {
-            QVector3D devPos = d.getPosition();
-            devPos.setZ(0);//2D
-            QVector3D toDev = devPos - middle;
-            float angle = 0.0f;
-            if(reference.length() == 0){//make this device as reference
-                reference = toDev;
-                angle = 0.0f;
-                normal = QVector3D::crossProduct(reference,QVector3D(0,0,1));
-            }
-            else{
-                double p = QVector3D::dotProduct(toDev,reference)/(reference.length()*toDev.length());
-                angle = acos(p) / M_PI * 180.0;
-                if(QVector3D::dotProduct(toDev,normal)<0){
-                    angle = 360-angle;
-                }
-                qDebug() << "value:" << p << " a:" << angle;
-            }
+    filterDevManager.addAcceptedType(Device::RGB);
+    filterDevManager.addAcceptedType(Device::RGBW);
+    filterDevManager.addAcceptedType(Device::Beamer);
+    connect(&filterDevManager,SIGNAL(virtualDevicesChanged()),this,SLOT(updateDevices()));
+    updateDevices();
 
-            PositionedDevice posD = {d,angle};
-            positionedDevices.append(posD);
-        }
-    }
-    else{
-        foreach (Device d, usedDevices) {
-            PositionedDevice posD = {d,0.0f};
-            positionedDevices.append(posD);
-        }
-    }
+
 
     if(serialized.length() > 0){
         if(serialized.contains(KEY_TRIGGER))
@@ -77,43 +40,33 @@ ColorWheelScene::ColorWheelScene(QList<Device> avDev, WebSocketServer *ws, JackP
     }
 }
 
-QList<Device> ColorWheelScene::getLights()
+QMap<QString, QSharedPointer<DeviceState> > ColorWheelScene::getDeviceState()
 {
-
     anchor += getDelta();
     while(anchor>1.0)
         anchor-=1.0;
-    //qDebug() << anchor;
 
-
-    //qDebug() << color.red();
-
-    QList<Device> ret;
+    QMap<QString, QSharedPointer<DeviceState> > ret;
     foreach(PositionedDevice posDev, positionedDevices){
         float individualAnchor = anchor+(posDev.angle/360);
         while(individualAnchor > 1.0)
             individualAnchor -= 1.0;
-        Device dev = posDev.d;
+        QSharedPointer<ChannelDeviceState> state = posDev.d.data()->createEmptyState().dynamicCast<ChannelDeviceState>();
         QColor color = normalizeColor(QColor::fromHsvF(individualAnchor,1,1));
-        int lowestChannel = dev.getFirstChannel();
+        int lowestChannel = state.data()->getFirstChannel();
 
-        dev.setChannel(lowestChannel + 0,color.redF());
-        dev.setChannel(lowestChannel + 1,color.greenF());
-        dev.setChannel(lowestChannel + 2,color.blueF());
-        if(dev.getType() == Device::RGBW)
-            dev.setChannel(lowestChannel + 3,0.0);
+        state.data()->setChannel(lowestChannel + 0,color.redF());
+        state.data()->setChannel(lowestChannel + 1,color.greenF());
+        state.data()->setChannel(lowestChannel + 2,color.blueF());
+        if(posDev.d.data()->getType() == Device::RGBW)
+            state.data()->setChannel(lowestChannel + 3,0.0);
 
-        ret.append(dev);
+        ret.insert(posDev.d.data()->getDeviceId(),state);
     }
 
     stopwatch.restart();
 
     return ret;
-}
-
-QList<Device> ColorWheelScene::getUsedLights()
-{
-    return usedDevices;
 }
 
 void ColorWheelScene::clientRegistered(QJsonObject msg, int id)
@@ -181,6 +134,45 @@ void ColorWheelScene::triggered()
 {
     triggerStopwatch.restart();
     //qDebug() << "triggered";
+}
+
+void ColorWheelScene::updateDevices()
+{
+    QVector3D middle = QVector3D(0,0,0);
+    int  div = 0;
+    foreach (QSharedPointer<Device> d, filterDevManager.getDevices().values()) {
+        middle += d.data()->getPosition();
+        div++;
+    }
+    if(div != 0){
+        middle /= div;
+        qDebug() << "middle:" << middle;
+        QVector3D reference(0,0,0);
+        QVector3D normal(0,0,0);
+        middle.setZ(0);//2D
+        foreach (QSharedPointer<Device> d, filterDevManager.getDevices().values()) {
+            QVector3D devPos = d.data()->getPosition();
+            devPos.setZ(0);//2D
+            QVector3D toDev = devPos - middle;
+            float angle = 0.0f;
+            if(reference.length() == 0){//make this device as reference
+                reference = toDev;
+                angle = 0.0f;
+                normal = QVector3D::crossProduct(reference,QVector3D(0,0,1));
+            }
+            else{
+                double p = QVector3D::dotProduct(toDev,reference)/(reference.length()*toDev.length());
+                angle = acos(p) / M_PI * 180.0;
+                if(QVector3D::dotProduct(toDev,normal)<0){
+                    angle = 360-angle;
+                }
+                qDebug() << "value:" << p << " a:" << angle;
+            }
+
+            PositionedDevice posD = {d,angle};
+            positionedDevices.append(posD);
+        }
+    }
 }
 
 /**

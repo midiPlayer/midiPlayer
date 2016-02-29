@@ -1,29 +1,18 @@
 #ifndef DEVICESTATE_H
 #define DEVICESTATE_H
-#include <QMap>
-#include "serializable.h"
-class DeviceState : Serializable
+#include <QSharedPointer>
+
+class Device;
+
+class DeviceState
 {
-
 public:
+    DeviceState();
     enum FusionType { AV,MAX,MAXG,MIN,MING,OVERRIDE};
-    DeviceState(QString devId, QMap<int,float>channels);
-    DeviceState(QString devId);
-    DeviceState(const DeviceState &state);
-    DeviceState(DeviceState *state);
-    DeviceState(QJsonObject serialized);
-    QString deviceId;
-    QMap<int,float> dmxChannels;
-    DeviceState fusionWith(DeviceState upper, FusionType type, float opacity);
-    void setChannel(int channel,float value);
-    float getChannelValue(int channel);
-    QList<int> getChannels() const;
-    int getFirstChannel();
-    QJsonObject serialize();
-    QJsonArray getClientJson();
-    void setClientJson(QJsonArray json);
-
-    void tryImport(DeviceState other);
+    virtual QSharedPointer<DeviceState> fusionWith(QSharedPointer<DeviceState> upper, FusionType type, float opacity) = 0;
+    virtual QSharedPointer<DeviceState> fusionAlone(FusionType type, float opacity) = 0;
+    virtual bool equal(DeviceState *other) = 0;
+    virtual void publish() {};
 };
 
 #endif // DEVICESTATE_H

@@ -3,21 +3,25 @@
 #include "websocketserver.h"
 #include "math.h"
 #include <QColor>
+#include "channeldevicestate.h"
+#include "channeldevice.h"
 
 #define KEY_COLOR "color"
 #define KEY_TRIGGER "trigger"
 #define KEY_SPEED "speed"
 #define KEY_ACTIVE_RADIUS "activeRadius"
 
-ColorWaveScene::ColorWaveScene(QList<Device> avDev, WebSocketServer *ws, JackProcessor *jackP, QString name, QJsonObject serialized):Scene(name,serialized),
-    WebSocketServerProvider(ws),trigger(ws,jackP),usedDevices(),onState(),beatStopwatch(),
+ColorWaveScene::ColorWaveScene(VirtualDeviceManager *manager, WebSocketServer *ws, JackProcessor *jackP, QString name, QJsonObject serialized):Scene(name,serialized),
+    WebSocketServerProvider(ws),filterDeviceManager(manager),trigger(ws,jackP),onState(),beatStopwatch(),
     isRunning(false),activeRadius(10),speed(50),colorButton(ws)
 {
-    foreach (Device dev,avDev) {
-        if(dev.getType() == Device::RGB || dev.getType() == Device::RGBW){
-            usedDevices.append(dev);
-        }
-    }
+
+    filterDeviceManager.addAcceptedType(Device::RGB);
+    filterDeviceManager.addAcceptedType(Device::RGBW);
+    filterDeviceManager.addAcceptedType(Device::Beamer);
+    connect(&filterDeviceManager,SIGNAL(virtualDevicesChanged()),this,SLOT(reinitDevices()));
+    reinitDevices();
+
     connect(&colorButton,SIGNAL(colorChanged()),this,SLOT(reinitColors()));
     if(serialized.length() > 0){
         if(serialized.contains(KEY_TRIGGER))
@@ -37,29 +41,24 @@ ColorWaveScene::ColorWaveScene(QList<Device> avDev, WebSocketServer *ws, JackPro
     reinitColors();
 }
 
-QList<Device> ColorWaveScene::getLights()
+QMap<QString, QSharedPointer<DeviceState> > ColorWaveScene::getDeviceState()
 {
     float radius = beatStopwatch.elapsed()/1000.0 * speed;
-    if(isRunning){
-        QList<Device> ret;
-        float maxDistance = 0.0;
-        foreach(Device dev,onState){
-            float distance = ((center-(dev.getPosition())).length());
-            maxDistance = std::max(distance,maxDistance);
-            float percentage = getPercentageForDistance(distance-radius);
-            dev = dev * percentage;
-            ret.append(dev);
-        }
-        if(radius > maxDistance + 2*activeRadius)//not interessting anymore
-            isRunning = false;
-        return ret;
-    }
-    return usedDevices;
-}
+    if(!isRunning)
+        return QMap<QString, QSharedPointer<DeviceState> >();//empty
 
-QList<Device> ColorWaveScene::getUsedLights()
-{
-    return usedDevices;
+    QMap<QString, QSharedPointer<DeviceState> > ret;
+    float maxDistance = 0.0;
+    foreach(QString devId,onState.keys()){
+        QSharedPointer<ChannelDeviceState> state = onState.value(devId).dynamicCast<ChannelDeviceState>();
+        float distance = ((center-(filterDeviceManager.getDevices().value(devId).data()->getPosition())).length());
+        maxDistance = std::max(distance,maxDistance);
+        float percentage = getPercentageForDistance(distance-radius);
+        ret.insert(devId,((*state) * percentage).copyToSharedPointer());
+    }
+    if(radius > maxDistance + 2*activeRadius)//not interessting anymore
+        isRunning = false;
+    return ret;
 }
 
 void ColorWaveScene::clientRegistered(QJsonObject msg, int id)
@@ -126,16 +125,27 @@ void ColorWaveScene::triggered()
     if(isRunning)
         return;
     reinitColors();
+    QMap<QString, QSharedPointer<Device> > usedDevices = filterDeviceManager.getDevices();
     int newCenterPos = -1;
     do
-        newCenterPos = rand() % usedDevices.length();
-    while(centerDevPos == newCenterPos && usedDevices.length() > 1);
+        newCenterPos = rand() % usedDevices.count();
+    while(centerDevPos == newCenterPos && usedDevices.count() > 1);
     if(newCenterPos == -1)
         return;
     centerDevPos = newCenterPos;
-    center = usedDevices.at(centerDevPos).getPosition();
+    center = usedDevices.value(usedDevices.keys().at(centerDevPos)).data()->getPosition();
     isRunning = true;
     beatStopwatch.restart();
+}
+
+void ColorWaveScene::reinitDevices()
+{
+    onState.clear();
+    QMap<QString, QSharedPointer<Device> > avdev = filterDeviceManager.getDevices();
+    foreach(QString devId, avdev.keys()){
+        QSharedPointer<Device> dev = avdev.value(devId);
+        onState.insert(devId,dev.data()->createEmptyState());
+    }
 }
 
 void ColorWaveScene::reinitColors()
@@ -146,15 +156,16 @@ void ColorWaveScene::reinitColors()
         int rIndex = rand() % colorButton.getColors().length();
         color = colorButton.getColors().at(rIndex);
     }
-    foreach(Device dev,usedDevices){
-        int basC = dev.getFirstChannel();
-        dev.setChannel(basC+0,color.redF());
-        dev.setChannel(basC+1,color.greenF());
-        dev.setChannel(basC+2,color.blueF());
-        if(dev.getType() == Device::RGBW){
-            dev.setChannel(basC+3,0.0);
+
+    foreach (QString devId, onState.keys()) {
+        QSharedPointer<ChannelDeviceState> cDevState = onState.value(devId).dynamicCast<ChannelDeviceState>();
+        int basC = cDevState.data()->getFirstChannel();
+        cDevState.data()->setChannel(basC+0,color.redF());
+        cDevState.data()->setChannel(basC+1,color.greenF());
+        cDevState.data()->setChannel(basC+2,color.blueF());
+        if(filterDeviceManager.getDevices().value(devId).data()->getType() == Device::RGBW){
+            cDevState.data()->setChannel(basC+3,0.0);
         }
-    onState.append(dev);
     }
 }
 /**

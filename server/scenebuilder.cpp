@@ -5,11 +5,10 @@
 #include "colorscene.h"
 #include "colorwheelscene.h"
 #include "colorwavescene.h"
-#include "beatscene2.h"
 #include "keyframescene.h"
 #include "musicscene.h"
-SceneBuilder::SceneBuilder(WebSocketServer *wssP, QList<Device> *avDev, QList<QSharedPointer<Device> > *newAvailableDevicesP, JackProcessor *jackP):wss(wssP),availableDevices(avDev),
-    jack(jackP),newAvailableDevices(newAvailableDevicesP)
+SceneBuilder::SceneBuilder(WebSocketServer *wssP, VirtualDeviceManager *manager, JackProcessor *jackP):wss(wssP),
+    vDevManager(manager),jack(jackP)
 {
 
 }
@@ -17,28 +16,25 @@ SceneBuilder::SceneBuilder(WebSocketServer *wssP, QList<Device> *avDev, QList<QS
 QSharedPointer<Scene> SceneBuilder::build(QString sceneType, QString name,QJsonObject serialized)
 {
     if(sceneType == FlashScene::getSceneTypeStringStaticaly()){
-        return QSharedPointer<Scene>(new FlashScene(wss,*availableDevices,jack,name,serialized));
+        return QSharedPointer<Scene>(new FlashScene(wss,jack,vDevManager,name,serialized));
     }
     else if(sceneType == DiscoScene::getSceneTypeStringStaticaly()){
         return QSharedPointer<Scene>(new DiscoScene(wss,this,name,serialized));
     }
     else if(sceneType == BeatScene1::getSceneTypeStringStaticaly()){
-        return QSharedPointer<Scene>(new BeatScene1(*availableDevices,jack,wss,name,serialized));
+        return QSharedPointer<Scene>(new BeatScene1(vDevManager,jack,wss,name,serialized));
     }
     else if(sceneType == ColorScene::getSceneTypeStringStaticaly()){
-        return QSharedPointer<Scene>(new ColorScene(*availableDevices,wss,name,serialized));
+        return QSharedPointer<Scene>(new ColorScene(vDevManager,wss,name,serialized));
     }
     else if(sceneType == ColorWheelScene::getSceneTypeStringStaticaly()){
-        return QSharedPointer<Scene>(new ColorWheelScene(*availableDevices,wss,jack,name,serialized));
+        return QSharedPointer<Scene>(new ColorWheelScene(vDevManager,wss,jack,name,serialized));
     }
     else if(sceneType == ColorWaveScene::getSceneTypeStringStaticaly()){
-        return QSharedPointer<Scene>(new ColorWaveScene(*availableDevices,wss,jack,name,serialized));
-    }
-    else if(sceneType == BeatScene2::getSceneTypeStringStaticaly()){
-        return QSharedPointer<Scene>(new BeatScene2(*availableDevices,jack,wss,name,serialized));
+        return QSharedPointer<Scene>(new ColorWaveScene(vDevManager,wss,jack,name,serialized));
     }
     else if(sceneType == KeyFrameScene::getSceneTypeStringStaticaly()){
-        return QSharedPointer<Scene>(new KeyFrameScene(*newAvailableDevices,name,wss,serialized));
+        return QSharedPointer<Scene>(new KeyFrameScene(vDevManager,name,wss,serialized));
     }
     else if(sceneType == MusicScene::getSceneTypeStringStaticaly()){
         return QSharedPointer<Scene>(new MusicScene(name,wss,serialized));

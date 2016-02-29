@@ -1,15 +1,23 @@
 #include "colorscene.h"
 #include <QListIterator>
 #include "websocketserver.h"
+#include "channeldevicestate.h"
 
 #define KEY_COLOR "color"
-ColorScene::ColorScene(QList<Device> avDev, WebSocketServer *ws, QString name, QJsonObject serialized) :
-    Scene(name,serialized),WebSocketServerProvider(ws), devices(avDev),colorButton(ws)
+ColorScene::ColorScene(VirtualDeviceManager *vDevManager, WebSocketServer *ws, QString name, QJsonObject serialized) :
+    Scene(name,serialized),WebSocketServerProvider(ws), filterVdevManager(vDevManager),colorButton(ws), deviceStates()
 {
+
     QList<QColor> colors;
     colors.append(QColor(255,255,255));//initial
     colorButton.setColors(colors);
-    reloadColor();
+
+    filterVdevManager.addAcceptedType(Device::Beamer);
+    filterVdevManager.addAcceptedType(Device::RGB);
+    filterVdevManager.addAcceptedType(Device::RGBW);
+    connect(&filterVdevManager,SIGNAL(virtualDevicesChanged()),this,SLOT(reloadDevices()));
+    reloadDevices();
+
     connect(&colorButton,SIGNAL(colorChanged()),this,SLOT(reloadColor()));
     if(serialized.length() != 0){
         if(serialized.contains(KEY_COLOR))
@@ -18,17 +26,17 @@ ColorScene::ColorScene(QList<Device> avDev, WebSocketServer *ws, QString name, Q
     ws->registerProvider(this);
 }
 
-QList<Device> ColorScene::getUsedLights()
-{
-    return devices;
-}
-
 QJsonObject ColorScene::serialize()
 {
     //nothing to serialize as this is an really trivial scene
     QJsonObject ret;
     ret.insert(KEY_COLOR,colorButton.serialize());
     return serializeScene(ret);
+}
+
+QMap<QString, QSharedPointer<DeviceState> > ColorScene::getDeviceState()
+{
+    return deviceStates;
 }
 
 QString ColorScene::getSceneTypeString()
@@ -63,43 +71,25 @@ QString ColorScene::getRequestType()
     return "colorScene";
 }
 
+void ColorScene::reloadDevices()
+{
+    QMap<QString,QSharedPointer<Device> > avDevs = filterVdevManager.getDevices();
+    deviceStates.clear();
+    foreach(QSharedPointer<Device> dev, avDevs.values() ){
+        deviceStates.insert(dev.data()->getDeviceId(),dev.data()->createEmptyState());
+    }
+    reloadColor();
+}
+
 void ColorScene::reloadColor()
 {
-    QList<Device> ret;
-    QList<Device>::iterator deviceIter = devices.begin();
-    while(deviceIter != devices.end()){
-        Device d = *deviceIter;
-        QColor c = colorButton.getColors().at(0);
-        int first = d.getFirstChannel();
-        d.setChannel(first+0,c.redF());
-        d.setChannel(first+1,c.greenF());
-        d.setChannel(first+2,c.blueF());
-        ret.append(d);;
-        deviceIter++;
+    QColor c = colorButton.getColors().at(0);
+    foreach(QSharedPointer<DeviceState> state, deviceStates){
+        QSharedPointer<ChannelDeviceState> cDevState = state.dynamicCast<ChannelDeviceState>();
+        int first = cDevState.data()->getFirstChannel();
+        cDevState.data()->setChannel(first+0,c.redF());
+        cDevState.data()->setChannel(first+1,c.greenF());
+        cDevState.data()->setChannel(first+2,c.blueF());
     }
-    devices = ret;
-}
-
-/*void ColorScene::reloadColor() //Option zum Farbezuweisen für jedes Device einzeln
-{
-    QList<Device> ret;
-    QList<Device>::iterator deviceIter = devices.begin();
-    while(deviceIter != devices.end()){
-        Device d = *deviceIter;
-        QColor c = colorButton.getColors().at(0);
-        int first = d.getFirstChannel();
-        d.setChannel(first+0,c.redF());
-        d.setChannel(first+1,c.greenF());
-        d.setChannel(first+2,c.blueF());
-        ret.append(d);;
-        deviceIter++;
-    }
-    devices = ret;
-}
-*/
-
-QList<Device> ColorScene::getLights()
-{
-    return devices;
 }
 

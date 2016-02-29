@@ -3,7 +3,6 @@
 #include "websocketserver.h"
 
 #define KEY_SMOOTHNESS "smoothness"
-#define KEY_FOREGROUNDTRIGGER "foregroundTrigger"
 #define KEY_BACKGROUNDTRIGGER "backgroundTrigger"
 #define KEY_COLOR "color"
 
@@ -14,9 +13,9 @@
 #define MAX_SMOOTHNESS_DUR 2000
 
 
-BeatScene1::BeatScene1(QList<Device> avDev, JackProcessor* p, WebSocketServer* ws, QString name, QJsonObject serialized) :
+BeatScene1::BeatScene1(VirtualDeviceManager *manager, JackProcessor *p, WebSocketServer *ws, QString name, QJsonObject serialized) :
     Scene(name,serialized),WebSocketServerProvider(ws),
-    availableDevices(avDev),c(0,0,0),highlighted(0,0,0),usedDevices(),foregroundTrigger(ws,p),
+    filterDeviceManager(manager),c(0,0,0),highlighted(0,0,0),
     backgroundTrigger(ws,p),smoothDuration(200),smoothTimer(),prev("prev"),next("next"), colorButton(ws)
 {
     if(serialized.length() != 0){
@@ -26,59 +25,45 @@ BeatScene1::BeatScene1(QList<Device> avDev, JackProcessor* p, WebSocketServer* w
         if(serialized.contains(KEY_COLOR)){
             colorButton.loadSerialized(serialized.value(KEY_COLOR).toObject());
         }
-        /*if(serialized.contains(KEY_FOREGROUNDTRIGGER)){
-            foregroundTrigger()
-        }*/
     }
 
-    foregroundTrigger.triggerConfig.insert(Trigger::ONSET);
     backgroundTrigger.triggerConfig.insert(Trigger::BEAT );
 
-    usedDevices.clear();
-    foreach (Device d, availableDevices) {
-        usedDevices.append(d);
-    }
+    filterDeviceManager.addAcceptedType(Device::RGB);
+    filterDeviceManager.addAcceptedType(Device::RGBW);
+    filterDeviceManager.addAcceptedType(Device::Beamer);
 
-    next.import(usedDevices);
-    prev.import(usedDevices);
+//    next.import();
+//    prev.import();
 
-    connect(&foregroundTrigger,SIGNAL(trigger()),this,SLOT(changeForeground()));
     connect(&backgroundTrigger,SIGNAL(trigger()),this,SLOT(changeBackground()));
     ws->registerProvider(this);
     smoothTimer.start();
 }
 
-QList<Device> BeatScene1::getLights()
-{
 
+QMap<QString, QSharedPointer<DeviceState> > BeatScene1::getDeviceState()
+{
     if(smoothDuration == 0 || smoothTimer.elapsed() > smoothDuration)
-        return next.getLights();
+        return next.getDeviceState();
     else{
         float per = float(smoothTimer.elapsed()) / float(smoothDuration);
         if(per>1.0)
             per = 1;
-        return prev.passiveFusion(next.getLights(),DeviceState::AV,per);
+        return prev.passiveFusion(next.getDeviceState(),ChannelDeviceState::AV,per);
     }
-
-}
-
-QList<Device> BeatScene1::getUsedLights()
-{
-    return usedDevices;
 }
 
 
 void BeatScene1::stop()
 {
     qDebug() << "stoped";
-    foregroundTrigger.stop();
     backgroundTrigger.stop();
 }
 
 void BeatScene1::start()
 {
     qDebug() << "start";
-    foregroundTrigger.start();
     backgroundTrigger.start();
 }
 
@@ -86,7 +71,6 @@ void BeatScene1::clientRegistered(QJsonObject msg, int id)
 {
     QJsonObject replay;
     QJsonObject config;
-    config.insert("foregroundTrigger",foregroundTrigger.providerId);
     config.insert("backgroundTrigger",backgroundTrigger.providerId);
     config.insert("smoothnessChanged",double(smoothDuration)/double(MAX_SMOOTHNESS_DUR));
     config.insert("colorButton", colorButton.providerId);
@@ -115,7 +99,6 @@ QString BeatScene1::getRequestType()
 QJsonObject BeatScene1::serialize()
 {
     QJsonObject ret;
-    ret.insert(KEY_FOREGROUNDTRIGGER,foregroundTrigger.serialize());
     ret.insert(KEY_BACKGROUNDTRIGGER,backgroundTrigger.serialize());
     ret.insert(KEY_COLOR,colorButton.serialize());
     ret.insert(KEY_SMOOTHNESS,smoothDuration);
@@ -133,18 +116,6 @@ QString BeatScene1::getSceneTypeStringStaticaly()
 }
 
 
-void BeatScene1::changeForeground()
-{
-    QList <QColor> options=colorButton.getColors();
-    QColor last = highlighted;
-    while((last == highlighted|| c == highlighted) && options.length() > 2)
-    {
-        int i = rand() % options.length();
-        highlighted = options.at(i);
-    }
-    generateNextScene();
-}
-
 void BeatScene1::changeBackground()
 {
     QList <QColor> options=colorButton.getColors();
@@ -159,20 +130,19 @@ void BeatScene1::changeBackground()
 
 void BeatScene1::generateNextScene()
 {
-    prev.import(getLights());
-    QList<Device> ret;
-    foreach (Device d, usedDevices) {
-        int firstChannel = d.getFirstChannel();
-        d.setChannel(firstChannel + 0,c.red()/255.0f);
-        d.setChannel(firstChannel + 1,c.green()/255.0f);
-        d.setChannel(firstChannel + 2,c.blue()/255.0f);
+    //prev.import(getLights());
+    QMap<QString, QSharedPointer<DeviceState> > ret;
+    QMap<QString, QSharedPointer<Device> > avDevs = filterDeviceManager.getDevices();
+    foreach (QString devId, avDevs.keys()) {
+        QSharedPointer<Device> dev = avDevs.value(devId);
+        QSharedPointer<DeviceState> state = dev.data()->createEmptyState();
+        QSharedPointer<ChannelDeviceState> d = state.dynamicCast<ChannelDeviceState>();
+        int firstChannel = d.data()->getFirstChannel();
+        d.data()->setChannel(firstChannel + 0,c.red()/255.0f);
+        d.data()->setChannel(firstChannel + 1,c.green()/255.0f);
+        d.data()->setChannel(firstChannel + 2,c.blue()/255.0f);
 
-        if(d.getType() == Device::Beamer){
-            d.setChannel(firstChannel + 3,highlighted.red()/255.0f);
-            d.setChannel(firstChannel + 4,highlighted.green()/255.0f);
-            d.setChannel(firstChannel + 5,highlighted.blue()/255.0f);
-        }
-        ret.append(d);
+        ret.insert(devId,d);
     }
     next.reset();
     next.import(ret);

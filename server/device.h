@@ -6,46 +6,30 @@
 #include <QMap>
 #include <QVector3D>
 #include "devicestate.h"
+#include "serializable.h"
+
+class ChannelDeviceState;
 
 class Device : public Serializable
 {
 public:
-    enum DeviceType{White,RGB,RGBW,Beamer,Unknown};
+    enum DeviceType{White,RGB,RGBW,Beamer,Unknown,MusicPlayer};
 
-    Device(QMap<int,float> channelsP, QString devIdP,DeviceType typeP,QVector3D pos = QVector3D(0,0,0));
-    Device(int firstChannel, int numChannels, QString devIdP,DeviceType typeP,QVector3D pos = QVector3D(0,0,0));
-    Device(const Device &d);
-    Device(const Device *d);
-    Device fusionWith(Device upper, DeviceState::FusionType type, float opacity);
+    Device(QString devIdP,DeviceType typeP,QVector3D pos = QVector3D(0,0,0));
     Device(QJsonObject serialized);
-    int getNumChannels();
-    QMap<int,float> getChannelValues();
-    QList<int> getChannels() const;
-    void setChannel(int channel,float value);
-    float getChannelValue(int channel);
-    static QList<Device> deserializeDevices(QJsonArray serialized);
-    static QJsonArray serializeDevices(QList<Device> devices);
-    bool deviceEqual(Device other);
+    //static QMap<QString, QSharedPointer<Device> > deserializeDevices(QJsonArray serialized);
+    //static QJsonArray serializeDevices(QList<Device> devices);
     bool deviceEqual(Device *other);
-    bool valuesEqual(Device other);
-    Device findEqualDevice(QList<Device> devices);
     static QMap<int,float> toLagacy(QList<Device> devices);
-
-    QDebug operator<<(QDebug debug);
-    bool operator ==(const Device &other);
-    Device operator *(float percentage);
     QString getDeviceId() const;
     DeviceType getType();
-    int getFirstChannel();
     QVector3D getPosition() const;
     void setPosition(const QVector3D &value);
-    DeviceState getState();
-    void setState(DeviceState stateP);
-
 
     QJsonObject serialize();
+
+    virtual QSharedPointer<DeviceState> createEmptyState() = 0;
 private:
-    DeviceState state;
     QString devId;
     DeviceType type;
     QVector3D position;

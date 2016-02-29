@@ -6,7 +6,7 @@
 #define KEY_FUSION_TYPE "fusionType"
 #define KEY_SCENE "scene"
 
-DiscoSubScene::DiscoSubScene(int idP, QSharedPointer<Scene> sceneP, DeviceState::FusionType fusionTypeP, bool muteP, float opacityP):
+DiscoSubScene::DiscoSubScene(int idP, QSharedPointer<Scene> sceneP, ChannelDeviceState::FusionType fusionTypeP, bool muteP, float opacityP):
     id(idP),scene(sceneP),fusionType(fusionTypeP),mute(muteP),opacity(opacityP)
 {
 
@@ -51,22 +51,22 @@ QJsonObject DiscoSubScene::getBasicJson()
 
     QString fusionTypeStr;
     switch (fusionType) {
-    case DeviceState::MAX:
+    case ChannelDeviceState::MAX:
         fusionTypeStr = "max";
         break;
-    case DeviceState::MAXG:
+    case ChannelDeviceState::MAXG:
         fusionTypeStr = "maxg";
         break;
-    case DeviceState::MIN:
+    case ChannelDeviceState::MIN:
         fusionTypeStr = "min";
         break;
-    case DeviceState::MING:
+    case ChannelDeviceState::MING:
         fusionTypeStr = "ming";
         break;
-    case DeviceState::AV:
+    case ChannelDeviceState::AV:
         fusionTypeStr = "av";
         break;
-    case DeviceState::OVERRIDE:
+    case ChannelDeviceState::OVERRIDE:
         fusionTypeStr = "override";
         break;
     }
@@ -85,16 +85,16 @@ QJsonObject DiscoSubScene::serialize(SceneBuilder *builder)
 void DiscoSubScene::setFusinType(QString fusionTypeStr)
 {
     if(fusionTypeStr == "max")
-        fusionType = DeviceState::MAX;
+        fusionType = ChannelDeviceState::MAX;
     else if(fusionTypeStr == "min")
-        fusionType = DeviceState::MIN;
+        fusionType = ChannelDeviceState::MIN;
     else if(fusionTypeStr == "maxg")
-        fusionType = DeviceState::MAXG;
+        fusionType = ChannelDeviceState::MAXG;
     else if(fusionTypeStr == "ming")
-        fusionType = DeviceState::MING;
+        fusionType = ChannelDeviceState::MING;
     else if(fusionTypeStr == "av")
-        fusionType = DeviceState::AV;
+        fusionType = ChannelDeviceState::AV;
     else if(fusionTypeStr == "override")
-        fusionType = DeviceState::OVERRIDE;
+        fusionType = ChannelDeviceState::OVERRIDE;
 }
 

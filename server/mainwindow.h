@@ -5,7 +5,6 @@
 #include <QList>
 #include <QMap>
 #include "scene.h"
-#include "overlayscene.h"
 #include "jackprocessor.h"
 #include "device.h"
 #include "websocketserver.h"
@@ -23,6 +22,8 @@
 #include "diascene.h"
 #include "fileioprovider.h"
 #include "monitorio.h"
+#include "hardcodedvirtualdevicemanager.h"
+
 class MainWindow : public QObject
 {
     Q_OBJECT
@@ -31,21 +32,21 @@ public:
     explicit MainWindow();
     ~MainWindow();
     void getChanges();
-    QList<QSharedPointer<Device> > newAvailableDevices;
-    QList<Device> availableDevices;
+
     void loadScenes(QJsonObject data);
 public slots:
     void trigger();
     void save();
 
 private:
-    QList<Device> usedLamps;
-    QList<Device> status;
+    QMap<QString, QSharedPointer<DeviceState> > status;
 
     bool offsetRequested;
 
     void resetFadeStart();
     float getTimeSinceFadePercentage(int duration);
+
+    HardcodedVirtualDeviceManager virtualDevManager;
 
     WebSocketServer wss;
     JackProcessor jackProcessor;

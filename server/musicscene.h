@@ -1,15 +1,15 @@
 #ifndef MUSICSCENE_H
 #define MUSICSCENE_H
 #include "scene.h"
-#include "musicplayer.h"
+#include "musicdevice.h"
 #include "websocketserverprovider.h"
 
 class MusicScene : public Scene, public WebSocketServerProvider
 {
 public:
     MusicScene(QString name, WebSocketServer *ws, QJsonObject serialized = QJsonObject());
-    QList<Device> getLights();
-    QList<Device> getUsedLights();
+    QMap<QString,QSharedPointer<DeviceState> > getDeviceState();
+
     void clientRegistered(QJsonObject msg, int id);
     void clientUnregistered(QJsonObject msg, int id);
     void clientMessage(QJsonObject msg, int id);
@@ -21,7 +21,7 @@ public:
     static QString getSceneTypeStringStaticaly();
 
 private:
-    MusicPlayer player;
+    MusicDevice player;
 
 };
 

@@ -5,13 +5,15 @@
 #include "trigger.h"
 #include <QTime>
 #include "colorbutton.h"
+#include "filtervirtualdevicemanager.h"
+
 class ColorWaveScene : public Scene, public WebSocketServerProvider
 {
 Q_OBJECT
+
 public:
-    ColorWaveScene(QList<Device> avDev,WebSocketServer *ws, JackProcessor *jackP,  QString name, QJsonObject serialized = QJsonObject());
-    QList<Device> getLights();
-    QList<Device> getUsedLights();
+    ColorWaveScene(VirtualDeviceManager *manager,WebSocketServer *ws, JackProcessor *jackP,  QString name, QJsonObject serialized = QJsonObject());
+    QMap<QString,QSharedPointer<DeviceState> > getDeviceState();
     void clientRegistered(QJsonObject msg, int id);
     void clientUnregistered(QJsonObject msg, int id);
     void clientMessage(QJsonObject msg, int id);
@@ -23,12 +25,12 @@ public:
     static QString getSceneTypeStringStaticaly();
 public slots:
     void triggered();
+    void reinitDevices();
     void reinitColors();
 
 private:
     Trigger trigger;
-    QList<Device> usedDevices;
-    QList<Device> onState;
+    QMap<QString, QSharedPointer<DeviceState> > onState;
     QTime beatStopwatch;
     bool isRunning;
     int centerDevPos;
@@ -39,6 +41,8 @@ private:
     float speed;// in m/s
 
     ColorButton colorButton;
+
+    FilterVirtualDeviceManager filterDeviceManager;
 };
 
 #endif // COLORWAVESCENE_H

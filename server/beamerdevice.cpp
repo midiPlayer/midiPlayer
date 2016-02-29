@@ -1,25 +1,13 @@
 #include "beamerdevice.h"
 
 BeamerDevice::BeamerDevice(BeamerDevice::ShutterType shutterTypeP, QJsonObject shutterParamsP) :
-    Device(QMap<int,float>(),"",Device::Beamer),shutterType(shutterTypeP),shutterParams(shutterParamsP)
+    ChannelDevice(0,0,"",Device::Beamer),shutterType(shutterTypeP),shutterParams(shutterParamsP)
 {
 
 }
 
-BeamerDevice::BeamerDevice(QMap<int, float> channelsP, QString devIdP, ShutterType shutterTypeP, QJsonObject shutterParamsP) :
-    Device(channelsP,devIdP,Device::Beamer), shutterType(shutterTypeP),shutterParams(shutterParamsP)
-{
-
-}
-
-BeamerDevice::BeamerDevice(const BeamerDevice &d) : Device(d), shutterType(d.getShutterType()),
-    shutterParams(d.shutterParams)
-{
-
-}
-
-BeamerDevice::BeamerDevice(const BeamerDevice *d) : Device(d),shutterType(d->getShutterType()),
-    shutterParams(d->shutterParams)
+BeamerDevice::BeamerDevice(int firstChannelP, int numChannelsP, QString devIdP, ShutterType shutterTypeP, QJsonObject shutterParamsP) :
+    ChannelDevice(firstChannelP,numChannelsP,devIdP,Device::Beamer), shutterType(shutterTypeP),shutterParams(shutterParamsP)
 {
 
 }

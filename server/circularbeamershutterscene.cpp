@@ -61,7 +61,7 @@ void CircularBeamerShutterScene::dataChanged()
     params.insert("radius",radius);
     params.insert("x",x);
     params.insert("y",y);
-    provider->publishShutter(BeamerDevice(BeamerDevice::CIRCULAR,params),true);//send To all beamers
+    //provider->publishShutter(BeamerDevice(BeamerDevice::CIRCULAR,params),true);//send To all beamers
 }
 
 void CircularBeamerShutterScene::triggered()

@@ -1,15 +1,18 @@
 #include "flashscene.h"
 #include "websocketserver.h"
 #include <algorithm>
+#include "channeldevicestate.h"
+
 #define KEY_SMOOTHNESS "smoothness"
 #define KEY_DURATION "duration"
 #define KEY_TRIGGER "trigger"
 #define KEY_COLOR "color"
 
-FlashScene::FlashScene(WebSocketServer* ws, QList<Device> avDevP, JackProcessor *jackP,QString name,QJsonObject serialized) : Scene(name,serialized),
-    WebSocketServerProvider(ws),trigger(ws,jackP),availableDevices(avDevP),
-        flashEnabled(false),flashState(),time(),smoothness(0),flashDuration(40),beatSpeed(INT_MAX),timePer(0.0f),colorButton(ws)
+FlashScene::FlashScene(WebSocketServer* ws, JackProcessor *jackP, VirtualDeviceManager *manager, QString name, QJsonObject serialized) : Scene(name,serialized),
+    WebSocketServerProvider(ws),trigger(ws,jackP),filterVDevManager(manager),
+    flashEnabled(false),flashState(),time(),smoothness(0),flashDuration(40),beatSpeed(INT_MAX),timePer(0.0f),colorButton(ws)
 {
+
     ws->registerProvider(this);
     trigger.triggerConfig.insert(Trigger::BEAT);
     connect(&trigger,SIGNAL(trigger()),this,SLOT(triggered()));
@@ -26,6 +29,22 @@ FlashScene::FlashScene(WebSocketServer* ws, QList<Device> avDevP, JackProcessor 
         if(serialized.contains(KEY_SMOOTHNESS))
             smoothness = serialized.value(KEY_SMOOTHNESS).toDouble(0.2);
     }
+
+
+    filterVDevManager.addAcceptedType(Device::Beamer);
+    filterVDevManager.addAcceptedType(Device::RGB);
+    filterVDevManager.addAcceptedType(Device::RGBW);
+    connect(&filterVDevManager,SIGNAL(virtualDevicesChanged()),this,SLOT(reloadDevices()));
+    reloadDevices();
+}
+
+void FlashScene::reloadDevices()
+{
+    QMap<QString,QSharedPointer<Device> > avDevs = filterVDevManager.getDevices();
+    flashState.clear();
+    foreach(QSharedPointer<Device> dev, avDevs.values() ){
+        flashState.insert(dev.data()->getDeviceId(),dev.data()->createEmptyState());
+    }
     reloadColor();
 }
 
@@ -36,19 +55,17 @@ void FlashScene::reloadColor()
     if(colorButton.getColors().length() > 0)
         color = colorButton.getColors().at(0);
 
-    foreach (Device dev, availableDevices) {
-        int firstC = dev.getFirstChannel();
-        if(dev.getType() == Device::RGB || dev.getType() == Device::RGBW ){
-            dev.setChannel(firstC+0,color.redF());
-            dev.setChannel(firstC+1,color.greenF());
-            dev.setChannel(firstC+2,color.blueF());
-        }
-        flashState.append(dev);
+    foreach (QSharedPointer<DeviceState> state, flashState) {
+        QSharedPointer<ChannelDeviceState> cDevState = state.dynamicCast<ChannelDeviceState>();
+        int firstC = cDevState.data()->getFirstChannel();
+            cDevState.data()->setChannel(firstC+0,color.redF());
+            cDevState.data()->setChannel(firstC+1,color.greenF());
+            cDevState.data()->setChannel(firstC+2,color.blueF());
     }
 }
 
 
-QList<Device> FlashScene::getLights()
+QMap<QString, QSharedPointer<DeviceState> > FlashScene::getDeviceState()
 {
     float percentage = 0;
     if(flashEnabled){
@@ -70,19 +87,13 @@ QList<Device> FlashScene::getLights()
     }
 
     //output
-    QList<Device> ret;
-    foreach (Device d, flashState) {
-        ret.append(d*percentage);
+    QMap<QString, QSharedPointer<DeviceState> > ret;
+    foreach (QString devId, flashState.keys()) {
+        QSharedPointer<DeviceState> state = flashState.value(devId);
+        ChannelDeviceState *cDevState = state.dynamicCast<ChannelDeviceState>().data();
+        ret.insert(devId,((*cDevState)*percentage).copyToSharedPointer());
     }
     return ret;
-}
-
-QList<Device> FlashScene::getUsedLights()
-{
-    if(flashEnabled)
-        return flashState;
-    else
-        return QList<Device>();
 }
 
 

@@ -22,12 +22,12 @@ DiscoScene::DiscoScene(WebSocketServer *ws, SceneBuilder *sceneBuilderP, QString
     }
 }
 
-QList<Device> DiscoScene::getLights()
+QMap<QString, QSharedPointer<DeviceState> > DiscoScene::getDeviceState()
 {
     fusion.reset();
-    fusion.import(getUsedLights());//all light in off state
+    //fusion.import(getUsedLights());//all light in off state
     if(solo){
-        fusion.fusion(soloScene.data()->scene.data()->getLights(),soloScene.data()->fusionType,soloScene.data()->opacity);
+        fusion.import(soloScene.data()->scene.data()->getDeviceState());
     }
     else{
         foreach  (int orderId, order) {
@@ -38,23 +38,9 @@ QList<Device> DiscoScene::getLights()
                 fusion.fusion(effect.data()->scene,effect.data()->fusionType,0.5f);
         }
     }
-    return fusion.getLights();
+    return fusion.getDeviceState();
 }
 
-QList<Device> DiscoScene::getUsedLights()
-{
-    QList<Device> useedLights;
-    foreach (QSharedPointer<DiscoSubScene> effect, effects.values()) {
-        if(effect.data()->mute)
-            continue; //TODO add handling for unused devices
-        foreach(Device d,effect->scene.data()->getUsedLights()){
-            if(useedLights.contains(d))
-                useedLights.append(d);
-        }
-    }
-
-    return useedLights;
-}
 
 QString DiscoScene::getSceneTypeString()
 {
@@ -143,7 +129,7 @@ void DiscoScene::clientMessage(QJsonObject msg, int id)
            qDebug("duscoScene: ERROR: unknown scene type");
            return;
         }
-        addSubScene(QSharedPointer<DiscoSubScene>(new DiscoSubScene(sceneIdCounter,newScene,DeviceState::MAX,true,1.0f)));
+        addSubScene(QSharedPointer<DiscoSubScene>(new DiscoSubScene(sceneIdCounter,newScene,ChannelDeviceState::MAX,true,1.0f)));
         sendMsg(getStatus(true,true,false),id,true);
     }
     if(msg.contains("deleteScene")){
@@ -189,7 +175,7 @@ QJsonObject DiscoScene::serialize()
 
 void DiscoScene::addEffect(QSharedPointer<Scene> scene)
 {
-    addSubScene(QSharedPointer<DiscoSubScene>(new DiscoSubScene(sceneIdCounter,scene,DeviceState::MAX,false,1.0)));
+    addSubScene(QSharedPointer<DiscoSubScene>(new DiscoSubScene(sceneIdCounter,scene,ChannelDeviceState::MAX,false,1.0)));
 }
 
 void DiscoScene::addSubScene(QSharedPointer<DiscoSubScene> subScene){

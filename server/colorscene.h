@@ -4,14 +4,17 @@
 #include <QJsonObject>
 #include "websocketserverprovider.h"
 #include "colorbutton.h"
+#include "virtualdevicemanager.h"
+#include "filtervirtualdevicemanager.h"
+
 class ColorScene : public Scene, public WebSocketServerProvider
 {
 Q_OBJECT
+
 public:
-    ColorScene(QList<Device> avDev, WebSocketServer *ws, QString name, QJsonObject serialized = QJsonObject());
-    QList<Device> getLights();
-    QList<Device> getUsedLights();
+    ColorScene(VirtualDeviceManager *vDevManager, WebSocketServer *ws, QString name, QJsonObject serialized = QJsonObject());
     QJsonObject serialize();
+    QMap<QString,QSharedPointer<DeviceState> > getDeviceState();
     QString getSceneTypeString();
     static QString getSceneTypeStringStaticaly();
     void clientRegistered(QJsonObject msg, int id);
@@ -20,9 +23,11 @@ public:
     QString getRequestType();
     ColorButton colorButton;
 public slots:
+    void reloadDevices();
     void reloadColor();
 private:
-    QList<Device> devices;
+    QMap<QString,QSharedPointer<DeviceState> > deviceStates;
+    FilterVirtualDeviceManager filterVdevManager;
 };
 
 #endif // COLORSCENE_H

@@ -9,15 +9,14 @@ MusicScene::MusicScene(QString name, WebSocketServer *ws, QJsonObject serialized
     ws->registerProvider(this);
 }
 
-QList<Device> MusicScene::getLights()
+QMap<QString, QSharedPointer<DeviceState> > MusicScene::getDeviceState()
 {
-    return QList<Device>();
+    QMap<QString, QSharedPointer<DeviceState> > ret;
+    ret.insert(player.getDeviceId(),player.createEmptyState());
+    return ret;
 }
 
-QList<Device> MusicScene::getUsedLights()
-{
-    return QList<Device>();
-}
+
 
 void MusicScene::clientRegistered(QJsonObject msg, int id)
 {

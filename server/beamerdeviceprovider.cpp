@@ -1,12 +1,13 @@
 #include "beamerdeviceprovider.h"
 #include <QColor>
 
-beamerDeviceProvider::beamerDeviceProvider(WebSocketServer *server, QList<Device> *availableVirtualDevicesP) :
+beamerDeviceProvider::beamerDeviceProvider(WebSocketServer *server, VirtualDeviceManager *manager) :
     WebSocketServerProvider(server), OutputDevice(),
-    availableVirtualDevices(availableVirtualDevicesP)
+    filterDevManager(manager)
 {
     server->registerProvider(this);
 
+    filterDevManager.addAcceptedType(Device::Beamer);
 }
 
 void beamerDeviceProvider::clientRegistered(QJsonObject msg, int id)
@@ -15,10 +16,12 @@ void beamerDeviceProvider::clientRegistered(QJsonObject msg, int id)
     if(msg.contains("deviceId")){
         QString devId = msg.value("deviceId").toString();
 
-        foreach(Device d, *availableVirtualDevices){
-            if(d.getDeviceId() == devId){
-                devices.insert(id,d);
-            }
+        QMap<QString, QSharedPointer<Device> > availableDevs = filterDevManager.getDevices();
+        if(availableDevs.contains(devId)){
+            devices.insert(id,availableDevs.value(devId).data()->getDeviceId());
+        }
+        else{
+            qDebug() << "error: beamer device id did not match!";
         }
     }
 }
@@ -39,29 +42,28 @@ QString beamerDeviceProvider::getRequestType()
     return "asBeamer";
 }
 
-void beamerDeviceProvider::publish(QList<Device> targetDevices,QList<Device> changes)
+void beamerDeviceProvider::publish(QMap<QString, QSharedPointer<DeviceState> > targetDevices, QMap<QString, QSharedPointer<DeviceState> > changes)
 {
-    foreach(Device d, changes){
-            QList<int> devIDs = devices.keys(d);
-            if(devIDs.length() == 0) continue;
+    foreach(QString devId, changes.keys()){
+            QList<int> beamerIDs = devices.keys(devId);
+            if(beamerIDs.length() == 0) continue; //no beamers registered for this device;
             QJsonObject msg;
             QColor c;
-            if(d.getType() != Device::Beamer)
-                continue;
-            int lowestChannel = d.getFirstChannel();
-            c.setRed(d.getChannelValue(lowestChannel + 0)*255);
-            c.setGreen(d.getChannelValue(lowestChannel + 1)*255);
-            c.setBlue(d.getChannelValue(lowestChannel + 2)*255);
+            QSharedPointer<ChannelDeviceState> d = changes.value(devId).dynamicCast<ChannelDeviceState>();
+            int lowestChannel = d.data()->getFirstChannel();
+            c.setRed(d.data()->getChannelValue(lowestChannel + 0)*255);
+            c.setGreen(d.data()->getChannelValue(lowestChannel + 1)*255);
+            c.setBlue(d.data()->getChannelValue(lowestChannel + 2)*255);
             msg.insert("color",c.name());
-            c.setRed(d.getChannelValue(lowestChannel + 3)*255);
-            c.setGreen(d.getChannelValue(lowestChannel + 4)*255);
-            c.setBlue(d.getChannelValue(lowestChannel + 5)*255);
+            c.setRed(d.data()->getChannelValue(lowestChannel + 3)*255);
+            c.setGreen(d.data()->getChannelValue(lowestChannel + 4)*255);
+            c.setBlue(d.data()->getChannelValue(lowestChannel + 5)*255);
             msg.insert("highlightedColor",c.name());
-            foreach(int devId,devIDs)
+            foreach(int devId,beamerIDs)
                 sendMsg(msg,devId);
     }
 }
-
+/*
 void beamerDeviceProvider::publishShutter(QList<Device> beamer)
 {
     QJsonObject msg;
@@ -90,5 +92,6 @@ void beamerDeviceProvider::publishShutter(BeamerDevice beamer, bool dismissDevID
       else
           sendMsg(msg);//sendToAll
 }
+*/
 
 

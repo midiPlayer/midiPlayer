@@ -6,13 +6,17 @@
 #include "device.h"
 #include "time.h"
 #include "trigger.h"
+#include "filtervirtualdevicemanager.h"
+
 class ColorWheelScene : public Scene, public WebSocketServerProvider
 {
 Q_OBJECT
+
 public:
-    ColorWheelScene(QList<Device> avDev,WebSocketServer *ws, JackProcessor *jackP,  QString name, QJsonObject serialized = QJsonObject());
-    QList<Device> getLights();
-    QList<Device> getUsedLights();
+    ColorWheelScene(VirtualDeviceManager *manager,WebSocketServer *ws, JackProcessor *jackP,  QString name, QJsonObject serialized = QJsonObject());
+
+    QMap<QString,QSharedPointer<DeviceState> > getDeviceState();
+
     void clientRegistered(QJsonObject msg, int id);
     void clientUnregistered(QJsonObject msg, int id);
     void clientMessage(QJsonObject msg, int id);
@@ -24,12 +28,12 @@ public:
     static QString getSceneTypeStringStaticaly();
 public slots:
     void triggered();
+    void updateDevices();
 private:
     struct PositionedDevice{
-        Device d;
+        QSharedPointer<Device> d;
         float angle;
     };
-    QList<Device> usedDevices;
     QList<PositionedDevice> positionedDevices;
     QTime stopwatch;
     QTime triggerStopwatch;
@@ -41,6 +45,8 @@ private:
     double getSpeed(double time);
     double getDelta();
     QColor normalizeColor(QColor color);
+
+    FilterVirtualDeviceManager filterDevManager;
 };
 
 #endif // COLORWHEELSCENE_H

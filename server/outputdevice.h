@@ -1,13 +1,13 @@
 #ifndef OUTPUTDEVICE_H
 #define OUTPUTDEVICE_H
 
-#include <QList>
+#include <QMap>
 #include "device.h"
 class OutputDevice
 {
 public:
     OutputDevice();
-    virtual void publish(QList<Device> devices,QList<Device> changes) = 0;
+    virtual void publish(QMap<QString, QSharedPointer<DeviceState> > allStates,QMap<QString, QSharedPointer<DeviceState> > changes) = 0;
 };
 
 #endif // OUTPUTDEVICE_H

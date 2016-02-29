@@ -6,15 +6,21 @@
 #include "trigger.h"
 #include <QTime>
 #include "colorbutton.h"
+#include "devicestate.h"
+#include "filtervirtualdevicemanager.h"
+#include <QMap>
 
 class FlashScene : public Scene, public WebSocketServerProvider
 {
     Q_OBJECT
 
 public:
-    FlashScene(WebSocketServer* ws, QList<Device> avDevP, JackProcessor *jackP,QString name,QJsonObject serialized);
+    FlashScene(WebSocketServer* ws, JackProcessor *jackP, VirtualDeviceManager *manager, QString name, QJsonObject serialized);
     QList<Device>getLights();
     QList<Device> getUsedLights();
+
+    QMap<QString,QSharedPointer<DeviceState> > getDeviceState();
+
     void start();
     void stop();
     void clientRegistered(QJsonObject msg, int id);
@@ -26,11 +32,12 @@ public:
     static QString getSceneTypeStringStaticaly();
 public slots:
     void triggered();
+    void reloadDevices();
     void reloadColor();
 private:
     Trigger trigger;
-    QList<Device> availableDevices;
-    QList<Device>flashState;
+    FilterVirtualDeviceManager filterVDevManager;
+    QMap<QString, QSharedPointer<DeviceState> >flashState;
     bool flashEnabled;
     QTime time;
     float smoothness;//0...0.5

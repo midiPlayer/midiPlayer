@@ -23,11 +23,11 @@
 
 
 MainWindow::MainWindow() :
-    settings(), usedLamps(),status(),offsetRequested(true),
-    availableDevices(), newAvailableDevices(), wss(this),jackProcessor(&wss,this),outDevices(),
-    timer(this),getChangesRunning(false), sceneBuilder(&wss,&availableDevices,&newAvailableDevices,&jackProcessor),
-    myBeamerDeviceProvider(&wss,&availableDevices),
-    beamerShutterSceneManager(&myBeamerDeviceProvider,&wss,&jackProcessor),  olaDeviceProvider(),
+    virtualDevManager(), settings(), status(),offsetRequested(true),
+    wss(this),jackProcessor(&wss,this),outDevices(),
+    timer(this),getChangesRunning(false), sceneBuilder(&wss,&virtualDevManager,&jackProcessor),
+    myBeamerDeviceProvider(&wss,&virtualDevManager),
+    beamerShutterSceneManager(&myBeamerDeviceProvider,&wss,&jackProcessor),  olaDeviceProvider(&virtualDevManager),
     remoteBeat(&wss,&jackProcessor),mainScene(),filieIoProv(&wss,&mainScene,this),
     monitorIO(&wss)
 {
@@ -37,34 +37,6 @@ MainWindow::MainWindow() :
     QCoreApplication::setOrganizationDomain("fdg-ab.de");
     QCoreApplication::setApplicationName("light master");
 
-    newAvailableDevices.append(QSharedPointer<Device>(new Device(0,4,"rgbw1",Device::RGBW,QVector3D(-2,-3,0))));
-    newAvailableDevices.append(QSharedPointer<Device>(new Device(4,4,"rgbw2",Device::RGBW,QVector3D(-1,1,0))));
-    newAvailableDevices.append(QSharedPointer<Device>(new Device(8,4,"rgbw3",Device::RGBW,QVector3D(2,-2,0))));
-    //newAvailableDevices.append(QSharedPointer<Device>(new Device(14,2,"white1",Device::White,QVector3D(2,-2,0))));
-    newAvailableDevices.append(QSharedPointer<Device>(new WhiteDevice(15,1,"White 1",QColor(255,0,0),QVector3D(3,0,0))));
-
-    foreach (QSharedPointer<Device> dev, newAvailableDevices){
-        availableDevices.append(Device(dev.data()));
-    }
-
-    /*
-     * Still the devices are memorized hard-coded in the programm.
-     * If you change the number of devices at this point, every scene-qml-file has to be edited,
-     * because there is a minColorNum for color changing...
-     * ...so it might be very nice to introduce a user-friendly gui to configure the devices,
-     * saved in a xml-file and parsed at the beginning!
-     * This was an explanation in best Jonas' English...
-     */
-
-
-    /*
-     * So here is a first step:
-     * You can now serialize and deserialize devices to JSON so it is easy to export them into a config file
-     * This was an comment in Jakob's English...
-     */
-    QJsonDocument d;
-    d.setArray(Device::serializeDevices(availableDevices));
-    qDebug() << d.toJson();
 
     outDevices.append(&myBeamerDeviceProvider);
     outDevices.append(&olaDeviceProvider);
@@ -84,31 +56,31 @@ MainWindow::MainWindow() :
 //if offset is true all lamps will be transmitet not only th changes
 void MainWindow::getChanges()
 {
-    QList<Device> newState;
+    QMap<QString, QSharedPointer<DeviceState> > newState;
     getChangesRunning = true;
-    QList<Device> changes;
+    QMap<QString, QSharedPointer<DeviceState> > changes;
 
-    newState = mainScene.data()->getLights();
-
-    QListIterator<Device> lampIter(availableDevices);
-    while(lampIter.hasNext()){
-        Device lamp = lampIter.next();
-        if(!newState.contains(lamp))//setzte alle unbenutzen Lampen auf 0
-            newState.append(lamp);
-    }
+    newState = mainScene.data()->getDeviceState();
 
 
-    //test for changes
-    QListIterator<Device> mapIter(newState);
-    while(mapIter.hasNext()){
-        Device lamp = mapIter.next();
-        Device old = lamp.findEqualDevice(status);
-        if(!old.valuesEqual(lamp) || offsetRequested){//value changed
-            changes.append(lamp);
-            status.removeAll(old);
-            status.append(lamp);//set status to new value
+    QMap<QString, QSharedPointer<Device> > avDev = virtualDevManager.getDevices();
+    foreach (QString deviceId, avDev.keys()) {
+        if(!newState.contains(deviceId)){//setzte alle unbenutzen Lampen auf 0
+            newState.insert(deviceId,avDev.value(deviceId).data()->createEmptyState());
+            changes.insert(deviceId,avDev.value(deviceId).data()->createEmptyState());
         }
     }
+
+    //test for changes
+    foreach (QString devId, newState.keys()) {
+        newState.value(devId).data()->publish();
+        if(offsetRequested || !status.contains(devId) || !status.value(devId).data()->equal(newState.value(devId).data())){
+            if(status.contains(devId))
+                status.remove(devId);
+            status.insert(devId,newState.value(devId));
+        }
+    }
+
     offsetRequested = false;
 
 
@@ -126,16 +98,10 @@ void MainWindow::loadScenes(QJsonObject data)
     wss.disconnectAllClients();
 
     timer.stop();
-    mainScene = QSharedPointer<DiaScene>(new DiaScene(availableDevices,&wss,&jackProcessor,&sceneBuilder,&monitorIO, "main"));
+    mainScene = QSharedPointer<DiaScene>(new DiaScene(&wss,&jackProcessor,&sceneBuilder,&monitorIO, "main"));
     mainScene.data()->loadSerialized(data);
     mainScene.data()->start();
-    usedLamps = mainScene.data()->getUsedLights();
 
-    QListIterator<Device> lampIter(usedLamps);
-    while(lampIter.hasNext()){
-        Device lamp = lampIter.next();
-        status.append(lamp);
-    }
     timer.start();
 
 }

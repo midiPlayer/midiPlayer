@@ -1,7 +1,14 @@
 #include "oladeviceprovider.h"
 #include <QDebug>
-OlaDeviceProvider::OlaDeviceProvider(): active(false), wrapper()
+#include "channeldevice.h"
+#include <QSharedPointer>
+OlaDeviceProvider::OlaDeviceProvider(VirtualDeviceManager *manager): filterDevManager(manager), active(false), wrapper()
 {
+    filterDevManager.addAcceptedType(Device::RGB);
+    filterDevManager.addAcceptedType(Device::RGBW);
+    filterDevManager.addAcceptedType(Device::White);
+
+
     ola::InitLogging(ola::OLA_LOG_WARN, ola::OLA_LOG_STDERR);
     if (wrapper.Setup())
         active = true;
@@ -16,18 +23,24 @@ OlaDeviceProvider::~OlaDeviceProvider()
     wrapper.Cleanup();
 }
 
-void OlaDeviceProvider::publish(QList<Device> outDevices, QList<Device> changes)
+void OlaDeviceProvider::publish(QMap<QString, QSharedPointer<DeviceState> > outDevices, QMap<QString, QSharedPointer<DeviceState> > changes)
 {
-    if(changes.length() == 0)
+    if(changes.count() == 0)
         return;
     static unsigned int universe = 0;
     ola::DmxBuffer buffer;
     buffer.Blackout();
-    foreach (Device d,outDevices) {
-        if(!(d.getType() == Device::RGB || d.getType() == Device::RGBW || d.getType() == Device::White))
-            continue;
-          foreach(int c,d.getChannels()){
-            buffer.SetChannel(c,d.getChannelValue(c)*255);
+    foreach (QString devId, outDevices.keys()) {
+        if(!filterDevManager.getDevices().contains(devId))
+            return;
+
+        QSharedPointer<ChannelDeviceState> d = outDevices.value(devId).dynamicCast<ChannelDeviceState>();
+        if(d.isNull())
+           continue;
+
+          foreach(int c,d.data()->getChannels()){
+              float cValue = d.data()->getChannelValue(c);
+            buffer.SetChannel(c,cValue*255);
         }
     }
     wrapper.GetClient()->SendDMX(universe, buffer, ola::client::SendDMXArgs());

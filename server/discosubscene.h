@@ -6,16 +6,17 @@
 #include "scene.h"
 #include <QSharedPointer>
 #include "scenebuilder.h"
+#include "channeldevicestate.h"
 class DiscoSubScene
 {
 public:
-    DiscoSubScene(int idP, QSharedPointer<Scene>sceneP, DeviceState::FusionType fusionTypeP, bool muteP = false, float opacityP = 1.0);
+    DiscoSubScene(int idP, QSharedPointer<Scene>sceneP, ChannelDeviceState::FusionType fusionTypeP, bool muteP = false, float opacityP = 1.0);
     DiscoSubScene(QJsonObject serialized, SceneBuilder *sceneBuilder, int idP);
     int id;
     QSharedPointer<Scene> scene;
     bool mute;
     float opacity;
-    DeviceState::FusionType fusionType;
+    ChannelDeviceState::FusionType fusionType;
     QJsonObject getJsonForClient();
     QJsonObject serialize(SceneBuilder *builder);
     void setFusinType(QString fusionTypeStr);

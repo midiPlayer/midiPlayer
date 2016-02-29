@@ -9,8 +9,8 @@
 
 #define KEY_KEYFRAMESCENE_KEYFRAMES "key_keyframescene_keyframes"
 
-KeyFrameScene::KeyFrameScene(QList<QSharedPointer<Device> > avDev, QString name, WebSocketServer *ws, QJsonObject serialized) :
-    Scene(name,serialized), WebSocketServerProvider(ws),wss(ws),watch(ws),
+KeyFrameScene::KeyFrameScene(VirtualDeviceManager *manager, QString name, WebSocketServer *ws, QJsonObject serialized) :
+    Scene(name,serialized), WebSocketServerProvider(ws),filterVDevManager(manager), wss(ws),watch(ws),
     musicPlayer(ws,serialized.value(KEY_MUSIC_PLAYER).toObject())
 {
     ws->registerProvider(this);
@@ -20,29 +20,30 @@ KeyFrameScene::KeyFrameScene(QList<QSharedPointer<Device> > avDev, QString name,
     connect(&watch,SIGNAL(stoped()),&musicPlayer,SLOT(stop()));
     connect(&watch,SIGNAL(timeSet()),this,SLOT(handleTimeChanged()));
 
-    foreach (QSharedPointer <Device> dev, avDev) {
-        myDevs.append(dev);//use all devs
-    }
+    filterVDevManager.addAcceptedType(Device::Beamer);
+    filterVDevManager.addAcceptedType(Device::RGB);
+    filterVDevManager.addAcceptedType(Device::RGBW);
+    filterVDevManager.addAcceptedType(Device::White);
 
     if(serialized.length() != 0 && serialized.contains(KEY_KEYFRAMESCENE_KEYFRAMES)){
         foreach (QJsonValue value, serialized.value(KEY_KEYFRAMESCENE_KEYFRAMES).toArray()) {
-            QSharedPointer<Keyframe> pointer = QSharedPointer<Keyframe>(new Keyframe(value.toObject(),wss));
+            QSharedPointer<Keyframe> pointer = QSharedPointer<Keyframe>(new Keyframe(value.toObject(),wss,&filterVDevManager));
             connect(pointer.data(),SIGNAL(deleteRequested(Keyframe*)),this,SLOT(removeKeyframe(Keyframe*)));
             keyframes.append(pointer);
         }
     }
 }
 
-QList<Device> KeyFrameScene::getLights()
+QMap<QString, QSharedPointer<DeviceState> > KeyFrameScene::getDeviceState()
 {
-    QList<Device> ret;
-    foreach (QSharedPointer<Device> devPrt,myDevs) {
-        Device dev(devPrt.data());
+    QMap<QString, QSharedPointer<DeviceState> > ret;
+
+    foreach (QString devId,filterVDevManager.getDevices().keys()) {
         QSharedPointer<Keyframe> min;
         QSharedPointer<Keyframe> max;
         double elapsed = (double)watch.getMSecs() / 1000.0;
         foreach (QSharedPointer<Keyframe> frame, keyframes) {
-            if(dev.getDeviceId() == frame.data()->state.deviceId){
+            if(devId == frame.data()->state.getDevice()->getDeviceId()){
                 if(frame.data()->isLiveEditing()){//override
                     min = frame;
                     max = QSharedPointer<Keyframe>();
@@ -57,29 +58,22 @@ QList<Device> KeyFrameScene::getLights()
             }
         }
         if(!min.isNull() && !max.isNull()){
-            dev.setState(min.data()->fusionWith(max,elapsed));
+            QSharedPointer<DeviceState> ptr = QSharedPointer<DeviceState>(min.data()->fusionWith(max,elapsed).copyToSharedPointer());
+            ret.insert(devId,ptr);
         }
         else if(!min.isNull()){
-            dev.setState(min.data()->state);
+            QSharedPointer<DeviceState> ptr = QSharedPointer<DeviceState>((min.data()->state).copyToSharedPointer());
+            ret.insert(devId,ptr);
         }
         else if(!max.isNull()){
-            dev.setState(max.data()->state);
+            QSharedPointer<DeviceState> ptr = QSharedPointer<DeviceState>(max.data()->state.copyToSharedPointer());
+            ret.insert(devId,ptr);
         }
-        ret.append(dev);
-
     }
 
     return ret;
 }
 
-QList<Device> KeyFrameScene::getUsedLights()
-{
-    QList<Device> ret;
-    foreach (QSharedPointer<Device> dev, myDevs) {
-        ret.append(Device(dev.data()));
-    }
-    return ret;
-}
 
 void KeyFrameScene::start()
 {
@@ -130,7 +124,7 @@ void KeyFrameScene::clientMessage(QJsonObject msg, int id)
     if(msg.contains("get_keyframes")){
 
         QString devId = msg.value("get_keyframes").toString();
-        foreach (QSharedPointer<Device> d, myDevs) {
+        foreach (QSharedPointer<Device> d, filterVDevManager.getDevices().values()) {
             if(d.data()->getDeviceId() != devId)
                 continue;
 
@@ -138,7 +132,7 @@ void KeyFrameScene::clientMessage(QJsonObject msg, int id)
              QJsonArray keyframesJson;
 
              foreach (QSharedPointer<Keyframe> k, keyframes) {
-                 if(k.data()->state.deviceId == devId){
+                 if(k.data()->state.getDevice()->getDeviceId() == devId){
                      keyframesJson.append(k.data()->providerId);
                  }
              }
@@ -152,12 +146,15 @@ void KeyFrameScene::clientMessage(QJsonObject msg, int id)
         QJsonObject insertCommand = msg.value("add_keyframe").toObject();
         QString devId = insertCommand.value("devId").toString();
         double time = insertCommand.value("time").toDouble();
-        foreach (QSharedPointer<Device> d, myDevs) {
-            if(d.data()->getDeviceId() == devId){
-                DeviceState state = d.data()->getState();
+        foreach (QString did, filterVDevManager.getDevices().keys()) {
+            if(did == devId){
+                ChannelDevice *d = dynamic_cast<ChannelDevice*>(filterVDevManager.getDevices().value(did).data());
+                if(d == NULL)
+                    continue;
+                ChannelDeviceState state = ChannelDeviceState(d->createEmptyChannelState().data());
                 QSharedPointer<Keyframe> next;
                 foreach (QSharedPointer<Keyframe> frame, keyframes) {
-                    if(devId == frame.data()->state.deviceId){
+                    if(devId == frame.data()->state.getDevice()->getDeviceId()){
                         if(next.isNull() || qAbs(frame.data()->time - time) < qAbs(next.data()->time - time)){
                             next = frame;
                             state = frame.data()->state;
@@ -165,7 +162,7 @@ void KeyFrameScene::clientMessage(QJsonObject msg, int id)
                     }
                 }
 
-                QSharedPointer<Keyframe> pointer = QSharedPointer<Keyframe>(new Keyframe(time,DeviceState(state),wss));
+                QSharedPointer<Keyframe> pointer = QSharedPointer<Keyframe>(new Keyframe(time,ChannelDeviceState(state),wss));
                 connect(pointer.data(),SIGNAL(deleteRequested(Keyframe*)),this,SLOT(removeKeyframe(Keyframe*)));
                 keyframes.append(pointer);
                 ret.insert("new_keyframe",pointer.data()->providerId);
@@ -186,13 +183,14 @@ void KeyFrameScene::clientMessage(QJsonObject msg, int id)
         QString to = copy.value("to").toString();
         clear(to);
 
-        foreach(QSharedPointer<Device> dev, myDevs){
-            if(dev.data()->getDeviceId() == to){
+        foreach(QString did, filterVDevManager.getDevices().keys()){
+            if(did == to){
+                ChannelDevice *dev = dynamic_cast<ChannelDevice*>(filterVDevManager.getDevices().value(did).data());
                 foreach (QSharedPointer<Keyframe> frame, keyframes) {
-                    if(frame.data()->state.deviceId == from){
-                        DeviceState state = dev.data()->getState();
+                    if(frame.data()->state.getDevice()->getDeviceId() == from){
+                        ChannelDeviceState state = ChannelDeviceState(dev->createEmptyChannelState().data());
                         state.tryImport(frame.data()->state);
-                        QSharedPointer<Keyframe> pointer = QSharedPointer<Keyframe>(new Keyframe(frame.data()->time,DeviceState(state),wss));
+                        QSharedPointer<Keyframe> pointer = QSharedPointer<Keyframe>(new Keyframe(frame.data()->time,ChannelDeviceState(state),wss));
                         connect(pointer.data(),SIGNAL(deleteRequested(Keyframe*)),this,SLOT(removeKeyframe(Keyframe*)));
                         keyframes.append(pointer);
                         QJsonObject ret;
@@ -242,10 +240,15 @@ void KeyFrameScene::handleTimeChanged()
     musicPlayer.setPosition(watch.getMSecs());
 }
 
+void KeyFrameScene::devicesChanged()
+{
+
+}
+
 QJsonArray KeyFrameScene::getLampsJson()
 {
     QJsonArray ret;
-    foreach (QSharedPointer<Device> dev, myDevs) {
+    foreach (QSharedPointer<Device> dev, filterVDevManager.getDevices().values()) {
         ret.append(getLampJson(dev));
     }
     return ret;
@@ -282,7 +285,7 @@ QJsonObject KeyFrameScene::getLampJson(QSharedPointer<Device> dev)
 void KeyFrameScene::clear(QString devId)
 {
     for(int i = 0; i < keyframes.length();){
-        if(keyframes.at(i).data()->state.deviceId == devId){
+        if(keyframes.at(i).data()->state.getDevice()->getDeviceId() == devId){
             keyframes.at(i).data()->beforeDelete();
             keyframes.removeAt(i);
             i=0;

@@ -14,10 +14,12 @@ class DiaScene : public Scene, public WebSocketServerProvider
 Q_OBJECT
 
 public:
-    DiaScene(QList<Device> avDev, WebSocketServer *ws, JackProcessor *jackP, SceneBuilder *builder,
+    DiaScene(WebSocketServer *ws, JackProcessor *jackP, SceneBuilder *builder,
              MonitorIO* monitorIoP, QString name, QJsonObject serialized = QJsonObject());
     QList<Device> getLights();
     QList<Device> getUsedLights();
+    QMap<QString,QSharedPointer<DeviceState> > getDeviceState();
+
     void clientRegistered(QJsonObject msg, int id);
     void clientUnregistered(QJsonObject msg, int id);
     void clientMessage(QJsonObject msg, int id);
@@ -34,7 +36,6 @@ public:
 public slots:
     void music();
 private:
-    QList<Device> availableDevices;
 
     QJsonObject getState(bool addScenes);
 

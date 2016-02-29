@@ -1,6 +1,7 @@
 #include "keyframe.h"
 #include "websocketserver.h"
 #include <QJsonArray>
+#include "channeldevice.h"
 /**
  * @brief Keyframe::Keyframe
  * A keyframe ist a point that stores the state of a lamp at a time
@@ -9,27 +10,27 @@
 #define KEY_KEYFRAME_TIME "keyframe_time"
 #define KEY_KEYFRAME_STATE "keyframe_state"
 
-Keyframe::Keyframe(double timeP, DeviceState stateP, WebSocketServer *ws) : state(stateP), time(timeP),
+Keyframe::Keyframe(double timeP, ChannelDeviceState stateP, WebSocketServer *ws) : state(stateP), time(timeP),
     WebSocketServerProvider(ws),wss(ws),liveEditing(false),liveEditor(-1)
 {
     ws->registerProvider(this);
 }
 
-Keyframe::Keyframe(QJsonObject serialized, WebSocketServer *ws) : state(serialized.value(KEY_KEYFRAME_STATE).toObject()),
+Keyframe::Keyframe(QJsonObject serialized, WebSocketServer *ws,VirtualDeviceManager * manager) : state(serialized.value(KEY_KEYFRAME_STATE).toObject(),manager),
     time(serialized.value(KEY_KEYFRAME_TIME).toDouble()),WebSocketServerProvider(ws),wss(ws),liveEditing(false), liveEditor(-1)
 {
     ws->registerProvider(this);
 }
 
 
-DeviceState Keyframe::fusionWith(QSharedPointer<Keyframe> later,double now)
+ChannelDeviceState Keyframe::fusionWith(QSharedPointer<Keyframe> later,double now)
 {
-    if(state.deviceId != later.data()->state.deviceId){
+    if(state.getDevice()->getDeviceId() != later.data()->state.getDevice()->getDeviceId()){
         throw("cannot fusion!");
     }
 
     double per = (now-time) / (later.data()->time - time);
-    return state.fusionWith(later.data()->state,DeviceState::AV,per);
+    return ChannelDeviceState(state.fusionWith(QSharedPointer<DeviceState>(later.data()->state.copyToSharedPointer()),ChannelDeviceState::AV,per).dynamicCast<ChannelDeviceState>().data());
 }
 
 QJsonObject Keyframe::serialize()

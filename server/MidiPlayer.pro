@@ -19,8 +19,6 @@ SOURCES += main.cpp\
     scene.cpp \
     keyframescene.cpp \
     beatscene1.cpp \
-    beatscene2.cpp \
-    overlayscene.cpp \
     discoscene.cpp \
     device.cpp \
     fusionscene.cpp \
@@ -44,24 +42,30 @@ SOURCES += main.cpp\
     colorwavescene.cpp \
     diascene.cpp \
     colorbutton.cpp \
-    dia.cpp \
     keyframe.cpp \
-    devicestate.cpp \
     stopwatch.cpp \
     fileioprovider.cpp \
     musicplayer.cpp \
     whitedevice.cpp \
     monitorio.cpp \
     diascenemonitorcontrol.cpp \
-    musicscene.cpp
+    musicscene.cpp \
+    virtualdevicemanager.cpp \
+    channeldevicestate.cpp \
+    devicestate.cpp \
+    channeldevice.cpp \
+    defaultvirtualdevicemanager.cpp \
+    dia.cpp \
+    filtervirtualdevicemanager.cpp \
+    hardcodedvirtualdevicemanager.cpp \
+    musicdevice.cpp \
+    musicdevicestate.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
     scene.h \
     keyframescene.h \
     beatscene1.h \
-    beatscene2.h \
-    overlayscene.h \
     discoscene.h \
     device.h \
     fusionscene.h \
@@ -87,14 +91,22 @@ HEADERS  += mainwindow.h\
     colorbutton.h \
     dia.h \
     keyframe.h \
-    devicestate.h \
     stopwatch.h \
     fileioprovider.h \
     musicplayer.h \
     whitedevice.h \
     monitorio.h \
     diascenemonitorcontrol.h \
-    musicscene.h
+    musicscene.h \
+    virtualdevicemanager.h \
+    channeldevicestate.h \
+    devicestate.h \
+    channeldevice.h \
+    defaultvirtualdevicemanager.h \
+    filtervirtualdevicemanager.h \
+    hardcodedvirtualdevicemanager.h \
+    musicdevice.h \
+    musicdevicestate.h
 
 FORMS    +=
 
