@@ -11,9 +11,8 @@ myProcess::myProcess(int firstImageP, int numImagesP, QString processCmd, QStrin
 
 void myProcess::start()
 {
-    qDebug() << "process started: first Image:"<<firstImage;
+//    qDebug() << "process started: first Image:"<<firstImage;
     procArgs << QString::number(firstImage) << QString::number(procId) << QString::number(numImages);
-    qDebug() << procArgs;
     worker.start(procCmd, procArgs);
 }
 
@@ -33,8 +32,10 @@ void myProcess::workerFinished(int code)
 void myProcess::readWorker()
 {
     QString read = QString(worker.readAll());
-    qDebug() << read;
-    progress = (read.toInt() - firstImage) / numImages;
+    QTextStream myteststream(&read);
+    int imageNr = 0;
+    myteststream >> imageNr;
+    progress = (float)(imageNr - firstImage) / (float)numImages;
     emit progressChanged(progress);
 }
 

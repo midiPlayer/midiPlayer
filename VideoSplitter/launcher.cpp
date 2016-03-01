@@ -26,7 +26,7 @@ Launcher::Launcher(int numImages, int numThreads, QString workerCommand, QString
     startProcess((numThreads -1)*iPerThread, numImages - (numThreads -1)*iPerThread);
 
     connect(&timer,SIGNAL(timeout()),this,SLOT(printProgress()));
-    timer.setInterval(1000);
+    timer.setInterval(100);
     timer.start();
 }
 
