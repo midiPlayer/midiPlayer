@@ -5,15 +5,15 @@
 void Launcher::startProcess(int first,int num)
 {
     runningProcs++;
-    QSharedPointer<myProcess> t = QSharedPointer<myProcess>(new myProcess(first,num,workCmd,procCount++));
+    QSharedPointer<myProcess> t = QSharedPointer<myProcess>(new myProcess(first,num,workCmd,workArgs,procCount++));
     connect(t.data(),SIGNAL(finished()),this,SLOT(workerFinished()));
     connect(t.data(),SIGNAL(error()),this,SLOT(workerError()));
     t.data()->start();
     process.append(t);
 }
 
-Launcher::Launcher(int numImages, int numThreads, QString workerCommand) : runningProcs(1),
-    timer(this),workCmd(workerCommand),procCount(0)
+Launcher::Launcher(int numImages, int numThreads, QString workerCommand, QStringList args) : runningProcs(0),
+    timer(this),workCmd(workerCommand),procCount(1),workArgs(args)
 {
     if(numThreads > numImages)
         numThreads = numImages;// more threads than images are useless!
