@@ -16,8 +16,8 @@
 #include "device.h"
 #include "websocketserver.h"
 
-#define DISSABLE_JACK
-#define DISSABLE_ANALYSE
+//#define DISSABLE_JACK
+//#define DISSABLE_ANALYSE
 
 #define KEY_MIN_LEVEL "minLevel"
 

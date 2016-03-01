@@ -147,6 +147,7 @@ ApplicationWindow {
        onConnectionSucceded: {
            requestType="monitor";
            display.visible = true;
+           backgroundWsc.requestType="asBeamer";
        }
        onConnectionFailed: {
            display.visible = false;
@@ -164,5 +165,19 @@ ApplicationWindow {
        }
    }
 
+   WebSocketConnector{
+       id:backgroundWsc
+       registrationParams: {
+           var msg = { "deviceId" : "beamer1"};
+           return JSON.stringify(msg);
+       }
 
+       onMessage: {
+           console.log(JSON.stringify(msg));
+           if(msg.color !== undefined){
+               display.color = msg.color
+
+           }
+       }
+   }
 }

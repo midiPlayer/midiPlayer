@@ -67,17 +67,18 @@ void MainWindow::getChanges()
     foreach (QString deviceId, avDev.keys()) {
         if(!newState.contains(deviceId)){//setzte alle unbenutzen Lampen auf 0
             newState.insert(deviceId,avDev.value(deviceId).data()->createEmptyState());
-            changes.insert(deviceId,avDev.value(deviceId).data()->createEmptyState());
         }
     }
 
     //test for changes
+    changes.clear();
     foreach (QString devId, newState.keys()) {
         newState.value(devId).data()->publish();
         if(offsetRequested || !status.contains(devId) || !status.value(devId).data()->equal(newState.value(devId).data())){
             if(status.contains(devId))
                 status.remove(devId);
             status.insert(devId,newState.value(devId));
+            changes.insert(devId,newState.value(devId));
         }
     }
 

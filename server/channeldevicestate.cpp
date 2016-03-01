@@ -169,7 +169,7 @@ bool ChannelDeviceState::equal(DeviceState *other)
     ChannelDeviceState *otherCDS = dynamic_cast<ChannelDeviceState*>(other);
     if(other == NULL)
         return false;
-    return (getChannels() == otherCDS->getChannels());
+    return (dmxChannels == otherCDS->dmxChannels);
 }
 
 void ChannelDeviceState::tryImport(ChannelDeviceState other)

@@ -32,7 +32,7 @@ void OlaDeviceProvider::publish(QMap<QString, QSharedPointer<DeviceState> > outD
     buffer.Blackout();
     foreach (QString devId, outDevices.keys()) {
         if(!filterDevManager.getDevices().contains(devId))
-            return;
+            continue;
 
         QSharedPointer<ChannelDeviceState> d = outDevices.value(devId).dynamicCast<ChannelDeviceState>();
         if(d.isNull())

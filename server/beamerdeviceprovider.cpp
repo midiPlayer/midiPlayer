@@ -55,10 +55,10 @@ void beamerDeviceProvider::publish(QMap<QString, QSharedPointer<DeviceState> > t
             c.setGreen(d.data()->getChannelValue(lowestChannel + 1)*255);
             c.setBlue(d.data()->getChannelValue(lowestChannel + 2)*255);
             msg.insert("color",c.name());
-            c.setRed(d.data()->getChannelValue(lowestChannel + 3)*255);
+            /*c.setRed(d.data()->getChannelValue(lowestChannel + 3)*255);
             c.setGreen(d.data()->getChannelValue(lowestChannel + 4)*255);
             c.setBlue(d.data()->getChannelValue(lowestChannel + 5)*255);
-            msg.insert("highlightedColor",c.name());
+            msg.insert("highlightedColor",c.name());*/
             foreach(int devId,beamerIDs)
                 sendMsg(msg,devId);
     }

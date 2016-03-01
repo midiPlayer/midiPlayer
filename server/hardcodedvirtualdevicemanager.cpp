@@ -1,7 +1,7 @@
 #include "hardcodedvirtualdevicemanager.h"
 #include "channeldevice.h"
 #include "whitedevice.h"
-
+#include "beamerdevice.h"
 /*
  * Still the devices are memorized hard-coded in the programm.
  * If you change the number of devices at this point, every scene-qml-file has to be edited,
@@ -23,6 +23,7 @@ HardcodedVirtualDeviceManager::HardcodedVirtualDeviceManager() : devices()
     addDev(QSharedPointer<Device>(new ChannelDevice(0,4,"rgbw1",Device::RGBW,QVector3D(-2,-3,0))));
     addDev(QSharedPointer<Device>(new ChannelDevice(4,4,"rgbw2",Device::RGBW,QVector3D(-1,1,0))));
     addDev(QSharedPointer<Device>(new ChannelDevice(8,4,"rgbw3",Device::RGBW,QVector3D(2,-2,0))));
+    addDev(QSharedPointer<Device>(new BeamerDevice(100,3,"beamer1")));
     addDev(QSharedPointer<Device>(new WhiteDevice(15,1,"White 1",QColor(255,0,0),QVector3D(3,0,0))));
 }
 
