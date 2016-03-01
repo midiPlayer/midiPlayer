@@ -13,7 +13,8 @@ void myProcess::start()
 {
     qDebug() << "process started: first Image:"<<firstImage;
     QStringList arguments;
-    arguments << "" + firstImage << "" + procId << "" + numImages;
+    arguments << QString::number(firstImage) << QString::number(procId) << QString::number(numImages);
+    qDebug() << arguments;
     worker.start(procCmd, arguments);
 }
 
