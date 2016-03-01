@@ -23,6 +23,7 @@ private:
     int runningProcs;
     QTimer timer;
     QString workCmd;
+    int procCount;
 };
 
 #endif // LAUNCHER_H

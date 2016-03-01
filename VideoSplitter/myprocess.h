@@ -7,7 +7,7 @@ class myProcess : public QObject
 Q_OBJECT
 
 public:
-    myProcess(int firstImageP, int numImagesP, QString processCmd);
+    myProcess(int firstImageP, int numImagesP, QString processCmd, int procIdP);
     void start();
     float getProgress();
 
@@ -25,6 +25,7 @@ private:
     QProcess worker;
     float progress;
     QString procCmd;
+    int procId;
 
 };
 
