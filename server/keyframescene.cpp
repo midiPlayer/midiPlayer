@@ -261,7 +261,7 @@ QJsonObject KeyFrameScene::getLampJson(QSharedPointer<Device> dev)
     QJsonObject ret;
     ret.insert("devID",dev.data()->getDeviceId());
     QJsonObject devChannels;
-    if(dev.data()->getType() == Device::RGBW || dev.data()->getType() == Device::RGB){
+    if(dev.data()->getType() == Device::RGBW || dev.data()->getType() == Device::RGB || dev.data()->getType() == Device::Beamer){
         devChannels.insert("r",true);
         devChannels.insert("g",true);
         devChannels.insert("b",true);
