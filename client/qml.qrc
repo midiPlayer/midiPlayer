@@ -26,7 +26,6 @@
         <file>AddScene.qml</file>
         <file>ColorPickerAddColor.js</file>
         <file>ColorPickerButton.qml</file>
-        <file>BeatScene2.qml</file>
         <file>icons/back.png</file>
         <file>icons/backTouched.png</file>
         <file>ColorScene.qml</file>
@@ -64,5 +63,6 @@
         <file>DiaListDelegate.qml</file>
         <file>DragRect.qml</file>
         <file>MusicScene.qml</file>
+        <file>KeyframeSceneDiscoWrapper.qml</file>
     </qresource>
 </RCC>

@@ -8,6 +8,10 @@ Item {
     width: parent.width
     height: parent.height
 
+    onRequestIdChanged: {
+        console.log("rqidset: " + requestId);
+    }
+
     ListModel {
         id:deviceModell
     }

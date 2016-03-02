@@ -39,8 +39,10 @@ DiaSceneMonitorControl::DiaSceneMonitorControl(WebSocketServer *ws,
 
 void DiaSceneMonitorControl::start()
 {
-    if(resources.length() < 1)
-        return; //no ressources to show
+    if(resources.length() < 1){
+        monitor->showRessource("",*fadeInDur);
+        return;
+    }
     monitor->showRessource(resources.at(0),*fadeInDur);
     currentRes = 0;
 }

@@ -55,12 +55,12 @@ Item{
             type:"colorWaveScene"
         }
         ListElement{
-            text: qsTr("Alternating Beat Scene")
-            type:"beatScene2"
-        }
-        ListElement{
             text: qsTr("Music Scene")
             type:"musicScene"
+        }
+        ListElement{
+            text: qsTr("Keyframe Scene")
+            type:"keyFrameScene"
         }
     }
 

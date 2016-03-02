@@ -288,8 +288,6 @@ Item {
                             var filename = "";
                             if(modelData.requestType === "beatScene1")
                                 filename = "BeatScene.qml";
-                            if(modelData.requestType === "beatScene2")
-                                filename = "BeatScene2.qml";
                             if(modelData.requestType === "falshScene")
                                 filename = "FlashScene.qml";
                             if(modelData.requestType === "colorScene")
@@ -301,7 +299,8 @@ Item {
                                 filename = "ColorWaveScene.qml";
                             if(modelData.requestType === "colorWheel")
                                 filename = "ColorWheelScene.qml";
-
+                            if(modelData.requestType === "keyFrameScene")
+                                filename = "KeyframeSceneDiscoWrapper.qml";
                             if(filename != ""){
                             var obj = Qt.createComponent(filename,0,this);
                                 if (obj.status === Component.Ready){

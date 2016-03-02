@@ -63,7 +63,7 @@ void DiaScene::clientMessage(QJsonObject msg, int id)
     }
     if(msg.contains("currentScene")){
         int newId = msg.value("currentScene").toInt(-1);
-        if(newId != -1 && newId < scenes.count()){
+        if(newId != -1 && newId < scenes.count() && newId != current){
             newId = order.indexOf(newId);
             fadeTimer.restart();
             if(fadingTo != -1)
