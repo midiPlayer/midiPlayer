@@ -64,5 +64,9 @@
         <file>DragRect.qml</file>
         <file>MusicScene.qml</file>
         <file>KeyframeSceneDiscoWrapper.qml</file>
+        <file>SelectVirtualDevieManagerHook.qml</file>
+        <file>SelectVirtualDevieManager.qml</file>
+        <file>SelectVirtualDeviceManagerGroup.qml</file>
+        <file>SelectVirtualDevieManagerImporter.js</file>
     </qresource>
 </RCC>

@@ -58,17 +58,18 @@ Item{
             }
             RowLayout{
                 width: parent.width
-                Text{
-                    height: parent.height
-                    verticalAlignment: Text.AlignVCenter
-                    text:qsTr("Color")
-                    color:"#fff";
-                }
+                spacing: 20
+
                 ColorPickerButton{
                     id: colorPickerButton
                     minColorNum: 3
                 }
+
+                SelectVirtualDevieManagerHook{
+                    id:vDevManager
+                }
             }
+
     }
 
 
@@ -84,6 +85,9 @@ Item{
                     smoothnessSlider.value  = msg.config.smoothnessChanged;
                 if(msg.config.colorButton!==undefined)
                     colorPickerButton.requestId = msg.config.colorButton;
+                if(msg.config.hasOwnProperty("selectDevManager"))
+                    vDevManager.requestId = msg.config.selectDevManager;
+
             }
             if(msg.smoothnessChanged !== undefined)
                 smoothnessSlider.value  = msg.smoothnessChanged;

@@ -58,7 +58,8 @@ SOURCES += main.cpp\
     filtervirtualdevicemanager.cpp \
     hardcodedvirtualdevicemanager.cpp \
     musicdevice.cpp \
-    musicdevicestate.cpp
+    musicdevicestate.cpp \
+    selectvirtualdevicemanager.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
@@ -104,7 +105,8 @@ HEADERS  += mainwindow.h\
     filtervirtualdevicemanager.h \
     hardcodedvirtualdevicemanager.h \
     musicdevice.h \
-    musicdevicestate.h
+    musicdevicestate.h \
+    selectvirtualdevicemanager.h
 
 FORMS    +=
 

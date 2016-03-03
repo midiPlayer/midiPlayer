@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import WebSocketConnector 1.1
+import QtQuick.Layouts 1.1
 
 Item{
     id: cpb
@@ -8,6 +9,8 @@ Item{
     property int minColorNum: 4
     property alias requestId : colorPickerWSC.requestId
 
+    width: colorPickerButton.width
+    height: colorPickerButton.height
 
     property bool initFinished : false;
 
@@ -39,7 +42,6 @@ Item{
     }
         Rectangle{
             id:colorPickerButton
-            x: 50
             radius: height/5
             height: 30
             width: 115

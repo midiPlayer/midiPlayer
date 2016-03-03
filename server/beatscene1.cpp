@@ -5,6 +5,7 @@
 #define KEY_SMOOTHNESS "smoothness"
 #define KEY_BACKGROUNDTRIGGER "backgroundTrigger"
 #define KEY_COLOR "color"
+#define KEY_SELECT_DEV_MANAGER "selectDevManager"
 
 #define l1 12
 #define l2 13
@@ -15,7 +16,8 @@
 
 BeatScene1::BeatScene1(VirtualDeviceManager *manager, JackProcessor *p, WebSocketServer *ws, QString name, QJsonObject serialized) :
     Scene(name,serialized),WebSocketServerProvider(ws),
-    filterDeviceManager(manager),c(0,0,0),highlighted(0,0,0),
+    filterDeviceManager(manager),selectDevManager(&filterDeviceManager,ws,
+    serialized.value(KEY_SELECT_DEV_MANAGER).toObject()), c(0,0,0),highlighted(0,0,0),
     backgroundTrigger(ws,p),smoothDuration(200),smoothTimer(),prev("prev"),next("next"), colorButton(ws)
 {
     if(serialized.length() != 0){
@@ -74,6 +76,7 @@ void BeatScene1::clientRegistered(QJsonObject msg, int id)
     config.insert("backgroundTrigger",backgroundTrigger.providerId);
     config.insert("smoothnessChanged",double(smoothDuration)/double(MAX_SMOOTHNESS_DUR));
     config.insert("colorButton", colorButton.providerId);
+    config.insert("selectDevManager", selectDevManager.providerId);
     replay.insert("config",config);
     sendMsg(replay,id,true);
 }
@@ -102,6 +105,7 @@ QJsonObject BeatScene1::serialize()
     ret.insert(KEY_BACKGROUNDTRIGGER,backgroundTrigger.serialize());
     ret.insert(KEY_COLOR,colorButton.serialize());
     ret.insert(KEY_SMOOTHNESS,smoothDuration);
+    ret.insert(KEY_SELECT_DEV_MANAGER,selectDevManager.serialize());
     return serializeScene(ret);
 }
 
@@ -132,7 +136,7 @@ void BeatScene1::generateNextScene()
 {
     //prev.import(getLights());
     QMap<QString, QSharedPointer<DeviceState> > ret;
-    QMap<QString, QSharedPointer<Device> > avDevs = filterDeviceManager.getDevices();
+    QMap<QString, QSharedPointer<Device> > avDevs = selectDevManager.getDevices();
     foreach (QString devId, avDevs.keys()) {
         QSharedPointer<Device> dev = avDevs.value(devId);
         QSharedPointer<DeviceState> state = dev.data()->createEmptyState();

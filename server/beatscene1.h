@@ -11,6 +11,7 @@
 #include "fusionscene.h"
 #include "colorbutton.h"
 #include "filtervirtualdevicemanager.h"
+#include "selectvirtualdevicemanager.h"
 
 class BeatScene1 : public Scene, public WebSocketServerProvider
 {
@@ -44,6 +45,7 @@ private:
     void generateNextScene();
     ColorButton colorButton;
     FilterVirtualDeviceManager filterDeviceManager;
+    SelectVirtualDeviceManager selectDevManager;
 
 };
 
