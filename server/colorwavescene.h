@@ -6,6 +6,7 @@
 #include <QTime>
 #include "colorbutton.h"
 #include "filtervirtualdevicemanager.h"
+#include "selectvirtualdevicemanager.h"
 
 class ColorWaveScene : public Scene, public WebSocketServerProvider
 {
@@ -43,6 +44,7 @@ private:
     ColorButton colorButton;
 
     FilterVirtualDeviceManager filterDeviceManager;
+    SelectVirtualDeviceManager selectDevManager;
 };
 
 #endif // COLORWAVESCENE_H

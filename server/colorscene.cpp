@@ -35,6 +35,7 @@ QJsonObject ColorScene::serialize()
     //nothing to serialize as this is an really trivial scene
     QJsonObject ret;
     ret.insert(KEY_COLOR,colorButton.serialize());
+    ret.insert(KEY_DEVS,selectDevManager.serialize());
     return serializeScene(ret);
 }
 
