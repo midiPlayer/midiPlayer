@@ -16,8 +16,7 @@
 
 BeatScene1::BeatScene1(VirtualDeviceManager *manager, JackProcessor *p, WebSocketServer *ws, QString name, QJsonObject serialized) :
     Scene(name,serialized),WebSocketServerProvider(ws),
-    filterDeviceManager(manager),selectDevManager(&filterDeviceManager,ws,
-    serialized.value(KEY_SELECT_DEV_MANAGER).toObject()), c(0,0,0),highlighted(0,0,0),
+    filterDeviceManager(manager),selectDevManager(&filterDeviceManager,ws), c(0,0,0),highlighted(0,0,0),
     backgroundTrigger(ws,p),smoothDuration(200),smoothTimer(),prev("prev"),next("next"), colorButton(ws)
 {
     if(serialized.length() != 0){
@@ -34,6 +33,8 @@ BeatScene1::BeatScene1(VirtualDeviceManager *manager, JackProcessor *p, WebSocke
     filterDeviceManager.addAcceptedType(Device::RGB);
     filterDeviceManager.addAcceptedType(Device::RGBW);
     filterDeviceManager.addAcceptedType(Device::Beamer);
+
+    selectDevManager.deserialize(serialized.value(KEY_SELECT_DEV_MANAGER).toObject());
 
 //    next.import();
 //    prev.import();
