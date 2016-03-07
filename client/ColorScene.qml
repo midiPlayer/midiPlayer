@@ -17,16 +17,13 @@ Item{
 
             RowLayout{
                 width: parent.width
-                Text{
-                    height: parent.height
-                    verticalAlignment: Text.AlignVCenter
-                    text:qsTr("Color")
-                    color:"#fff";
-                }
                 ColorPickerButton{
                     id: colorPickerButton
                     onlyOne: true
                     minColorNum: 1
+                }
+                SelectVirtualDevieManagerHook{
+                    id:vDevManager
                 }
             }
 
@@ -39,6 +36,8 @@ Item{
             if(msg.config !== undefined){
                 if(msg.config.colorButton!==undefined)
                     colorPickerButton.requestId = msg.config.colorButton;
+                if(msg.config.hasOwnProperty("devManager"))
+                    vDevManager.requestId = msg.config.devManager;
             }
         }
     }

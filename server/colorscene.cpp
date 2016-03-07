@@ -4,19 +4,23 @@
 #include "channeldevicestate.h"
 
 #define KEY_COLOR "color"
+#define KEY_DEVS "devices"
+
 ColorScene::ColorScene(VirtualDeviceManager *vDevManager, WebSocketServer *ws, QString name, QJsonObject serialized) :
-    Scene(name,serialized),WebSocketServerProvider(ws), filterVdevManager(vDevManager),colorButton(ws), deviceStates()
+    Scene(name,serialized),WebSocketServerProvider(ws), filterVdevManager(vDevManager),selectDevManager(&filterVdevManager,ws),colorButton(ws), deviceStates()
 {
 
     QList<QColor> colors;
     colors.append(QColor(255,255,255));//initial
     colorButton.setColors(colors);
 
+    connect(&selectDevManager,SIGNAL(virtualDevicesChanged()),this,SLOT(reloadDevices()));
+
     filterVdevManager.addAcceptedType(Device::Beamer);
     filterVdevManager.addAcceptedType(Device::RGB);
     filterVdevManager.addAcceptedType(Device::RGBW);
-    connect(&filterVdevManager,SIGNAL(virtualDevicesChanged()),this,SLOT(reloadDevices()));
-    reloadDevices();
+
+    selectDevManager.deserialize(serialized.value(KEY_DEVS).toObject());
 
     connect(&colorButton,SIGNAL(colorChanged()),this,SLOT(reloadColor()));
     if(serialized.length() != 0){
@@ -54,6 +58,7 @@ void ColorScene::clientRegistered(QJsonObject msg, int id)
     QJsonObject replay;
     QJsonObject config;
     config.insert("colorButton", colorButton.providerId);
+    config.insert("devManager",selectDevManager.providerId);
     replay.insert("config",config);
     sendMsg(replay,id,true);
 }
@@ -73,7 +78,7 @@ QString ColorScene::getRequestType()
 
 void ColorScene::reloadDevices()
 {
-    QMap<QString,QSharedPointer<Device> > avDevs = filterVdevManager.getDevices();
+    QMap<QString,QSharedPointer<Device> > avDevs = selectDevManager.getDevices();
     deviceStates.clear();
     foreach(QSharedPointer<Device> dev, avDevs.values() ){
         deviceStates.insert(dev.data()->getDeviceId(),dev.data()->createEmptyState());

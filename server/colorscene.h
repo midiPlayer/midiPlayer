@@ -5,6 +5,7 @@
 #include "websocketserverprovider.h"
 #include "colorbutton.h"
 #include "virtualdevicemanager.h"
+#include "selectvirtualdevicemanager.h"
 #include "filtervirtualdevicemanager.h"
 
 class ColorScene : public Scene, public WebSocketServerProvider
@@ -28,6 +29,7 @@ public slots:
 private:
     QMap<QString,QSharedPointer<DeviceState> > deviceStates;
     FilterVirtualDeviceManager filterVdevManager;
+    SelectVirtualDeviceManager selectDevManager;
 };
 
 #endif // COLORSCENE_H
