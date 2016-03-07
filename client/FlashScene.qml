@@ -66,16 +66,13 @@ Item{
             }
             RowLayout{
                 width: parent.width
-                Text{
-                    height: parent.height
-                    verticalAlignment: Text.AlignVCenter
-                    text:qsTr("Color")
-                    color:"#fff";
-                }
                 ColorPickerButton{
                     id: colorPickerButton
                     minColorNum: 1
                     onlyOne: true
+                }
+                SelectVirtualDevieManagerHook{
+                    id:vDevManager
                 }
             }
     }
@@ -93,6 +90,8 @@ Item{
                 durationSlider.value  = msg.durationChanged;
             if(msg.color !== undefined)
                 colorPickerButton.requestId = msg.color;
+            if(msg.hasOwnProperty("devManager"))
+                vDevManager.requestId = msg.devManager;
         }
     }
 

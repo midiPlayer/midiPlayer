@@ -34,6 +34,7 @@ public:
     static QString getSceneTypeStringStaticaly();
 public slots:
     void changeBackground();
+    void generateNextScene();
 private:
     QColor c;
     QColor highlighted;
@@ -42,7 +43,6 @@ private:
     QTime smoothTimer;
     FusionScene prev;
     FusionScene next;
-    void generateNextScene();
     ColorButton colorButton;
     FilterVirtualDeviceManager filterDeviceManager;
     SelectVirtualDeviceManager selectDevManager;

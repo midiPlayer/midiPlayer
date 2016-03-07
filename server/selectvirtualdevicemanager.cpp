@@ -58,7 +58,7 @@ void SelectVirtualDeviceManager::clientMessage(QJsonObject msg, int id)
     if(msg.contains("rmAccType")){
         selectedTypes.removeAll((Device::DeviceType)msg.value("rmAccType").toInt(-1));
     }
-    emit virtualDevicesChanged();
+    updateDevices();
     sendMsgButNotTo(msg,id,true);
 }
 

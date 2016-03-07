@@ -8,6 +8,7 @@
 #include "colorbutton.h"
 #include "devicestate.h"
 #include "filtervirtualdevicemanager.h"
+#include "selectvirtualdevicemanager.h"
 #include <QMap>
 
 class FlashScene : public Scene, public WebSocketServerProvider
@@ -37,6 +38,7 @@ public slots:
 private:
     Trigger trigger;
     FilterVirtualDeviceManager filterVDevManager;
+    SelectVirtualDeviceManager selectDevManager;
     QMap<QString, QSharedPointer<DeviceState> >flashState;
     bool flashEnabled;
     QTime time;

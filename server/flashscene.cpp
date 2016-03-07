@@ -7,9 +7,10 @@
 #define KEY_DURATION "duration"
 #define KEY_TRIGGER "trigger"
 #define KEY_COLOR "color"
+#define KEY_DEVS "devices"
 
 FlashScene::FlashScene(WebSocketServer* ws, JackProcessor *jackP, VirtualDeviceManager *manager, QString name, QJsonObject serialized) : Scene(name,serialized),
-    WebSocketServerProvider(ws),trigger(ws,jackP),filterVDevManager(manager),
+    WebSocketServerProvider(ws),trigger(ws,jackP),filterVDevManager(manager),selectDevManager(&filterVDevManager,ws),
     flashEnabled(false),flashState(),time(),smoothness(0),flashDuration(40),beatSpeed(INT_MAX),timePer(0.0f),colorButton(ws)
 {
 
@@ -31,16 +32,20 @@ FlashScene::FlashScene(WebSocketServer* ws, JackProcessor *jackP, VirtualDeviceM
     }
 
 
+    connect(&selectDevManager,SIGNAL(virtualDevicesChanged()),this,SLOT(reloadDevices()));
+
     filterVDevManager.addAcceptedType(Device::Beamer);
     filterVDevManager.addAcceptedType(Device::RGB);
     filterVDevManager.addAcceptedType(Device::RGBW);
-    connect(&filterVDevManager,SIGNAL(virtualDevicesChanged()),this,SLOT(reloadDevices()));
+
+    selectDevManager.deserialize(serialized.value(KEY_DEVS).toObject());
+
     reloadDevices();
 }
 
 void FlashScene::reloadDevices()
 {
-    QMap<QString,QSharedPointer<Device> > avDevs = filterVDevManager.getDevices();
+    QMap<QString,QSharedPointer<Device> > avDevs = selectDevManager.getDevices();
     flashState.clear();
     foreach(QSharedPointer<Device> dev, avDevs.values() ){
         flashState.insert(dev.data()->getDeviceId(),dev.data()->createEmptyState());
@@ -50,7 +55,6 @@ void FlashScene::reloadDevices()
 
 void FlashScene::reloadColor()
 {
-    flashState.clear();
     QColor color;
     if(colorButton.getColors().length() > 0)
         color = colorButton.getColors().at(0);
@@ -115,6 +119,7 @@ void FlashScene::clientRegistered(QJsonObject msg, int id)
     replay.insert("smoothnessChanged",smoothness);
     replay.insert("durationChanged",flashDuration);
     replay.insert("color",colorButton.providerId);
+    replay.insert("devManager",selectDevManager.providerId);
     sendMsg(replay,id,true);
 }
 
@@ -153,6 +158,7 @@ QJsonObject FlashScene::serialize(){
     ret.insert(KEY_SMOOTHNESS,smoothness);
     ret.insert(KEY_DURATION,flashDuration);
     ret.insert(KEY_COLOR,colorButton.serialize());
+    ret.insert(KEY_DEVS,selectDevManager.serialize());
     return serializeScene(ret);
 }
 

@@ -30,6 +30,8 @@ BeatScene1::BeatScene1(VirtualDeviceManager *manager, JackProcessor *p, WebSocke
 
     backgroundTrigger.triggerConfig.insert(Trigger::BEAT );
 
+    connect(&selectDevManager,SIGNAL(virtualDevicesChanged()),this,SLOT(generateNextScene()));
+
     filterDeviceManager.addAcceptedType(Device::RGB);
     filterDeviceManager.addAcceptedType(Device::RGBW);
     filterDeviceManager.addAcceptedType(Device::Beamer);
