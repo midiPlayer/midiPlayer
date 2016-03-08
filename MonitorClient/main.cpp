@@ -5,6 +5,7 @@
 #include "mediamanager.h"
 #include "../webSocketConnector/websocketconnector.h"
 #include <QQmlContext>
+#include <QDesktopWidget>
 
 int main(int argc, char *argv[])
 {
@@ -24,6 +25,9 @@ int main(int argc, char *argv[])
     QQmlContext* ctx = engine.rootContext();
     ctx->setContextProperty("urlParam", argc >= 2 ? argv[1] : "");
     ctx->setContextProperty("nameParam", argc >= 3 ? argv[2] : "");
+
+    ctx->setContextProperty("desktopWidth", app.desktop()->geometry().width());
+    ctx->setContextProperty("desktopHeight", app.desktop()->geometry().height());
 
 
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

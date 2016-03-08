@@ -9,13 +9,15 @@ ApplicationWindow {
     id:mainWindow
     objectName: "mainWindow"
     visible: true
-    width: 640
-    height: 480
+    width: desktopWidth
+    height: desktopHeight
     title: qsTr("Video Player")
 
     visibility: "FullScreen"
 
     property int fadeDur: 1000
+
+    //visibility: "FullScreen"
 
 
     MediaPlayer {
