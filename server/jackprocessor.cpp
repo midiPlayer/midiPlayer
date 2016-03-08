@@ -58,20 +58,19 @@ int JackProcessor::initJack(MainWindow* m) {
   }
   //jackMidi = jack_port_register(jackHandle, "Scene Recorder_MIDI_In", JACK_DEFAULT_MIDI_TYPE, JackPortIsInput, 0);
   jackMidiOut = jack_port_register(jackHandle, "Playback", JACK_DEFAULT_MIDI_TYPE, JackPortIsOutput, 0);
-  jack_set_process_callback(jackHandle, jack_static_callback, (void *)this);
-  if (jack_activate(jackHandle)) {
-      qDebug() << "Can't activate JACK.";
-    exit(1);
-  }  
-
   jackAudioIn = jack_port_register(jackHandle,"Audio Trigger in",JACK_DEFAULT_AUDIO_TYPE,JackPortIsInput,0);
 
   samplerate = jack_get_sample_rate (jackHandle);
   o = new_aubio_onset ("default", buffer_size, hop_size, samplerate);
   aubio_onset_set_threshold (o, 0.6);
   onset = new_fvec (1);
-
   tempo = new_aubio_tempo("default", buffer_size, hop_size, samplerate);
+
+  jack_set_process_callback(jackHandle, jack_static_callback, (void *)this);
+  if (jack_activate(jackHandle)) {
+      qDebug() << "Can't activate JACK.";
+    exit(1);
+  }
 
   return(0);
 }
@@ -141,6 +140,9 @@ int JackProcessor::jack_callback(jack_nframes_t nframes)
 
 #ifndef DISSABLE_ANALYSE
     ibuf = (jack_sample_t *)jack_port_get_buffer (jackAudioIn, nframes);
+
+    if(ibuf == NULL)
+        return 0;
 
     for (int j=0;j<(unsigned)nframes;j++) {
          fvec_set_sample(smpl, ibuf[j], pos);

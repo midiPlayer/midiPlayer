@@ -95,15 +95,15 @@ void DiaScene::clientMessage(QJsonObject msg, int id)
     }
     if(msg.contains("deleteScene")){
         int id = msg.value("deleteScene").toInt(-1);
-        if(current = id){
-            scenes.value(order.at(current)).data()->stop();
+        if(current != -1 && order.at(current) == id){
+            scenes.value(id).data()->stop();
             current = fadingTo == -1 ? -1 : fadingTo;
         }
-        if(fadingTo = id){
-            scenes.value(order.at(fadingTo)).data()->stop();
+        if(fadingTo != -1 && order.at(fadingTo) == id){
+            scenes.value(id).data()->stop();
             fadingTo = -1;
         }
-        if(id < scenes.count()){
+        if(scenes.contains(id)){
             scenes.remove(id);
             order.removeAll(id);
         }
