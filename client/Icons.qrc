@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/clone.png</file>
+    </qresource>
+</RCC>

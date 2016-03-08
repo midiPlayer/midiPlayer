@@ -260,7 +260,7 @@ Item{
                                     width: height
                                     Layout.minimumWidth: height
                                     Image{
-                                        source: "icons/delete.png"
+                                        source: "qrc:/icons/clone.png"
                                         anchors.fill: parent
                                         fillMode: Image.PreserveAspectFit
                                     }
