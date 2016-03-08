@@ -5,7 +5,7 @@
 #include "websocketserver.h"
 #include <QJsonArray>
 
-#define MUSIC_DIR "/home/theater/ownCloud/Theater16/music/"
+#define MUSIC_DIR "/home/theater/ownCloud/Theater16/music/final/"
 
 #define KEY_FILE "musicplayer_file"
 

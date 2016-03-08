@@ -37,6 +37,7 @@ FlashScene::FlashScene(WebSocketServer* ws, JackProcessor *jackP, VirtualDeviceM
     filterVDevManager.addAcceptedType(Device::Beamer);
     filterVDevManager.addAcceptedType(Device::RGB);
     filterVDevManager.addAcceptedType(Device::RGBW);
+    filterVDevManager.addAcceptedType(Device::White);
 
     selectDevManager.deserialize(serialized.value(KEY_DEVS).toObject());
 
@@ -61,10 +62,15 @@ void FlashScene::reloadColor()
 
     foreach (QSharedPointer<DeviceState> state, flashState) {
         QSharedPointer<ChannelDeviceState> cDevState = state.dynamicCast<ChannelDeviceState>();
+        if(cDevState.data()->getNumChannels() == 1){
+            cDevState.data()->setChannel(cDevState.data()->getFirstChannel(),1.0);
+        }
+        else{
         int firstC = cDevState.data()->getFirstChannel();
             cDevState.data()->setChannel(firstC+0,color.redF());
             cDevState.data()->setChannel(firstC+1,color.greenF());
             cDevState.data()->setChannel(firstC+2,color.blueF());
+        }
     }
 }
 

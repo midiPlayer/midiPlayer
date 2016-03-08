@@ -13,6 +13,8 @@ ApplicationWindow {
     height: 480
     title: qsTr("Video Player")
 
+    visibility: "FullScreen"
+
     property int fadeDur: 1000
 
 

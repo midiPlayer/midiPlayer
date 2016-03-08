@@ -151,6 +151,7 @@ void BeatScene1::generateNextScene()
 
         ret.insert(devId,d);
     }
+    prev.import(next.getDeviceState());
     next.reset();
     next.import(ret);
 
