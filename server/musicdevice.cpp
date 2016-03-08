@@ -5,7 +5,7 @@
 #include "websocketserver.h"
 #include <QJsonArray>
 
-#define MUSIC_DIR "/home/theater/ownCloud/Theater16/music/final/"
+#define MUSIC_DIR QDir::homePath() + "/theaterMusikFinal/"
 
 #define KEY_FILE "musicplayer_file"
 

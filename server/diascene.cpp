@@ -180,7 +180,8 @@ QJsonObject DiaScene::serialize()
     QJsonObject serialized;
 
     QJsonArray dias;
-    foreach(QSharedPointer<Dia> dia,scenes){
+    foreach(int index,order){
+        QSharedPointer<Dia> dia = scenes.value(index);
         dias.append(dia.data()->serialize(builder));
     }
     serialized.insert(KEY_DIAS,dias);

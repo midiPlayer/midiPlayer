@@ -1,0 +1,516 @@
+
+<!DOCTYPE patchbay>
+<patchbay version="0.4.0" name="patch1">
+ <output-sockets>
+  <socket exclusive="off" client="MidiPlayer" type="jack-audio" name="midiPlayer0">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-01" type="jack-audio" name="midiPlayer1">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-02" type="jack-audio" name="midiPlayer2">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-03" type="jack-audio" name="midiPlayer3">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-04" type="jack-audio" name="midiPlayer4">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-05" type="jack-audio" name="midiPlayer5">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-06" type="jack-audio" name="midiPlayer6">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-07" type="jack-audio" name="midiPlayer7">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-08" type="jack-audio" name="midiPlayer8">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-09" type="jack-audio" name="midiPlayer9">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-10" type="jack-audio" name="midiPlayer10">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-11" type="jack-audio" name="midiPlayer11">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-12" type="jack-audio" name="midiPlayer12">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-13" type="jack-audio" name="midiPlayer13">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-14" type="jack-audio" name="midiPlayer14">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-15" type="jack-audio" name="midiPlayer15">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-16" type="jack-audio" name="midiPlayer16">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-17" type="jack-audio" name="midiPlayer17">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-18" type="jack-audio" name="midiPlayer18">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-19" type="jack-audio" name="midiPlayer19">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-20" type="jack-audio" name="midiPlayer20">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-21" type="jack-audio" name="midiPlayer21">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-22" type="jack-audio" name="midiPlayer22">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-23" type="jack-audio" name="midiPlayer23">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-24" type="jack-audio" name="midiPlayer24">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-25" type="jack-audio" name="midiPlayer25">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-26" type="jack-audio" name="midiPlayer26">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-27" type="jack-audio" name="midiPlayer27">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-28" type="jack-audio" name="midiPlayer28">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-29" type="jack-audio" name="midiPlayer29">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-30" type="jack-audio" name="midiPlayer30">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-31" type="jack-audio" name="midiPlayer31">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-32" type="jack-audio" name="midiPlayer32">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-33" type="jack-audio" name="midiPlayer33">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-34" type="jack-audio" name="midiPlayer34">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-35" type="jack-audio" name="midiPlayer35">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-36" type="jack-audio" name="midiPlayer36">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-37" type="jack-audio" name="midiPlayer37">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-38" type="jack-audio" name="midiPlayer38">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-39" type="jack-audio" name="midiPlayer39">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-40" type="jack-audio" name="midiPlayer40">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-41" type="jack-audio" name="midiPlayer41">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-42" type="jack-audio" name="midiPlayer42">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-43" type="jack-audio" name="midiPlayer43">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-44" type="jack-audio" name="midiPlayer44">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-45" type="jack-audio" name="midiPlayer45">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-46" type="jack-audio" name="midiPlayer46">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-47" type="jack-audio" name="midiPlayer47">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-48" type="jack-audio" name="midiPlayer48">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-49" type="jack-audio" name="midiPlayer49">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-50" type="jack-audio" name="midiPlayer50">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-51" type="jack-audio" name="midiPlayer51">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-52" type="jack-audio" name="midiPlayer52">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-53" type="jack-audio" name="midiPlayer53">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-54" type="jack-audio" name="midiPlayer54">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-55" type="jack-audio" name="midiPlayer55">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-56" type="jack-audio" name="midiPlayer56">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-57" type="jack-audio" name="midiPlayer57">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-58" type="jack-audio" name="midiPlayer58">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-59" type="jack-audio" name="midiPlayer59">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-60" type="jack-audio" name="midiPlayer60">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-61" type="jack-audio" name="midiPlayer61">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-62" type="jack-audio" name="midiPlayer62">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-63" type="jack-audio" name="midiPlayer63">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-64" type="jack-audio" name="midiPlayer64">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-65" type="jack-audio" name="midiPlayer65">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-66" type="jack-audio" name="midiPlayer66">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-67" type="jack-audio" name="midiPlayer67">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-68" type="jack-audio" name="midiPlayer68">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-69" type="jack-audio" name="midiPlayer69">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-70" type="jack-audio" name="midiPlayer70">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-71" type="jack-audio" name="midiPlayer71">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-72" type="jack-audio" name="midiPlayer72">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-73" type="jack-audio" name="midiPlayer73">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-74" type="jack-audio" name="midiPlayer74">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-75" type="jack-audio" name="midiPlayer75">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-76" type="jack-audio" name="midiPlayer76">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-77" type="jack-audio" name="midiPlayer77">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-78" type="jack-audio" name="midiPlayer78">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-79" type="jack-audio" name="midiPlayer79">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-80" type="jack-audio" name="midiPlayer80">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-81" type="jack-audio" name="midiPlayer81">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-82" type="jack-audio" name="midiPlayer82">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-83" type="jack-audio" name="midiPlayer83">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-84" type="jack-audio" name="midiPlayer84">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-85" type="jack-audio" name="midiPlayer85">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-86" type="jack-audio" name="midiPlayer86">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-87" type="jack-audio" name="midiPlayer87">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-88" type="jack-audio" name="midiPlayer88">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-89" type="jack-audio" name="midiPlayer89">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-90" type="jack-audio" name="midiPlayer90">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-91" type="jack-audio" name="midiPlayer91">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-92" type="jack-audio" name="midiPlayer92">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-93" type="jack-audio" name="midiPlayer93">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-94" type="jack-audio" name="midiPlayer94">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-95" type="jack-audio" name="midiPlayer95">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-96" type="jack-audio" name="midiPlayer96">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-97" type="jack-audio" name="midiPlayer97">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-98" type="jack-audio" name="midiPlayer98">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+  <socket exclusive="off" client="MidiPlayer-99" type="jack-audio" name="midiPlayer99">
+   <plug>out_audiosink-actual-sink-jackaudio_1</plug>
+   <plug>out_audiosink-actual-sink-jackaudio_2</plug>
+  </socket>
+
+ </output-sockets>
+ <input-sockets>
+  <socket exclusive="off" client="MidiPlayerInput" type="jack-audio" name="aubio">
+   <plug>Audio Trigger in</plug>
+  </socket>
+ </input-sockets>
+ <slots/>
+ <cables>
+  <cable output="midiPlayer0" input="aubio" type="jack-audio"/>
+  <cable output="midiPlayer1" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer2" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer3" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer4" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer5" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer6" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer7" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer8" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer9" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer10" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer11" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer12" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer13" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer14" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer15" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer16" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer17" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer18" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer19" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer20" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer21" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer22" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer23" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer24" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer25" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer26" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer27" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer28" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer29" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer30" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer31" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer32" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer33" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer34" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer35" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer36" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer37" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer38" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer39" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer40" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer41" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer42" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer43" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer44" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer45" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer46" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer47" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer48" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer49" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer50" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer51" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer52" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer53" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer54" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer55" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer56" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer57" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer58" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer59" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer60" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer61" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer62" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer63" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer64" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer65" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer66" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer67" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer68" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer69" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer70" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer71" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer72" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer73" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer74" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer75" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer76" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer77" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer78" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer79" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer80" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer81" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer82" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer83" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer84" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer85" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer86" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer87" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer88" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer89" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer90" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer91" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer92" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer93" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer94" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer95" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer96" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer97" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer98" input="aubio" type="jack-audio"/>
+<cable output="midiPlayer99" input="aubio" type="jack-audio"/>
+
+ </cables>
+</patchbay>

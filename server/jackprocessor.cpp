@@ -52,7 +52,7 @@ int JackProcessor::initJack(MainWindow* m) {
     tempo_out = new_fvec(2);
 
     mainW = m;
-  if ((jackHandle = jack_client_open("MidiPlayer", JackNullOption, NULL)) == 0) {
+  if ((jackHandle = jack_client_open("MidiPlayerInput", JackNullOption, NULL)) == 0) {
     qDebug() << "JACK server not running ?";
     exit(1);
   }
