@@ -255,12 +255,31 @@ Item{
                                     Layout.fillWidth: true
                                 }
 
+                                Item{
+                                    height: parent.height
+                                    width: height
+                                    Layout.minimumWidth: height
+                                    Image{
+                                        source: "icons/delete.png"
+                                        anchors.fill: parent
+                                        fillMode: Image.PreserveAspectFit
+                                    }
+
+                                    MouseArea{
+                                        anchors.fill: parent
+                                        onClicked: {
+                                                var msg = {"cloneScene":diaLayout.id};
+                                                wsc.send = JSON.stringify(msg);
+                                            }
+                                        }
+                                }
+
 
                                 Item{
                                     height: parent.height
                                     width: height
-                                    anchors.right: parent.right
-                                    anchors.rightMargin: 20
+
+                                    Layout.rightMargin: 20
                                     Image{
                                         source: "icons/delete.png"
                                         anchors.fill: parent
@@ -295,6 +314,8 @@ Item{
                                         }
                                     }
                                 }
+
+
                             }
 
 

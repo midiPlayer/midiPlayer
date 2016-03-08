@@ -109,6 +109,11 @@ void DiaScene::clientMessage(QJsonObject msg, int id)
         }
         sendMsg(getState(true),false);
     }
+    if(msg.contains("cloneScene")){
+        int sceneId = msg.value("cloneScene").toInt(-1);
+        addScene(QSharedPointer<Dia>(new Dia(scenes.value(sceneId).data()->serialize(builder)
+                                             ,builder,wss,jack,monitorIo)));
+    }
     if(msg.contains("musicNotification")){
         setNextOnMusic(msg.value("musicNotification").toBool(false));
         sendMsgButNotTo(msg,id,false);
