@@ -13,11 +13,9 @@ ApplicationWindow {
     height: desktopHeight
     title: qsTr("Video Player")
 
-    visibility: "FullScreen"
 
     property int fadeDur: 1000
 
-    //visibility: "FullScreen"
 
 
     MediaPlayer {
