@@ -44,6 +44,7 @@ private:
     QTimer timer;
     void startTimer();
     void stopTimer();
+    bool running;
 };
 
 #endif // TRIGGER_H

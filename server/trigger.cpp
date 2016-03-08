@@ -8,7 +8,7 @@
 
 Trigger::Trigger(WebSocketServer* ws, JackProcessor* jackP, QJsonObject serialized) : QObject(0),
     WebSocketServerProvider(ws),jack(jackP),beatCount(0),numBeats(0),interval(1000),randomness(0.0),
-    timer(this)
+    timer(this), running(false)
 {
     ws->registerProvider(this);
     if(serialized.length() != 0){
@@ -23,14 +23,19 @@ Trigger::Trigger(WebSocketServer* ws, JackProcessor* jackP, QJsonObject serializ
 
 void Trigger::start()
 {
+    running = true;
     connect(jack,SIGNAL(beatNotification()),this,SLOT(beat()));
     connect(jack,SIGNAL(onsetNotification()),this,SLOT(onset()));
+    if(triggerConfig.contains(TIMER))
+        startTimer();
 }
 
 void Trigger::stop()
 {
+    running = false;
     disconnect(jack,SIGNAL(beatNotification()),this,SLOT(beat()));
     disconnect(jack,SIGNAL(onsetNotification()),this,SLOT(onset()));
+    stopTimer();
 }
 
 void Trigger::clientRegistered(QJsonObject msg, int clientId)
@@ -103,6 +108,8 @@ void Trigger::onset()
 
 void Trigger::startTimer()
 {
+    if(!running)
+        return;
     int i = interval + randomness*(2*interval * ((float)rand() / (float)RAND_MAX) - interval);
     timer.start(i);
 }
