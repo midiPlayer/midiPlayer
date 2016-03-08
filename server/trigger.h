@@ -5,6 +5,7 @@
 #include <QSet>
 #include <QObject>
 #include "serializable.h"
+#include <QTimer>
 
 class Trigger : public QObject, public WebSocketServerProvider, public Serializable
 {
@@ -26,6 +27,7 @@ public:
 public slots:
     void beat();
     void onset();
+    void onTimer();
 signals:
     void trigger();
 private:
@@ -35,6 +37,13 @@ private:
     int numBeats;
     int beatCount;
     void triggerInt();
+
+    int interval;
+    float randomness;
+
+    QTimer timer;
+    void startTimer();
+    void stopTimer();
 };
 
 #endif // TRIGGER_H

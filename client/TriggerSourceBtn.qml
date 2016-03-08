@@ -70,6 +70,7 @@ import WebSocketConnector 1.1
                         beatBtn.isOn = false;
                     }
                     sendState();
+                    stackView.push(Qt.resolvedUrl("TriggerTimerConfig.qml"),{"ws":stateWsc});
                 }
                 onStateOff: sendState();
             }

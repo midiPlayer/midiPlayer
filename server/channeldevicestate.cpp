@@ -4,6 +4,7 @@
 
 #include "channeldevice.h"
 #include <QSharedPointer>
+#include "devicenotfoundexception.h"
 
 #define KEY_DEVICESTATE_DEV_ID "devicestate_dev_id"
 #define KEY_DEVICESTATE_CHANNELS "devicestate_channels"
@@ -24,12 +25,13 @@ ChannelDeviceState::ChannelDeviceState(const ChannelDeviceState &state) : device
 ChannelDeviceState::ChannelDeviceState(ChannelDeviceState *state) : device(state->device), dmxChannels(state->dmxChannels)
 { }
 
+
 ChannelDeviceState::ChannelDeviceState(QJsonObject serialized,VirtualDeviceManager *manager) : dmxChannels()
 {
     QMap<QString,QSharedPointer<Device> > available = manager->getDevices();
     QString devId = serialized.value(KEY_DEVICESTATE_DEV_ID).toString();
     if(!available.contains(devId))
-        throw("no device found for given device id! Can't create device state");
+        throw(DeviceNotFoundException());
 
     device = (available.value(devId).dynamicCast<ChannelDevice>().data());
 

@@ -4,11 +4,14 @@
 #include "serializable.h"
 #include "devicestate.h"
 #include "virtualdevicemanager.h"
+#include <exception>
 class ChannelDevice;
+
 class ChannelDeviceState : public Serializable, public DeviceState
 {
 
 public:
+
     ChannelDeviceState(ChannelDevice *deviceP);
     ChannelDeviceState(const ChannelDeviceState &state);
     ChannelDeviceState(ChannelDeviceState *state);

@@ -4,7 +4,7 @@
 #include <QJsonArray>
 #include "websocketserver.h"
 #include "whitedevice.h"
-
+#include "devicenotfoundexception.h"
 #define KEY_MUSIC_PLAYER "music_player"
 
 #define KEY_KEYFRAMESCENE_KEYFRAMES "key_keyframescene_keyframes"
@@ -27,9 +27,13 @@ KeyFrameScene::KeyFrameScene(VirtualDeviceManager *manager, QString name, WebSoc
 
     if(serialized.length() != 0 && serialized.contains(KEY_KEYFRAMESCENE_KEYFRAMES)){
         foreach (QJsonValue value, serialized.value(KEY_KEYFRAMESCENE_KEYFRAMES).toArray()) {
+            try{
             QSharedPointer<Keyframe> pointer = QSharedPointer<Keyframe>(new Keyframe(value.toObject(),wss,&filterVDevManager));
             connect(pointer.data(),SIGNAL(deleteRequested(Keyframe*)),this,SLOT(removeKeyframe(Keyframe*)));
             keyframes.append(pointer);
+            }catch(DeviceNotFoundException& e){
+                qDebug() << "keyframe could not be created.";
+            }
         }
     }
 }

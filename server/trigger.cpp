@@ -3,14 +3,22 @@
 
 #define KEY_SOURCE "source"
 #define KEY_NUM_BEATS "numBeats"
+#define KEY_TIMER_INTERVAL "timerInterval"
+#define KEY_TIMER_RANDOM "timerRand"
+
 Trigger::Trigger(WebSocketServer* ws, JackProcessor* jackP, QJsonObject serialized) : QObject(0),
-    WebSocketServerProvider(ws),jack(jackP),beatCount(0),numBeats(0)
+    WebSocketServerProvider(ws),jack(jackP),beatCount(0),numBeats(0),interval(1000),randomness(0.0),
+    timer(this)
 {
     ws->registerProvider(this);
     if(serialized.length() != 0){
         loadSerialized(serialized);
     }
 
+    interval = serialized.value(KEY_TIMER_INTERVAL).toInt(interval);
+    randomness = serialized.value(KEY_TIMER_RANDOM).toDouble(randomness);
+
+    connect(&timer,SIGNAL(timeout()),this,SLOT(onTimer()));
 }
 
 void Trigger::start()
@@ -49,6 +57,19 @@ void Trigger::clientMessage(QJsonObject msg, int clientId)
     if(msg.contains("manual")){
         emit trigger();
     }
+    if(msg.contains(KEY_TIMER_INTERVAL)){
+        interval = (int)msg.value(KEY_TIMER_INTERVAL).toDouble(interval);
+        stopTimer();
+        startTimer();
+        sendMsgButNotTo(msg,clientId,true);
+    }
+    if(msg.contains(KEY_TIMER_RANDOM)){
+        randomness = msg.value(KEY_TIMER_RANDOM).toDouble(randomness);
+        sendMsgButNotTo(msg,clientId,true);
+    }
+    if(msg.contains("getState")){
+        sendMsg(getState(),clientId,true);
+    }
 }
 
 QString Trigger::getRequestType()
@@ -61,6 +82,9 @@ QJsonObject Trigger::serialize()
     QJsonObject ret;
     ret.insert(KEY_SOURCE,getTriggerSourceJson());
     ret.insert(KEY_NUM_BEATS,numBeats);
+
+    ret.insert(KEY_TIMER_INTERVAL,interval);
+    ret.insert(KEY_TIMER_RANDOM,randomness);
     return ret;
 }
 
@@ -75,6 +99,25 @@ void Trigger::onset()
 
     if(triggerConfig.contains(ONSET))
         triggerInt();
+}
+
+void Trigger::startTimer()
+{
+    int i = interval + randomness*(2*interval * ((float)rand() / (float)RAND_MAX) - interval);
+    timer.start(i);
+}
+
+void Trigger::stopTimer()
+{
+    timer.stop();
+}
+
+void Trigger::onTimer()
+{
+    if(triggerConfig.contains(TIMER)){
+        triggerInt();
+        startTimer();
+    }
 }
 
 QJsonObject Trigger::getTriggerSourceJson()
@@ -99,6 +142,8 @@ QJsonObject Trigger::getState()
     QJsonObject state;
     state.insert("setTrigger",getTriggerSourceJson());
     state.insert(KEY_NUM_BEATS,numBeats);
+    state.insert(KEY_TIMER_INTERVAL,interval);
+    state.insert(KEY_TIMER_RANDOM,randomness);
     return state;
 }
 
@@ -117,10 +162,14 @@ void Trigger::setState(QJsonObject fgt)
             triggerConfig.remove(BEAT);
     }
     if(fgt.contains("timer")){
-        if(fgt.value("timer").toBool())
+        if(fgt.value("timer").toBool()){
             triggerConfig.insert(TIMER);
-        else
+            startTimer();
+        }
+        else{
             triggerConfig.remove(TIMER);
+            stopTimer();
+        }
     }
 }
 

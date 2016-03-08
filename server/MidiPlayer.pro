@@ -59,7 +59,8 @@ SOURCES += main.cpp\
     hardcodedvirtualdevicemanager.cpp \
     musicdevice.cpp \
     musicdevicestate.cpp \
-    selectvirtualdevicemanager.cpp
+    selectvirtualdevicemanager.cpp \
+    devicenotfoundexception.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
@@ -106,7 +107,8 @@ HEADERS  += mainwindow.h\
     hardcodedvirtualdevicemanager.h \
     musicdevice.h \
     musicdevicestate.h \
-    selectvirtualdevicemanager.h
+    selectvirtualdevicemanager.h \
+    devicenotfoundexception.h
 
 FORMS    +=
 
