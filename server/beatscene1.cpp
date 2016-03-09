@@ -1,11 +1,14 @@
 #include "beatscene1.h"
 #include <QDebug>
 #include "websocketserver.h"
+#include "math.h"
 
 #define KEY_SMOOTHNESS "smoothness"
 #define KEY_BACKGROUNDTRIGGER "backgroundTrigger"
 #define KEY_COLOR "color"
 #define KEY_SELECT_DEV_MANAGER "selectDevManager"
+#define KEY_NUM_CHANGING_DEVS "changingDevices"
+#define KEY_SAME_COLOR "sameColor"
 
 #define l1 12
 #define l2 13
@@ -16,8 +19,9 @@
 
 BeatScene1::BeatScene1(VirtualDeviceManager *manager, JackProcessor *p, WebSocketServer *ws, QString name, QJsonObject serialized) :
     Scene(name,serialized),WebSocketServerProvider(ws),
-    filterDeviceManager(manager),selectDevManager(&filterDeviceManager,ws), c(0,0,0),highlighted(0,0,0),
-    backgroundTrigger(ws,p),smoothDuration(200),smoothTimer(),prev("prev"),next("next"), colorButton(ws)
+    filterDeviceManager(manager),selectDevManager(&filterDeviceManager,ws),
+    backgroundTrigger(ws,p),smoothDuration(200),smoothTimer(),prev("prev"),next("next"), colorButton(ws),
+    numChangingDevices(0), sameColor(true)
 {
     if(serialized.length() != 0){
         if(serialized.contains(KEY_SMOOTHNESS)){
@@ -28,9 +32,12 @@ BeatScene1::BeatScene1(VirtualDeviceManager *manager, JackProcessor *p, WebSocke
         }
     }
 
+    numChangingDevices = serialized.value(KEY_NUM_CHANGING_DEVS).toInt(numChangingDevices);
+    sameColor = serialized.value(KEY_SAME_COLOR).toBool(sameColor);
+
     backgroundTrigger.triggerConfig.insert(Trigger::BEAT );
 
-    connect(&selectDevManager,SIGNAL(virtualDevicesChanged()),this,SLOT(generateNextScene()));
+    connect(&selectDevManager,SIGNAL(virtualDevicesChanged()),this,SLOT(devicesChanged()));
 
     filterDeviceManager.addAcceptedType(Device::RGB);
     filterDeviceManager.addAcceptedType(Device::RGBW);
@@ -41,7 +48,7 @@ BeatScene1::BeatScene1(VirtualDeviceManager *manager, JackProcessor *p, WebSocke
 //    next.import();
 //    prev.import();
 
-    connect(&backgroundTrigger,SIGNAL(trigger()),this,SLOT(changeBackground()));
+    connect(&backgroundTrigger,SIGNAL(trigger()),this,SLOT(generateNextScene()));
     ws->registerProvider(this);
     smoothTimer.start();
 }
@@ -80,6 +87,9 @@ void BeatScene1::clientRegistered(QJsonObject msg, int id)
     config.insert("smoothnessChanged",double(smoothDuration)/double(MAX_SMOOTHNESS_DUR));
     config.insert("colorButton", colorButton.providerId);
     config.insert("selectDevManager", selectDevManager.providerId);
+    config.insert("numDevs",selectDevManager.getDevices().count());
+    config.insert(KEY_NUM_CHANGING_DEVS,numChangingDevices);
+    config.insert(KEY_SAME_COLOR,sameColor);
     replay.insert("config",config);
     sendMsg(replay,id,true);
 }
@@ -93,6 +103,12 @@ void BeatScene1::clientMessage(QJsonObject msg, int id)
 {
     if(msg.contains("smoothnessChanged")){
         smoothDuration = msg.value("smoothnessChanged").toDouble(0)*MAX_SMOOTHNESS_DUR;
+    }
+    if(msg.contains(KEY_NUM_CHANGING_DEVS)){
+        numChangingDevices =  round(msg.value(KEY_NUM_CHANGING_DEVS).toDouble(numChangingDevices));
+    }
+    if(msg.contains(KEY_SAME_COLOR)){
+        sameColor = msg.value(KEY_SAME_COLOR).toBool(sameColor);
     }
     sendMsgButNotTo(msg,id,true);
 }
@@ -109,6 +125,8 @@ QJsonObject BeatScene1::serialize()
     ret.insert(KEY_COLOR,colorButton.serialize());
     ret.insert(KEY_SMOOTHNESS,smoothDuration);
     ret.insert(KEY_SELECT_DEV_MANAGER,selectDevManager.serialize());
+    ret.insert(KEY_NUM_CHANGING_DEVS,numChangingDevices);
+    ret.insert(KEY_SAME_COLOR,sameColor);
     return serializeScene(ret);
 }
 
@@ -122,32 +140,63 @@ QString BeatScene1::getSceneTypeStringStaticaly()
     return "beatScene1";
 }
 
-
-void BeatScene1::changeBackground()
+void BeatScene1::devicesChanged()
 {
-    QList <QColor> options=colorButton.getColors();
-    QColor last = c;
-    while((last == c || c == highlighted) && options.length() > 2)
-    {
-        int i = rand() % options.length();
-        c = options.at(i);
-    }
+    QJsonObject config;
+    config.insert("numDevs",selectDevManager.getDevices().count());
+    QJsonObject msg;
+    msg.insert("config",config);
+    sendMsg(msg,true);
     generateNextScene();
 }
 
 void BeatScene1::generateNextScene()
 {
-    //prev.import(getLights());
     QMap<QString, QSharedPointer<DeviceState> > ret;
     QMap<QString, QSharedPointer<Device> > avDevs = selectDevManager.getDevices();
+
+    //choose devices
+    QList<QString> freeDevs = selectDevManager.getDevices().keys();
+    QList<QString> chosenDevs;
+    if(numChangingDevices == 0)
+        chosenDevs = freeDevs;
+    else{
+        for (int i = 0; i < numChangingDevices && freeDevs.count() > 0 ; i++) {
+            int index = rand() % freeDevs.count();
+            chosenDevs.append(freeDevs.at(index));
+            freeDevs.removeAt(index);
+        }
+    }
+
+    QColor commonColor = getNextColor();
+
     foreach (QString devId, avDevs.keys()) {
+
+        //not chosen devices ceep their old state
+        if(!chosenDevs.contains(devId) && next.getDeviceState().contains(devId)){
+            ret.insert(devId,next.getDeviceState().value(devId));
+            continue;
+        }
+
         QSharedPointer<Device> dev = avDevs.value(devId);
         QSharedPointer<DeviceState> state = dev.data()->createEmptyState();
         QSharedPointer<ChannelDeviceState> d = state.dynamicCast<ChannelDeviceState>();
         int firstChannel = d.data()->getFirstChannel();
-        d.data()->setChannel(firstChannel + 0,c.red()/255.0f);
-        d.data()->setChannel(firstChannel + 1,c.green()/255.0f);
-        d.data()->setChannel(firstChannel + 2,c.blue()/255.0f);
+        if(sameColor){
+            d.data()->setChannel(firstChannel + 0,commonColor.red()/255.0f);
+            d.data()->setChannel(firstChannel + 1,commonColor.green()/255.0f);
+            d.data()->setChannel(firstChannel + 2,commonColor.blue()/255.0f);
+        }
+        else{
+            do{
+                QColor c = getNextColor();
+                d.data()->setChannel(firstChannel + 0,c.red()/255.0f);
+                d.data()->setChannel(firstChannel + 1,c.green()/255.0f);
+                d.data()->setChannel(firstChannel + 2,c.blue()/255.0f);
+            }while(colorButton.getColors().length() > 2 &&
+                   next.getDeviceState().contains(devId) &&
+                   next.getDeviceState().value(devId).data()->equal(d.data()));
+        }
 
         ret.insert(devId,d);
     }
@@ -156,6 +205,13 @@ void BeatScene1::generateNextScene()
     next.import(ret);
 
     smoothTimer.restart();
+}
+
+QColor BeatScene1::getNextColor()
+{
+    QList <QColor> options=colorButton.getColors();
+    int i = rand() % options.length();
+    return options.at(i);
 }
 
 

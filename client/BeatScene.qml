@@ -18,13 +18,7 @@ Item{
                     width: parent.width
                     columns: 2
                     rowSpacing: 20
-                    Text{
-                        text:qsTr("Foreground trigger:")
-                        color:"#fff";
-                    }
-                    TriggerSourceBtn{
-                        id:foregroundBtn
-                    }
+
                         Text{
                             text:qsTr("Background trigger:")
                             color:"#fff";
@@ -32,29 +26,48 @@ Item{
                         TriggerSourceBtn{
                             id:backroundBtn
                         }
-                }
-            }
-
-            RowLayout{
-                width: parent.width
-                Text{
-                    text:qsTr("Smoothness")
-                    color:"#fff";
-                }
-                Slider{
-                    id: smoothnessSlider
-                    minimumValue: 0
-                    maximumValue: 0.5
-                    Layout.preferredWidth: 200
-                    onValueChanged: {
-                        if(pressed){
-                            var mesage = new Object();
-                            mesage.smoothnessChanged = value;
-                            wsc.send = JSON.stringify(mesage);
+                        Text {
+                            text: qsTr("changing Devices")
+                            color:"#fff";
                         }
-                    }
-                }
+                        RowLayout{
+                            Slider{
+                                id:numChangingDevSlider
+                                Layout.fillWidth: true;
+                                stepSize: 1
+                                minimumValue: 0
+                                maximumValue: 20
 
+                                onValueChanged: {
+                                    var msg = {"changingDevices":value};
+                                    wsc.send = JSON.stringify(msg);
+                                }
+                            }
+                            Text{
+                                color:"#fff";
+                                text: numChangingDevSlider.value == 0 ? qsTr("all") : numChangingDevSlider.value
+                                Layout.minimumWidth: 20
+                            }
+                        }
+
+                        Text{
+                            text:qsTr("Smoothness")
+                            color:"#fff";
+                        }
+                        Slider{
+                            id: smoothnessSlider
+                            minimumValue: 0
+                            maximumValue: 0.5
+                            Layout.fillWidth: true;
+                            onValueChanged: {
+                                if(pressed){
+                                    var mesage = new Object();
+                                    mesage.smoothnessChanged = value;
+                                    wsc.send = JSON.stringify(mesage);
+                                }
+                            }
+                        }
+                }
             }
             RowLayout{
                 width: parent.width
@@ -68,6 +81,15 @@ Item{
                 SelectVirtualDevieManagerHook{
                     id:vDevManager
                 }
+
+                CheckBox{
+                    id: sameColorCb
+                    text:qsTr("Same Color");
+                    onCheckedChanged: {
+                        var msg = {"sameColor":checked};
+                        wsc.send = JSON.stringify(msg);
+                    }
+                }
             }
 
     }
@@ -76,6 +98,7 @@ Item{
     WebSocketConnector{
         id: wsc
         onMessage: {
+            console.log(JSON.stringify(msg));
             if(msg.config !== undefined){
                 if(msg.config.foregroundTrigger !== undefined)
                     foregroundBtn.requestId = msg.config.foregroundTrigger;
@@ -87,6 +110,12 @@ Item{
                     colorPickerButton.requestId = msg.config.colorButton;
                 if(msg.config.hasOwnProperty("selectDevManager"))
                     vDevManager.requestId = msg.config.selectDevManager;
+                if(msg.config.hasOwnProperty("numDevs"))
+                    numChangingDevSlider.maximumValue = msg.config.numDevs;
+                if(msg.config.hasOwnProperty("changingDevices"))
+                    numChangingDevSlider.value = msg.config.changingDevices;
+                if(msg.config.hasOwnProperty("sameColor"))
+                    sameColorCb.checked = msg.config.sameColor;
 
             }
             if(msg.smoothnessChanged !== undefined)

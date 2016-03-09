@@ -33,11 +33,9 @@ public:
     QString getSceneTypeString();
     static QString getSceneTypeStringStaticaly();
 public slots:
-    void changeBackground();
+    void devicesChanged();
     void generateNextScene();
 private:
-    QColor c;
-    QColor highlighted;
     Trigger backgroundTrigger;
     int smoothDuration;
     QTime smoothTimer;
@@ -46,6 +44,12 @@ private:
     ColorButton colorButton;
     FilterVirtualDeviceManager filterDeviceManager;
     SelectVirtualDeviceManager selectDevManager;
+
+    QColor getNextColor();
+
+    int numChangingDevices;
+    bool sameColor;
+
 
 };
 
