@@ -14,6 +14,8 @@
 #include <QJsonArray>
 #include <QCoreApplication>
 
+#include "channeldevicestate.h"
+
 #define SETTING_KEY_MAINSCENE_JSON "mainscenejson"
 #define SETTING_KEY_JACKP "jackp"
 
@@ -69,6 +71,17 @@ void MainWindow::getChanges()
             newState.insert(deviceId,avDev.value(deviceId).data()->createEmptyState());
         }
     }
+
+    //single device saver:
+    //replaces 0 by 0.001 to keep the single device always warm
+    foreach (QString devId, newState.keys()) {
+        QSharedPointer<ChannelDeviceState> state = newState.value(devId).dynamicCast<ChannelDeviceState>();
+        if(state.data()->device->getType() == Device::White &&
+                state.data()->getChannelValue(state.data()->getFirstChannel()) == 0.0 ){
+            state.data()->setChannel(state.data()->getFirstChannel(),0.01);
+        }
+    }
+
 
     //test for changes
     changes.clear();
