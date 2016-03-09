@@ -26,7 +26,6 @@ Item{
                     id:vDevManager
                 }
             }
-
     }
 
 

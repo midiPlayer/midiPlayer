@@ -63,7 +63,7 @@ void FlashScene::reloadColor()
     foreach (QSharedPointer<DeviceState> state, flashState) {
         QSharedPointer<ChannelDeviceState> cDevState = state.dynamicCast<ChannelDeviceState>();
         if(cDevState.data()->getNumChannels() == 1){
-            cDevState.data()->setChannel(cDevState.data()->getFirstChannel(),1.0);
+            cDevState.data()->setChannel(cDevState.data()->getFirstChannel(),color.toHsv().valueF());
         }
         else{
         int firstC = cDevState.data()->getFirstChannel();
