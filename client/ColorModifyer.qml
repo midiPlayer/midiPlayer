@@ -5,10 +5,11 @@ import RGBWColor 1.1
 
 
 Item {
-    property string color;
+    //property string color;
+    property alias color : rgbwColor.string
 
     RGBWColor{
-
+        id:rgbwColor
     }
 
     ColumnLayout{
@@ -29,15 +30,54 @@ Item {
                 color: "#369cb6"
             }
             Slider{
-                id:redSlider
                 minimumValue: 0
-                maximumValue: 255
+                maximumValue: 1
+                value:rgbwColor.r;
+                onValueChanged: {
+                    rgbwColor.r = value;
+                }
             }
+            Text{
+                text:qsTr("Green")
+                color: "#369cb6"
+            }
+            Slider{
+                minimumValue: 0
+                maximumValue: 1
+                value:rgbwColor.g;
+                onValueChanged: {
+                    rgbwColor.g = value;
+                }
+            }
+            Text{
+                text:qsTr("Blue")
+                color: "#369cb6"
+            }
+            Slider{
+                minimumValue: 0
+                maximumValue: 1
+                value:rgbwColor.b;
+                onValueChanged: {
+                    rgbwColor.b = value;
+                }
+            }
+        }
+            Rectangle{
+                id:previwRect;
+                height: 20
+                Layout.fillWidth: true;
+                color:rgbwColor.preview
+            }
+
             Button{
                 text:qsTr("Done")
+                onClicked: {
+                    console.log(rgbwColor.preview);
+                    colorPicker.colorSelected(rgbwColor.preview)
+                    colorPickerStackView.pop(null);
+                }
             }
 
 
-        }
     }
 }

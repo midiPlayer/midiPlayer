@@ -17,6 +17,7 @@ public:
     Q_PROPERTY(double w READ getW  WRITE setW)
 
     Q_PROPERTY(QString string READ getString  WRITE setString)
+    Q_PROPERTY(QString legacyString READ getLegacyString)
 
     Q_PROPERTY(double passivR READ getR  WRITE setRPassiv)
     Q_PROPERTY(double passivG READ getG  WRITE setGPassiv)
@@ -28,7 +29,7 @@ public:
     Q_PROPERTY(bool hasB READ getHasB  WRITE setHasB)
     Q_PROPERTY(bool hasW READ getHasW  WRITE setHasW)
 
-    Q_PROPERTY(QString preview READ getRGBPrev)
+    Q_PROPERTY(QString preview READ getRGBPrev NOTIFY colorChanged)
     Q_PROPERTY(QString deviceWhiteColor READ getDeviceWhiteColor WRITE setDeviceWhiteColor)
     Q_PROPERTY(double brightness READ getBrightness)
     Q_PROPERTY(RGBWColor* copy READ getCopy)
@@ -65,6 +66,7 @@ public slots:
 
     void setString(QString colorString);
     QString getString();
+    QString getLegacyString();
 
     void setDeviceWhiteColor(QString name);
 signals:
@@ -74,6 +76,7 @@ private:
 double r,g,b,w;
 bool hasR, hasG, hasB, hasW;
 QColor maximizeColor(QColor c);
+QString formateNumber(double num);
 
 QColor deviceWhiteColor;
 

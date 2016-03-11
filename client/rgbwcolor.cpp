@@ -34,6 +34,14 @@ QColor RGBWColor::maximizeColor(QColor c)
     return c;
 }
 
+QString RGBWColor::formateNumber(double num)
+{
+    QString ret = QString::number((int)(num*254),16);
+    while(ret.length() <= 1)
+        ret = "0" + ret;
+    return ret;
+}
+
 double RGBWColor::getR()
 {
     return r;
@@ -166,21 +174,22 @@ void RGBWColor::setWPassiv(double w)
 void RGBWColor::setString(QString colorString)
 {
     /*
+     * ACHTUNG es wird nicht das standard format verwedet sonder ein eigenes mit Weiß am ende
      * valid formats:
      * rrggbb
      * rrggbbww
      * */
-    if(colorString.length() >= 6){ //rrggbb
+    if(colorString.length() >= 7){ //rrggbb
         bool ok;
-        QStringRef redStr(&colorString,0,2);
+        QStringRef redStr(&colorString,1,2);
         r = redStr.toInt(&ok,16)/254.0;
-        QStringRef greenStr(&colorString,2,2);
+        QStringRef greenStr(&colorString,3,2);
         g = greenStr.toInt(&ok,16)/254.0;
-        QStringRef blueStr(&colorString,4,2);
+        QStringRef blueStr(&colorString,5,2);
         b = blueStr.toInt(&ok,16)/254.0;
     }
-    if(colorString.length() >= 8){//rrggbbww
-        QStringRef whiteStr(&colorString,6,2);
+    if(colorString.length() >= 9){//rrggbbww
+        QStringRef whiteStr(&colorString,7,2);
         bool ok;
         w = whiteStr.toInt(&ok,16)/254.0;
     }
@@ -190,8 +199,15 @@ void RGBWColor::setString(QString colorString)
 
 QString RGBWColor::getString()
 {
-    QString ret = QString::number((int)(r*254),16) + QString::number((int)(g*254),16) +
-            QString::number((int)(b*254),16) + QString::number((int)(w*254),16);
+    QString ret = "#" + formateNumber(r) + formateNumber(g) +
+            formateNumber(b) + formateNumber(w);
+    return ret;
+}
+
+QString RGBWColor::getLegacyString()
+{
+    QString ret = "#" + formateNumber(r) + formateNumber(g) +
+            formateNumber(b);
     return ret;
 }
 
