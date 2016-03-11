@@ -9,8 +9,9 @@ ApplicationWindow {
     id:mainWindow
     objectName: "mainWindow"
     visible: true
-    width: desktopWidth
-    height: desktopHeight
+    //width: desktopWidth
+    //height: desktopHeight
+    visibility: "FullScreen"
     title: qsTr("Video Player")
 
 

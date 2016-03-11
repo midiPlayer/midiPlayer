@@ -54,6 +54,14 @@ import QtQuick.Layouts 1.1
 
                         }
                     }
+                    onOptionSelected: {
+                        console.log("show Options");
+                        if(subColors.count != 0)
+                            colorPickerStackView.push(Qt.resolvedUrl("ColorPickerView.qml"),{"lmodel":subColors});
+                        else{
+                            colorPickerStackView.push(Qt.resolvedUrl("ColorModifyer.qml"),{"color":color});
+                        }
+                    }
                 }
         }
     }

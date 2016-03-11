@@ -15,6 +15,7 @@ Q_OBJECT
 public:
     DiaSceneMonitorControl(WebSocketServer *ws, JackProcessor *jackP, MonitorIO *monitorP, float* fadeInDurP, QJsonObject serialized = QJsonObject());
     void start();
+    void stop();
 
     void clientRegistered(QJsonObject msg,int clientId);
     void clientUnregistered(QJsonObject msg,int clientId);

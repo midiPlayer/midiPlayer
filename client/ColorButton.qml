@@ -4,6 +4,7 @@ import QtGraphicalEffects 1.0
 Item {
     property alias bcolor: r1.color
     signal selected();
+    signal optionSelected();
     property string subColorsJson
     property ListModel subColors : ListModel{}
 
@@ -41,13 +42,19 @@ Item {
 
     MouseArea{
         anchors.fill: parent
+        property var pressedTimeStamp: 0
         onPressed: {
             shadow.opacity = 0.8;
+            pressedTimeStamp = Date.now();
 
         }
         onReleased: {
             shadow.opacity = 0.6;
-            selected();
+            console.log("diff:"  + (Date.now() - pressedTimeStamp));
+            if(Date.now() - pressedTimeStamp > 500)//longclick
+                optionSelected();
+            else
+                selected();
         }
         onCanceled: {
             shadow.opacity = 0.6;

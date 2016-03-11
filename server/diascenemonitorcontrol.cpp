@@ -43,8 +43,14 @@ void DiaSceneMonitorControl::start()
         monitor->showRessource("",*fadeInDur);
         return;
     }
+    trigger.start();
     monitor->showRessource(resources.at(0),*fadeInDur);
     currentRes = 0;
+}
+
+void DiaSceneMonitorControl::stop()
+{
+    trigger.stop();
 }
 
 void DiaSceneMonitorControl::clientRegistered(QJsonObject msg, int clientId)

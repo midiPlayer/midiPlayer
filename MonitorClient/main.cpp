@@ -11,6 +11,8 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
+    app.setOverrideCursor( QCursor( Qt::BlankCursor ) );
+
     qmlRegisterType<MediaManager>("MediaManager", 1,1, "MediaManager");
     qmlRegisterType<WebSocketConnector>("WebSocketConnector", 1,1, "WebSocketConnector");
 

@@ -86,6 +86,7 @@ void Dia::start()
 void Dia::stop()
 {
     scene.data()->stop();
+    monitorControl.stop();
 }
 
 

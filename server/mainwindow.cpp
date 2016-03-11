@@ -76,6 +76,8 @@ void MainWindow::getChanges()
     //replaces 0 by 0.001 to keep the single device always warm
     foreach (QString devId, newState.keys()) {
         QSharedPointer<ChannelDeviceState> state = newState.value(devId).dynamicCast<ChannelDeviceState>();
+        if(state.isNull())
+            continue;
         if(state.data()->device->getType() == Device::White &&
                 state.data()->getChannelValue(state.data()->getFirstChannel()) == 0.0 ){
             state.data()->setChannel(state.data()->getFirstChannel(),0.01);

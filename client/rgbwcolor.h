@@ -16,6 +16,8 @@ public:
     Q_PROPERTY(double b READ getB  WRITE setB)
     Q_PROPERTY(double w READ getW  WRITE setW)
 
+    Q_PROPERTY(QString string READ getString  WRITE setString)
+
     Q_PROPERTY(double passivR READ getR  WRITE setRPassiv)
     Q_PROPERTY(double passivG READ getG  WRITE setGPassiv)
     Q_PROPERTY(double passivB READ getB  WRITE setBPassiv)
@@ -60,6 +62,9 @@ public slots:
     void setGPassiv(double g);
     void setBPassiv(double b);
     void setWPassiv(double w);
+
+    void setString(QString colorString);
+    QString getString();
 
     void setDeviceWhiteColor(QString name);
 signals:

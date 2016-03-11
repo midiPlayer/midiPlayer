@@ -69,5 +69,6 @@
         <file>SelectVirtualDeviceManagerGroup.qml</file>
         <file>SelectVirtualDevieManagerImporter.js</file>
         <file>TriggerTimerConfig.qml</file>
+        <file>ColorModifyer.qml</file>
     </qresource>
 </RCC>
