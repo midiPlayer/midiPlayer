@@ -25,7 +25,7 @@ QSharedPointer<DeviceState> MusicDeviceState::fusionWith(QSharedPointer<DeviceSt
         factorB = opacity;
     }
     else if(type == DeviceState::OVERRIDE){
-        factorB = 0;
+        factorA = 0;
     }
 
     foreach(MusicDevice* dev, devices.keys()){

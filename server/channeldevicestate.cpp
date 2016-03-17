@@ -61,8 +61,11 @@ QSharedPointer<DeviceState> ChannelDeviceState::fusionWith(QSharedPointer<Device
         foreach (int channel, getChannels()) {
             ret.data()->setChannel(channel,upper.data()->getChannelValue(channel)*opacity+getChannelValue(channel)*(1.0f-opacity));
         }
-
         break;
+    case OVERRIDE:
+        foreach (int channel, getChannels()) {
+            ret.data()->setChannel(channel,upper.data()->getChannelValue(channel));
+        }
 
     default :
         qDebug() << "this Fusiontype is currently not implemented";
