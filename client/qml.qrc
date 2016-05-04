@@ -70,5 +70,6 @@
         <file>SelectVirtualDevieManagerImporter.js</file>
         <file>TriggerTimerConfig.qml</file>
         <file>ColorModifyer.qml</file>
+        <file>ScreenColorScene.qml</file>
     </qresource>
 </RCC>

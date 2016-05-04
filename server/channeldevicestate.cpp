@@ -6,6 +6,7 @@
 #include <QSharedPointer>
 #include "devicenotfoundexception.h"
 
+
 #define KEY_DEVICESTATE_DEV_ID "devicestate_dev_id"
 #define KEY_DEVICESTATE_CHANNELS "devicestate_channels"
 #define KEY_DEVICESTATE_DMX_ID "devicestate_dmx_id"
@@ -154,6 +155,20 @@ void ChannelDeviceState::multiply(float percentage)
     foreach (int channel, getChannels()) {
         setChannel(channel,getChannelValue(channel)*percentage);
     }
+}
+
+void ChannelDeviceState::setRGB(QColor color)
+{
+    int first = getFirstChannel();
+    if(device->getType() == Device::RGB || device->getType() == Device::RGBW || device->getType() == Device::Beamer){
+        setChannel(first+0,color.redF());
+        setChannel(first+1,color.greenF());
+        setChannel(first+2,color.blueF());
+        if(device->getType() == Device::RGBW)
+            setChannel(first +3,color.toHsv().valueF() * color.toHsv().saturationF());
+    }
+    if(device->getType() == Device::White)
+        setChannel(first,color.toHsv().valueF());
 }
 
 ChannelDeviceState ChannelDeviceState::copy()

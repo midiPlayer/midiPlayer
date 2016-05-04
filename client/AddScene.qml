@@ -62,6 +62,10 @@ Item{
             text: qsTr("Keyframe Scene")
             type:"keyFrameScene"
         }
+        ListElement{
+            text: qsTr("Screencolor Scene")
+            type:"screenColor"
+        }
     }
 
     ColumnLayout{

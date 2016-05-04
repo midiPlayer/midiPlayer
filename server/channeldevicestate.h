@@ -5,6 +5,8 @@
 #include "devicestate.h"
 #include "virtualdevicemanager.h"
 #include <exception>
+#include <QColor>
+
 class ChannelDevice;
 
 class ChannelDeviceState : public Serializable, public DeviceState
@@ -31,6 +33,8 @@ public:
     void setClientJson(QJsonArray json);
     ChannelDeviceState operator *(float percentage);
     void multiply(float percentage);
+
+    void setRGB(QColor color);
 
     ChannelDeviceState copy();
     QSharedPointer<ChannelDeviceState> copyToSharedPointer();

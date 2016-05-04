@@ -93,15 +93,8 @@ void ColorScene::reloadColor()
     QColor c = colorButton.getColors().at(0);
     foreach(QSharedPointer<DeviceState> state, deviceStates){
         QSharedPointer<ChannelDeviceState> cDevState = state.dynamicCast<ChannelDeviceState>();
-        if(cDevState.data()->getNumChannels() == 1){
-            cDevState.data()->setChannel(cDevState.data()->getFirstChannel(),c.toHsv().valueF());
-        }
-        else{
-            int first = cDevState.data()->getFirstChannel();
-            cDevState.data()->setChannel(first+0,c.redF());
-            cDevState.data()->setChannel(first+1,c.greenF());
-            cDevState.data()->setChannel(first+2,c.blueF());
-        }
+        cDevState.data()->setRGB(c);
     }
+
 }
 

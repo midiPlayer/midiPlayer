@@ -7,6 +7,8 @@
 #include "colorwavescene.h"
 #include "keyframescene.h"
 #include "musicscene.h"
+#include "screencolorscene.h"
+
 SceneBuilder::SceneBuilder(WebSocketServer *wssP, VirtualDeviceManager *manager, JackProcessor *jackP):wss(wssP),
     vDevManager(manager),jack(jackP)
 {
@@ -38,6 +40,9 @@ QSharedPointer<Scene> SceneBuilder::build(QString sceneType, QString name,QJsonO
     }
     else if(sceneType == MusicScene::getSceneTypeStringStaticaly()){
         return QSharedPointer<Scene>(new MusicScene(name,wss,serialized));
+    }
+    else if(sceneType == ScreenColorScene::getSceneTypeStringStaticaly()){
+        return QSharedPointer<Scene>(new ScreenColorScene(vDevManager,wss,name,serialized));
     }
     return QSharedPointer<Scene>();
 }

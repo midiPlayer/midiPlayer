@@ -301,6 +301,8 @@ Item {
                                 filename = "ColorWheelScene.qml";
                             if(modelData.requestType === "keyFrameScene")
                                 filename = "KeyframeSceneDiscoWrapper.qml";
+                            if(modelData.requestType === "screenColor")
+                                filename = "ScreenColorScene.qml";
                             if(filename != ""){
                             var obj = Qt.createComponent(filename,0,this);
                                 if (obj.status === Component.Ready){

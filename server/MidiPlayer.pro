@@ -60,7 +60,10 @@ SOURCES += main.cpp\
     musicdevice.cpp \
     musicdevicestate.cpp \
     selectvirtualdevicemanager.cpp \
-    devicenotfoundexception.cpp
+    devicenotfoundexception.cpp \
+    colorpreview.cpp \
+    screencolorscene.cpp \
+    screencolorscenescanner.cpp
 
 HEADERS  += mainwindow.h\
             jackprocessor.h \
@@ -108,7 +111,10 @@ HEADERS  += mainwindow.h\
     musicdevice.h \
     musicdevicestate.h \
     selectvirtualdevicemanager.h \
-    devicenotfoundexception.h
+    devicenotfoundexception.h \
+    colorpreview.h \
+    screencolorscene.h \
+    screencolorscenescanner.h
 
 FORMS    +=
 
