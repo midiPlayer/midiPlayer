@@ -35,7 +35,10 @@ BeatScene1::BeatScene1(VirtualDeviceManager *manager, JackProcessor *p, WebSocke
     numChangingDevices = serialized.value(KEY_NUM_CHANGING_DEVS).toInt(numChangingDevices);
     sameColor = serialized.value(KEY_SAME_COLOR).toBool(sameColor);
 
-    backgroundTrigger.triggerConfig.insert(Trigger::BEAT );
+    //backgroundTrigger.triggerConfig.insert(Trigger::BEAT );
+    if(serialized.contains(KEY_BACKGROUNDTRIGGER)){
+        backgroundTrigger.loadSerialized(serialized.value(KEY_BACKGROUNDTRIGGER).toObject());
+    }
 
     connect(&selectDevManager,SIGNAL(virtualDevicesChanged()),this,SLOT(devicesChanged()));
 
@@ -154,6 +157,10 @@ void BeatScene1::generateNextScene()
 {
     QMap<QString, QSharedPointer<DeviceState> > ret;
     QMap<QString, QSharedPointer<Device> > avDevs = selectDevManager.getDevices();
+
+    //HACK!!!
+    if(colorButton.getColors().count() == 0)
+        return;
 
     //choose devices
     QList<QString> freeDevs = selectDevManager.getDevices().keys();
