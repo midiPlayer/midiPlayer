@@ -1,0 +1,9 @@
+image: opensuse
+
+before_script:
+  - bundle install
+  
+my_project:
+  script:
+    - cd client
+    - ls
