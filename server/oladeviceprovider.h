@@ -4,7 +4,7 @@
 #include <ola/DmxBuffer.h>
 #include <ola/io/SelectServer.h>
 #include <ola/Logging.h>
-#include <ola/client/ClientWrapper.h>
+#include <ola/OlaClientWrapper.h>
 #include <ola/Callback.h>
 #include "filtervirtualdevicemanager.h"
 
