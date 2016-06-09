@@ -1,9 +1,13 @@
-image: opensuse
-
-before_script:
-  - bundle install
+image: jakobbraun/midiplayer-linux-build-env
   
-my_project:
+client:
   script:
     - cd client
-    - ls
+    - qmake
+    - make
+    
+server:
+  script:
+    - cd server
+    - qmake
+    - make
