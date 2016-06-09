@@ -5,6 +5,9 @@ client:
     - cd client
     - qmake
     - make
+  artifacts:
+    paths:
+      - client/client
     
 server:
   script:
