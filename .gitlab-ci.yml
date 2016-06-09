@@ -1,6 +1,5 @@
-image: jakobbraun/midiplayer-linux-build-env
-  
-client:
+client-linux:
+  image: jakobbraun/midiplayer-linux-build-env
   script:
     - cd client
     - qmake
@@ -8,9 +7,24 @@ client:
   artifacts:
     paths:
       - client/client
+      
+client-win:
+  image: jakobbraun/midiplayer-win-build-env
+  script:
+    - cd client
+    - export PATH=/usr/lib/mxe/usr/x86_64-w64-mingw32.static/qt5/bin/:$PATH
+    - /usr/lib/mxe/usr/x86_64-w64-mingw32.static/qt5/bin/qmake
+    - make
+  artifacts:
+    paths:
+      - client/release/client.exe
     
 server:
+  image: jakobbraun/midiplayer-linux-build-env
   script:
     - cd server
     - qmake
     - make
+  artifacts:
+    paths:
+      - server/MidiPlayer
