@@ -1,0 +1,16 @@
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get -y install build-essential qt5-default qtbase5-dev  qtdeclarative5-dev libqt5websockets5-dev qtmultimedia5-dev  libjack-jackd2-dev libaubio-dev libola-dev libprotobuf-dev
+  
+script:
+  -cd client
+  - qmake
+  - make
+
+deploy:
+  provider: releases
+  api_key: "$GH_API_KEY"
+  file: "client/client"
+  skip_cleanup: true
+  on:
+    tags: true
