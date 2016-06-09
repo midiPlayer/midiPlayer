@@ -16,9 +16,25 @@ client-win:
     - export PATH=/usr/lib/mxe/usr/x86_64-w64-mingw32.static/qt5/bin/:$PATH
     - qmake
     - make
+  only:
+    - tags
   artifacts:
     paths:
       - client/release/client.exe
+      
+client-android:
+  image: rabits/qt:5.4-android
+  script:
+    - cd client
+    - mkdir build
+    - qmake ../
+    - make
+    - make install INSTALL_ROOT=$HOME/dist
+    - androiddeployqt --input ./android-libclient.so-deployment-settings.json --output ~/dist --deployment bundled --gradle --release
+  artifacts:
+    paths:
+    - /home/user/dist/build/outputs/apk/android-build-release-unsigned.apk
+            
     
 server:
   image: jakobbraun/midiplayer-linux-build-env
