@@ -27,6 +27,7 @@ client-android:
   script:
     - cd client
     - mkdir build
+    - cd build
     - qmake ../
     - make
     - make install INSTALL_ROOT=$HOME/dist
