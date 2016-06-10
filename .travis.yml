@@ -2,8 +2,8 @@ addons:
   apt:
     sources:
       - sourceline: 'deb http://httpredir.debian.org/debian jessie main'
-      - sourceline 'deb http://httpredir.debian.org/debian jessie-updates main'
-      - sourceline 'deb http://security.debian.org jessie/updates main'
+      - sourceline: 'deb http://httpredir.debian.org/debian jessie-updates main'
+      - sourceline: 'deb http://security.debian.org jessie/updates main'
     packages:
      - build-essential 
      - qt5-default
